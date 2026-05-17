@@ -1,0 +1,50 @@
+{
+  "display_name": "Vue",
+  "category": "frontend",
+  "status": "stable",
+  "generator": "VueGenerator",
+  "gatekeeper": "VueGatekeeper",
+  "prompt_template": "vue_prompt.md",
+  "required_fields": [
+    "project_name",
+    "business_goal",
+    "pages",
+    "components",
+    "router",
+    "pinia",
+    "forms",
+    "api_client",
+    "tests",
+    "language"
+  ],
+  "forbidden": [
+    "pom.xml",
+    "requirements.txt",
+    "Spring Boot",
+    "FastAPI"
+  ],
+  "supported_architectures": [
+    "spa",
+    "frontend_platform"
+  ],
+  "default_versions": {
+    "vue_version": "3",
+    "node_version": "20",
+    "state_management": "pinia",
+    "tests": "vitest"
+  },
+  "aliases": [],
+  "modules": [
+    "pages",
+    "components",
+    "stores",
+    "router"
+  ],
+  "features": [
+    "router",
+    "state",
+    "forms",
+    "tests"
+  ],
+  "stack_id": "vue"
+}

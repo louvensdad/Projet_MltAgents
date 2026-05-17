@@ -58,7 +58,7 @@ const WIZARD_CARDS: WizardCard[] = [
     graph: "Visitor -> Hero -> Content -> CTA -> Analytics",
   },
   {
-    slug: "springboot",
+    slug: "spring_boot",
     nameKey: "wizard.selector.springboot_name",
     descKey: "wizard.selector.springboot_desc",
     icon: Server,
@@ -292,7 +292,7 @@ const WIZARD_CARDS: WizardCard[] = [
 
 const CATEGORIES = [
   { key: "sites", labelKey: "wizard.selector.cat_sites", items: ["static-site"] },
-  { key: "backend", labelKey: "wizard.selector.cat_backend", items: ["springboot", "fastapi", "nestjs", "express", "laravel", "dotnet"] },
+  { key: "backend", labelKey: "wizard.selector.cat_backend", items: ["spring_boot", "fastapi", "nestjs", "express", "laravel", "dotnet"] },
   { key: "frontend", labelKey: "wizard.selector.cat_frontend", items: ["angular", "react", "nextjs", "vue", "blazor"] },
 ];
 

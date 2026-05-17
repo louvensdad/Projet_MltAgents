@@ -9,7 +9,7 @@ export interface StackTheme {
 }
 
 export const STACK_THEMES: Record<StackKey, StackTheme> = {
-  springboot: {
+  spring_boot: {
     name: "Spring Enterprise",
     accent: "from-emerald-500 to-cyan-500",
     panel: "bg-emerald-500/10 border-emerald-500/30",

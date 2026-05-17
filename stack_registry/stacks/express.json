@@ -1,0 +1,59 @@
+{
+  "display_name": "Node.js + Express",
+  "category": "backend",
+  "status": "stable",
+  "generator": "ExpressGenerator",
+  "gatekeeper": "ExpressGatekeeper",
+  "prompt_template": "express_prompt.md",
+  "required_fields": [
+    "project_name",
+    "business_goal",
+    "entities",
+    "features",
+    "architecture",
+    "database",
+    "orm",
+    "auth",
+    "validation",
+    "tests",
+    "docker",
+    "language"
+  ],
+  "forbidden": [
+    "pom.xml",
+    "requirements.txt",
+    "Spring Boot",
+    "FastAPI"
+  ],
+  "supported_architectures": [
+    "simple_api",
+    "modular_api"
+  ],
+  "default_versions": {
+    "node_version": "20",
+    "database": "postgresql",
+    "orm": "prisma",
+    "auth": "jwt",
+    "validation": "zod",
+    "tests": "jest",
+    "docker": true
+  },
+  "aliases": [
+    "node-express",
+    "node_express",
+    "expressjs"
+  ],
+  "modules": [
+    "routes",
+    "controllers",
+    "services",
+    "middlewares"
+  ],
+  "features": [
+    "routing",
+    "middlewares",
+    "validation",
+    "tests"
+  ],
+  "stack_id": "express"
+}

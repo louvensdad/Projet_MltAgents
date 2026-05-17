@@ -1,4 +1,4 @@
-export type StackKey = "springboot" | "fastapi" | "nestjs" | "express" | "laravel" | "dotnet" | "static";
+export type StackKey = "spring_boot" | "fastapi" | "nestjs" | "express" | "laravel" | "dotnet" | "static";
 
 export interface ArchitectureInput {
   stack: StackKey;

@@ -2,7 +2,7 @@ import { runSecurity } from "./security-engine";
 
 const s = runSecurity(
   {
-    stack: "springboot",
+    stack: "spring_boot",
     backendLabel: "Java + Spring Boot",
     frontend: "Angular",
     architecture: "Monólito Modular",

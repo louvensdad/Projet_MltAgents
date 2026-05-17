@@ -71,7 +71,7 @@ export function validateStackSelection(input: ValidationInput): ValidationResult
   if (input.stack === "fastapi" && input.database === "PostgreSQL") {
     recommendations.push("FastAPI + PostgreSQL validado para APIs assíncronas robustas.");
   }
-  if (input.stack === "springboot" && input.frontend === "Angular") {
+  if (input.stack === "spring_boot" && input.frontend === "Angular") {
     recommendations.push("Spring Boot + Angular é combinação enterprise recomendada.");
   }
   if (input.security.includes("Keycloak")) {

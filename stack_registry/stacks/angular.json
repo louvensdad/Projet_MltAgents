@@ -1,0 +1,57 @@
+{
+  "display_name": "Angular",
+  "category": "frontend",
+  "status": "stable",
+  "generator": "AngularGenerator",
+  "gatekeeper": "AngularGatekeeper",
+  "prompt_template": "angular_prompt.md",
+  "required_fields": [
+    "project_name",
+    "business_goal",
+    "pages",
+    "components",
+    "auth",
+    "routing",
+    "guards",
+    "interceptors",
+    "forms",
+    "api_client",
+    "state_management",
+    "charts",
+    "tests",
+    "language"
+  ],
+  "forbidden": [
+    "pom.xml",
+    "requirements.txt",
+    "Spring Boot",
+    "FastAPI"
+  ],
+  "supported_architectures": [
+    "spa",
+    "enterprise_frontend"
+  ],
+  "default_versions": {
+    "angular_version": "18",
+    "node_version": "20",
+    "state_management": "ngrx",
+    "forms": "reactive",
+    "tests": "karma_jest"
+  },
+  "aliases": [],
+  "modules": [
+    "pages",
+    "components",
+    "services",
+    "guards",
+    "interceptors"
+  ],
+  "features": [
+    "routing",
+    "forms",
+    "state",
+    "charts",
+    "tests"
+  ],
+  "stack_id": "angular"
+}

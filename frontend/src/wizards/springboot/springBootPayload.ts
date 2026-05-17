@@ -50,10 +50,10 @@ export function buildSpringBootPayload(
   locale: string
 ): SpringBootPayload {
   return {
-    wizard_type: "springboot",
+    wizard_type: "spring_boot",
     project_type: "api",
-    stack_profile_id: "java_springboot",
-    backend_stack: "java_springboot",
+    stack_profile_id: "spring_boot",
+    backend_stack: "spring_boot",
     project_name: form.project_name,
     java_version: form.java_version,
     spring_boot_version: form.spring_boot_version,

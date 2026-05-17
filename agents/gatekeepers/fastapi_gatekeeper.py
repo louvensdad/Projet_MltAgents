@@ -13,7 +13,7 @@ class FastAPIGatekeeper(BaseGatekeeper):
     """Gatekeeper especializado em projetos Python FastAPI."""
 
     def __init__(self):
-        super().__init__(name="FastAPIGatekeeper", stack_id="python_fastapi")
+        super().__init__(name="FastAPIGatekeeper", stack_id="fastapi")
 
     # ── Fase 1: Pre-Generation ──────────────────────────────────────────
 

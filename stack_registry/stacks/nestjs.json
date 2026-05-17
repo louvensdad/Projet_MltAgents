@@ -1,0 +1,66 @@
+{
+  "display_name": "Node.js + NestJS",
+  "category": "backend",
+  "status": "stable",
+  "generator": "NestJSGenerator",
+  "gatekeeper": "NestJSGatekeeper",
+  "prompt_template": "nestjs_prompt.md",
+  "required_fields": [
+    "project_name",
+    "business_goal",
+    "entities",
+    "features",
+    "architecture",
+    "database",
+    "orm",
+    "auth",
+    "messaging",
+    "cache",
+    "swagger",
+    "tests",
+    "docker",
+    "language"
+  ],
+  "forbidden": [
+    "requirements.txt",
+    "pom.xml",
+    "Spring Boot",
+    "FastAPI"
+  ],
+  "supported_architectures": [
+    "modular",
+    "microservices"
+  ],
+  "default_versions": {
+    "node_version": "20",
+    "typescript_version": "5.4",
+    "database": "postgresql",
+    "orm": "prisma",
+    "auth": "jwt",
+    "messaging": "kafka",
+    "cache": "redis",
+    "swagger": true,
+    "tests": "jest",
+    "docker": true
+  },
+  "aliases": [
+    "node-nestjs",
+    "nest-js",
+    "node_nestjs"
+  ],
+  "modules": [
+    "modules",
+    "controllers",
+    "services",
+    "guards",
+    "pipes"
+  ],
+  "features": [
+    "di",
+    "guards",
+    "pipes",
+    "swagger",
+    "messaging"
+  ],
+  "stack_id": "nestjs"
+}

@@ -1,85 +1,71 @@
 {
-    "id": "fastapi",
-    "name": "Python + FastAPI",
-    "description": "Modern async APIs with performance",
-    "form_schema": [
-        {
-            "id": "async_mode",
-            "label": "Use Async Mode?",
-            "type": "boolean",
-            "default": true
-        },
-        {
-            "id": "background_workers",
-            "label": "Background Workers",
-            "type": "select",
-            "options": [
-                "none",
-                "celery",
-                "rq"
-            ],
-            "default": "none"
-        },
-        {
-            "id": "websockets",
-            "label": "Enable WebSockets",
-            "type": "boolean",
-            "default": false
-        },
-        {
-            "id": "cache",
-            "label": "Cache",
-            "type": "select",
-            "options": [
-                "none",
-                "redis"
-            ],
-            "default": "none"
-        },
-        {
-            "id": "vector_db",
-            "label": "Vector DB",
-            "type": "select",
-            "options": [
-                "none",
-                "pinecone",
-                "milvus",
-                "qdrant"
-            ],
-            "default": "none"
-        },
-        {
-            "id": "ai_integration",
-            "label": "AI Integration",
-            "type": "select",
-            "options": [
-                "none",
-                "gemini",
-                "openai",
-                "local"
-            ],
-            "default": "none"
-        }
-    ],
-    "validation_rules": [
-        {
-            "condition": "ai_integration != 'none' and vector_db == 'none'",
-            "level": "warning",
-            "message": "Using AI without a Vector DB limits RAG capabilities."
-        }
-    ],
-    "best_practices": {
-        "examples": [
-            "Clean Architecture snippet",
-            "DTO usage example"
-        ],
-        "rules": [
-            "Always validate DTOs",
-            "Use structured logging"
-        ],
-        "patterns": [
-            "Repository Pattern",
-            "Service Layer"
-        ]
-    }
+  "display_name": "Python + FastAPI",
+  "category": "backend",
+  "status": "stable",
+  "generator": "FastAPIGenerator",
+  "gatekeeper": "FastAPIGatekeeper",
+  "prompt_template": "fastapi_prompt.md",
+  "required_fields": [
+    "project_name",
+    "business_goal",
+    "target_audience",
+    "business_rules",
+    "entities",
+    "features",
+    "architecture",
+    "python_version",
+    "orm",
+    "database",
+    "auth",
+    "async_mode",
+    "workers",
+    "cache",
+    "openapi",
+    "tests",
+    "docker",
+    "language"
+  ],
+  "forbidden": [
+    "pom.xml",
+    "build.gradle",
+    "Spring Boot",
+    "Java"
+  ],
+  "supported_architectures": [
+    "modular_api",
+    "layered",
+    "clean_architecture"
+  ],
+  "default_versions": {
+    "python_version": "3.12",
+    "orm": "sqlalchemy",
+    "database": "postgresql",
+    "auth": "jwt",
+    "async_mode": true,
+    "workers": "celery",
+    "cache": "redis",
+    "openapi": true,
+    "tests": "pytest",
+    "docker": true
+  },
+  "aliases": [
+    "fast-api",
+    "fast_api",
+    "python_fastapi"
+  ],
+  "modules": [
+    "routes",
+    "schemas",
+    "services",
+    "core",
+    "workers"
+  ],
+  "features": [
+    "async",
+    "openapi",
+    "workers",
+    "cache",
+    "testing"
+  ],
+  "stack_id": "fastapi"
 }

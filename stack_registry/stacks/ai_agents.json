@@ -1,0 +1,56 @@
+{
+  "display_name": "AI Agents",
+  "category": "ai",
+  "status": "stable",
+  "generator": "AIAgentsGenerator",
+  "gatekeeper": "AIAgentsGatekeeper",
+  "prompt_template": "ai_agents_prompt.md",
+  "required_fields": [
+    "project_name",
+    "business_goal",
+    "agents",
+    "tools",
+    "memory",
+    "workflows",
+    "llm_provider",
+    "guardrails",
+    "evaluation",
+    "logs",
+    "tests",
+    "language"
+  ],
+  "forbidden": [
+    "hardcoded_api_key",
+    "no_guardrails",
+    "no_logs",
+    "unsafe_tooling"
+  ],
+  "supported_architectures": [
+    "single_agent",
+    "multi_agent",
+    "orchestrated"
+  ],
+  "default_versions": {
+    "llm_provider": "openai",
+    "memory": "vector_db",
+    "tests": "pytest"
+  },
+  "aliases": [
+    "ai-agents",
+    "agentes-ia",
+    "multi_agent"
+  ],
+  "modules": [
+    "agents",
+    "tools",
+    "memory",
+    "orchestrator"
+  ],
+  "features": [
+    "guardrails",
+    "evaluation",
+    "logging",
+    "workflows"
+  ],
+  "stack_id": "ai_agents"
+}

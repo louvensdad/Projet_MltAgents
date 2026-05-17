@@ -1,10 +1,16 @@
 IMPLEMENTED_STACKS = {
-    "springboot": {"status": "stable"},
+    "spring_boot": {"status": "stable"},
     "fastapi": {"status": "stable"},
     "nestjs": {"status": "stable"},
     "express": {"status": "stable"},
     "laravel": {"status": "partial"},
     "dotnet": {"status": "partial"},
-    "static": {"status": "stable"},
+    "angular": {"status": "stable"},
+    "react": {"status": "stable"},
+    "nextjs": {"status": "stable"},
+    "vue": {"status": "stable"},
+    "blazor": {"status": "stable"},
+    "automation": {"status": "stable"},
+    "ai_agents": {"status": "stable"},
     "grpc": {"status": "planned"},
 }

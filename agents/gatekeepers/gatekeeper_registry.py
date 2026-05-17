@@ -41,9 +41,9 @@ class GatekeeperRegistry:
         from agents.gatekeepers.ai_agents_gatekeeper import AIAgentsGatekeeper
 
         # ── Backend stacks ─────────────────────────────────────────────
+        cls._gatekeepers["spring_boot"] = SpringBootGatekeeper
         cls._gatekeepers["java_springboot"] = SpringBootGatekeeper
         cls._gatekeepers["springboot"] = SpringBootGatekeeper
-        cls._gatekeepers["spring_boot"] = SpringBootGatekeeper
         cls._gatekeepers["java"] = SpringBootGatekeeper
         cls._gatekeepers["python_fastapi"] = FastAPIGatekeeper
         cls._gatekeepers["fastapi"] = FastAPIGatekeeper

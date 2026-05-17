@@ -16,16 +16,48 @@ class StackRegistry:
         raw = raw.replace("+", "_").replace("-", "_").replace(" ", "_")
         raw = re.sub(r"_+", "_", raw).strip("_")
         aliases = {
+            "springboot": "spring_boot",
+            "spring_boot": "spring_boot",
+            "java_springboot": "spring_boot",
+            "java_spring_boot": "spring_boot",
+            "java_spring": "spring_boot",
+            "fastapi": "fastapi",
+            "python_fastapi": "fastapi",
+            "fast_api": "fastapi",
+            "fast-api": "fastapi",
+            "nestjs": "nestjs",
+            "node_nestjs": "nestjs",
+            "nest_js": "nestjs",
+            "nest-js": "nestjs",
+            "express": "express",
+            "node_express": "express",
+            "php_laravel": "laravel",
+            "laravel": "laravel",
+            "dotnet": "dotnet",
+            "dot_net": "dotnet",
+            "aspnet_core": "dotnet",
+            "asp_net": "dotnet",
+            "aspnet": "dotnet",
+            "asp_net_core": "dotnet",
+            "nextjs": "nextjs",
+            "next_js": "nextjs",
+            "next.js": "nextjs",
+            "react": "react",
+            "vue": "vue",
+            "blazor": "blazor",
+            "angular": "angular",
+            "automation": "automation",
+            "ai_agents": "ai_agents",
+            "ai-agents": "ai_agents",
+            "agentes_ia": "ai_agents",
+            "agentes-ia": "ai_agents",
+            "multi_agent": "ai_agents",
             "static": "static_site",
             "staticsite": "static_site",
             "static_site_wizard": "static_site",
             "static_site": "static_site",
             "static-site": "static_site",
             "static site": "static_site",
-            "spring_boot": "springboot",
-            "java_springboot": "springboot",
-            "python_fastapi": "fastapi",
-            "node_nestjs": "nestjs",
         }
         return aliases.get(raw, raw)
 
@@ -40,10 +72,11 @@ class StackRegistry:
             path = os.path.join(self.registry_dir, filename)
             with open(path, "r", encoding="utf-8") as f:
                 data = json.load(f)
-                stack_id = self.normalize_stack_id(data.get("id"))
+                stack_id = self.normalize_stack_id(data.get("id") or data.get("stack_id"))
                 if not stack_id:
                     continue
                 data["id"] = stack_id
+                data["stack_id"] = stack_id
                 self.stacks[stack_id] = data
                 for alias in data.get("aliases", []) or []:
                     normalized_alias = self.normalize_stack_id(alias)

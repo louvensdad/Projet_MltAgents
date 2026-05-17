@@ -36,7 +36,7 @@ interface StackSchema {
 type StackKeyOrStatic = StackKey | "static";
 
 const STACK_PREVIEW_MAP: Record<string, { title: string; subtitle: string; nodes: string[]; chips: string[]; score: number; complexity: string; scalability: string; performance: string; tone: "cyan" | "violet" | "emerald" | "amber" | "rose" }> = {
-  springboot: {
+  spring_boot: {
     title: "Spring Boot enterprise",
     subtitle: "Gateway, auth, Kafka and PostgreSQL aligned for scale and traceability.",
     nodes: ["Gateway", "Auth Service", "Kafka", "PostgreSQL", "Redis", "Monitoring"],
@@ -324,7 +324,7 @@ export default function CreateWizardPage() {
 
   const previewNodes = getArchitectureNodes(schema, stackId);
 
-  const recommendation = stackId === "springboot"
+  const recommendation = stackId === "spring_boot"
     ? "Spring Boot + Kafka + PostgreSQL is the most coherent fit for this flow. It gives you strong enterprise semantics, auditability and scale."
     : stackId === "fastapi"
       ? "FastAPI + Redis + PostgreSQL fits async workloads and AI-heavy flows with low friction."
@@ -380,7 +380,7 @@ export default function CreateWizardPage() {
               `Messaging: ${stackProfile.messaging.slice(0, 2).join(", ")}`,
               `Frontend: ${stackProfile.frontends.slice(0, 2).join(", ")}`,
             ]}
-            mode={stackId === "springboot" ? "Agent Boost 100%" : "Local Build 90%"}
+            mode={stackId === "spring_boot" ? "Agent Boost 100%" : "Local Build 90%"}
           />
           <HolographicCard className="p-5">
             <SectionHeader eyebrow="live preview" title="Architecture preview" subtitle="Stack topology evolves visually as you navigate the form." />

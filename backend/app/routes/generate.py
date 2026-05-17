@@ -62,13 +62,37 @@ def _normalize_stack_id(payload: dict[str, Any]) -> str:
         "static": "static_site",
         "static-site": "static_site",
         "static_site_wizard": "static_site",
-        "springboot": "springboot",
-        "java_springboot": "springboot",
+        "springboot": "spring_boot",
+        "spring_boot": "spring_boot",
+        "java_springboot": "spring_boot",
+        "java_spring_boot": "spring_boot",
         "fastapi": "fastapi",
         "python_fastapi": "fastapi",
+        "fast-api": "fastapi",
+        "fast_api": "fastapi",
         "angular": "angular",
         "react": "react",
         "nextjs": "nextjs",
+        "next-js": "nextjs",
+        "next.js": "nextjs",
+        "nestjs": "nestjs",
+        "node_nestjs": "nestjs",
+        "node-nestjs": "nestjs",
+        "express": "express",
+        "node_express": "express",
+        "node-express": "express",
+        "laravel": "laravel",
+        "php_laravel": "laravel",
+        "dotnet": "dotnet",
+        "dotnet_aspnetcore": "dotnet",
+        "aspnet_core": "dotnet",
+        "asp-net": "dotnet",
+        "blazor": "blazor",
+        "vue": "vue",
+        "automation": "automation",
+        "ai_agents": "ai_agents",
+        "ai-agents": "ai_agents",
+        "agentes-ia": "ai_agents",
     }
     return aliases.get(normalized, normalized)
 
@@ -83,7 +107,7 @@ def _to_list(value: Any) -> list[str]:
 
 def _map_architecture(value: str, stack_id: str) -> str:
     raw = (value or "").lower()
-    if stack_id == "springboot":
+    if stack_id == "spring_boot":
         if "micro" in raw:
             return "microservices"
         if "modular" in raw:
@@ -178,7 +202,7 @@ def _build_prompt_answers(payload: dict[str, Any], stack_id: str) -> dict[str, A
         })
         return base
 
-    if stack_id == "springboot":
+    if stack_id == "spring_boot":
         security = _to_list(payload.get("security"))
         events = _to_list(payload.get("events"))
         observability = _to_list(payload.get("observability"))
@@ -190,7 +214,7 @@ def _build_prompt_answers(payload: dict[str, Any], stack_id: str) -> dict[str, A
             "java_version": str(payload.get("java_version", "Java 21")).replace("Java", "").strip(),
             "spring_boot_version": str(payload.get("spring_boot_version", "Spring Boot 3.3")).replace("Spring Boot", "").strip() + ".x",
             "build_tool": str(payload.get("build_tool", "maven")).lower(),
-            "architecture": _map_architecture(str(payload.get("architecture", "")), "springboot"),
+            "architecture": _map_architecture(str(payload.get("architecture", "")), "spring_boot"),
             "database": str(payload.get("database", "postgresql")).lower(),
             "orm": "jpa_hibernate",
             "auth_strategy": auth_strategy,
@@ -242,12 +266,34 @@ def _load_documentation_context(stack_id: str) -> dict[str, Any]:
 def _backend_stack_name(stack_id: str) -> str:
     return {
         "static_site": "Static HTML",
-        "springboot": "Java + Spring Boot",
+        "spring_boot": "Java + Spring Boot",
         "fastapi": "Python + FastAPI",
+        "nestjs": "Node.js + NestJS",
+        "express": "Node.js + Express",
+        "laravel": "PHP + Laravel",
+        "dotnet": "C# + ASP.NET Core",
         "angular": "Angular",
         "react": "React",
         "nextjs": "Next.js",
+        "vue": "Vue",
+        "blazor": "Blazor",
+        "automation": "Automation",
+        "ai_agents": "AI Agents",
     }.get(stack_id, stack_id)
+
+
+def _project_type_for_stack(stack_id: str) -> str:
+    if stack_id == "static_site":
+        return "static_site"
+    if stack_id in {"spring_boot", "fastapi", "nestjs", "express", "laravel", "dotnet"}:
+        return "api"
+    if stack_id in {"angular", "react", "nextjs", "vue", "blazor"}:
+        return "frontend"
+    if stack_id == "automation":
+        return "automation"
+    if stack_id == "ai_agents":
+        return "ai_agents"
+    return "api"
 
 
 @router.post("/generate")
@@ -260,7 +306,7 @@ def generate_project(payload: dict[str, Any]):
 
     stack_id = _normalize_stack_id(payload)
     project_name = payload.get("project_name") or payload.get("site_name") or "projeto"
-    project_type = payload.get("project_type") or ("static_site" if stack_id == "static_site" else "api")
+    project_type = payload.get("project_type") or _project_type_for_stack(stack_id)
     prompt_answers = _build_prompt_answers(payload, stack_id)
 
     logger.info("Official generate requested: project=%s stack=%s", project_name, stack_id)

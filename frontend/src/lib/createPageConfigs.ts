@@ -2,8 +2,8 @@ import { Server, Globe, Palette, Box, Cpu, Shield, Database, Zap, Layers, Lock, 
 import type { CreatePageConfig } from "@/components/create/StackCreateForm";
 
 const STACK_CONFIGS: Record<string, CreatePageConfig> = {
-  springboot: {
-    id: "springboot",
+  spring_boot: {
+    id: "spring_boot",
     name: "Spring Boot",
     description: "Enterprise Java com ecossistema Spring completo — produção, segurança e governança.",
     icon: Server,

@@ -30,7 +30,7 @@ const CATEGORY_META: Record<CategoryKey, { label: string; tone: CreateStackCard[
 
 const STACKS: CreateStackCard[] = [
   {
-    id: "springboot",
+    id: "spring_boot",
     name: "Java + Spring Boot",
     description: "Enterprise Java com microsserviços, observabilidade e disciplina arquitetural.",
     category: "Backend",
@@ -45,7 +45,7 @@ const STACKS: CreateStackCard[] = [
     chips: ["Java 21", "Spring Boot 3.3", "Kafka", "PostgreSQL"],
     previewTitle: "Spring Boot microservices",
     previewSubtitle: "Gateway, auth server, messaging and persistent stores wired for scale.",
-    href: "/create/springboot",
+    href: "/create/spring_boot",
     ready: true,
     techBadge: "enterprise",
   },
@@ -204,7 +204,7 @@ const CATEGORY_TABS = CATEGORY_ORDER.map((key) => {
 });
 
 function describeStack(stack: CreateStackCard) {
-  if (stack.id === "springboot") {
+  if (stack.id === "spring_boot") {
     return "Spring Boot + Kafka + PostgreSQL is the best fit for enterprise systems with hard boundaries, auditability and scale.";
   }
   if (stack.id === "fastapi") {
@@ -226,7 +226,7 @@ function describeStack(stack: CreateStackCard) {
 }
 
 function getPreviewNodes(stack: CreateStackCard) {
-  if (stack.id === "springboot") return ["Client", "Gateway", "Auth Service", "Kafka", "PostgreSQL", "Redis"];
+  if (stack.id === "spring_boot") return ["Client", "Gateway", "Auth Service", "Kafka", "PostgreSQL", "Redis"];
   if (stack.id === "fastapi") return ["Client", "Async API", "Workers", "Redis", "Vector DB", "PostgreSQL"];
   if (stack.id === "nestjs") return ["Client", "Gateway", "Modules", "Queue", "PostgreSQL", "Redis"];
   if (stack.id === "static-site") return ["Browser", "CDN", "SEO", "CMS", "Forms"];
@@ -242,7 +242,7 @@ export default function CreatePage() {
   const { t } = usePreferences();
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState<CategoryKey>("Backend");
-  const [activeStackId, setActiveStackId] = useState<string>("springboot");
+  const [activeStackId, setActiveStackId] = useState<string>("spring_boot");
   const [aiMode, setAiMode] = useState("Local Build 90%");
 
   useEffect(() => {

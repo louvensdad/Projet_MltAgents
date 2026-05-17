@@ -1,0 +1,61 @@
+{
+  "display_name": "C# + ASP.NET Core",
+  "category": "backend",
+  "status": "partial",
+  "generator": "DotNetGenerator",
+  "gatekeeper": "DotNetGatekeeper",
+  "prompt_template": "dotnet_prompt.md",
+  "required_fields": [
+    "project_name",
+    "business_goal",
+    "entities",
+    "features",
+    "architecture",
+    "dotnet_version",
+    "database",
+    "auth",
+    "swagger",
+    "tests",
+    "docker",
+    "language"
+  ],
+  "forbidden": [
+    "requirements.txt",
+    "pom.xml",
+    "Spring Boot",
+    "FastAPI"
+  ],
+  "supported_architectures": [
+    "minimal_api",
+    "clean_architecture",
+    "modular_monolith"
+  ],
+  "default_versions": {
+    "dotnet_version": "8.0",
+    "database": "sqlserver",
+    "auth": "identity",
+    "swagger": true,
+    "tests": "xunit",
+    "docker": true
+  },
+  "aliases": [
+    "aspnet-core",
+    "asp-net",
+    "aspnet",
+    "asp_net_core",
+    "c#"
+  ],
+  "modules": [
+    "apis",
+    "services",
+    "domain",
+    "infrastructure"
+  ],
+  "features": [
+    "swagger",
+    "identity",
+    "tests",
+    "docker"
+  ],
+  "stack_id": "dotnet"
+}

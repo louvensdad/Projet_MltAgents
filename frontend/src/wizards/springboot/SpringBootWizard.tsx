@@ -113,7 +113,7 @@ export default function SpringBootWizard() {
         testing_strategy: formData.test_options.length > 0 ? "unit_integration" : "unit_only",
       };
       const promptRes = await apiPost<{ prompt_master?: Record<string, unknown> }>("/api/prompt/build", {
-        stack_id: "springboot",
+        stack_id: "spring_boot",
         answers: promptAnswers,
       });
       if (!promptRes.ok || !promptRes.data?.prompt_master) {

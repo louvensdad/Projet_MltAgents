@@ -1,0 +1,52 @@
+{
+  "display_name": "Automation",
+  "category": "automation",
+  "status": "stable",
+  "generator": "AutomationGenerator",
+  "gatekeeper": "AutomationGatekeeper",
+  "prompt_template": "automation_prompt.md",
+  "required_fields": [
+    "project_name",
+    "business_goal",
+    "workflow_steps",
+    "triggers",
+    "actions",
+    "integrations",
+    "queues",
+    "schedule",
+    "retries",
+    "logs",
+    "tests",
+    "language"
+  ],
+  "forbidden": [
+    "pom.xml",
+    "requirements.txt",
+    "Spring Boot",
+    "FastAPI"
+  ],
+  "supported_architectures": [
+    "workflow",
+    "event_driven",
+    "scheduled"
+  ],
+  "default_versions": {
+    "workflow_engine": "default",
+    "queue": "redis",
+    "tests": "pytest"
+  },
+  "aliases": [],
+  "modules": [
+    "workflows",
+    "triggers",
+    "actions",
+    "schedules"
+  ],
+  "features": [
+    "queue",
+    "scheduling",
+    "integrations",
+    "retries"
+  ],
+  "stack_id": "automation"
+}

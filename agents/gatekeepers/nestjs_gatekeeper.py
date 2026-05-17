@@ -14,7 +14,7 @@ class NestJSGatekeeper(BaseGatekeeper):
     """Gatekeeper especializado em projetos Node.js NestJS."""
 
     def __init__(self):
-        super().__init__(name="NestJSGatekeeper", stack_id="node_nestjs")
+        super().__init__(name="NestJSGatekeeper", stack_id="nestjs")
 
     # ── Fase 1: Pre-Generation ──────────────────────────────────────────
 

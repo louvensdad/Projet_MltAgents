@@ -8,13 +8,13 @@ import { usePreferences } from "@/context/PreferencesContext";
 
 const WIZARD_MAP: Record<string, any> = {
   "static-site": dynamic(() => import("@/wizards/static-site/StaticSiteWizard")),
-  springboot: dynamic(() => import("@/wizards/springboot/SpringBootWizard")),
+  spring_boot: dynamic(() => import("@/wizards/springboot/SpringBootWizard")),
   fastapi: dynamic(() => import("@/wizards/fastapi/FastAPIWizard")),
 };
 
 const FALLBACK_LABELS: Record<string, string> = {
   "static-site": "Static Site",
-  springboot: "Spring Boot",
+  spring_boot: "Spring Boot",
   fastapi: "FastAPI",
   nestjs: "NestJS",
   express: "Express",

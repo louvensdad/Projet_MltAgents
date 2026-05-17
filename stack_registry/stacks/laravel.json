@@ -1,0 +1,61 @@
+{
+  "display_name": "PHP + Laravel",
+  "category": "backend",
+  "status": "partial",
+  "generator": "LaravelGenerator",
+  "gatekeeper": "LaravelGatekeeper",
+  "prompt_template": "laravel_prompt.md",
+  "required_fields": [
+    "project_name",
+    "business_goal",
+    "entities",
+    "features",
+    "architecture",
+    "database",
+    "auth",
+    "queues",
+    "cache",
+    "blade_or_api",
+    "tests",
+    "docker",
+    "language"
+  ],
+  "forbidden": [
+    "pom.xml",
+    "requirements.txt",
+    "Spring Boot",
+    "FastAPI"
+  ],
+  "supported_architectures": [
+    "mvc",
+    "modular"
+  ],
+  "default_versions": {
+    "php_version": "8.3",
+    "laravel_version": "11",
+    "database": "mysql",
+    "auth": "sanctum",
+    "queues": "redis",
+    "cache": "redis",
+    "blade_or_api": "api",
+    "tests": "pest",
+    "docker": true
+  },
+  "aliases": [
+    "php_laravel"
+  ],
+  "modules": [
+    "controllers",
+    "models",
+    "migrations",
+    "queues",
+    "jobs"
+  ],
+  "features": [
+    "mvc",
+    "queues",
+    "cache",
+    "tests"
+  ],
+  "stack_id": "laravel"
+}

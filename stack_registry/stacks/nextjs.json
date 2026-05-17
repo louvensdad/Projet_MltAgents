@@ -1,0 +1,58 @@
+{
+  "display_name": "Next.js",
+  "category": "frontend",
+  "status": "stable",
+  "generator": "NextJSGenerator",
+  "gatekeeper": "NextJSGatekeeper",
+  "prompt_template": "nextjs_prompt.md",
+  "required_fields": [
+    "project_name",
+    "business_goal",
+    "pages",
+    "components",
+    "rendering",
+    "api_routes",
+    "auth",
+    "database_optional",
+    "seo",
+    "analytics",
+    "tests",
+    "language"
+  ],
+  "forbidden": [
+    "pom.xml",
+    "requirements.txt",
+    "Spring Boot",
+    "FastAPI"
+  ],
+  "supported_architectures": [
+    "ssr",
+    "ssg",
+    "isr",
+    "csr"
+  ],
+  "default_versions": {
+    "nextjs_version": "14",
+    "react_version": "18",
+    "node_version": "20",
+    "rendering": "ssr",
+    "tests": "playwright"
+  },
+  "aliases": [
+    "next-js",
+    "next.js"
+  ],
+  "modules": [
+    "pages",
+    "components",
+    "app",
+    "routes"
+  ],
+  "features": [
+    "seo",
+    "analytics",
+    "routing",
+    "tests"
+  ],
+  "stack_id": "nextjs"
+}

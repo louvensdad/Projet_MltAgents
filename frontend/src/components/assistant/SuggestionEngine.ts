@@ -13,7 +13,7 @@ export function buildSuggestions(input: AssistantInput) {
   const suggestions: string[] = [];
   const warnings: string[] = [];
 
-  if (input.stack === "springboot") suggestions.push("Angular é recomendado para dashboards enterprise.");
+  if (input.stack === "spring_boot") suggestions.push("Angular é recomendado para dashboards enterprise.");
   if (input.stack === "fastapi") suggestions.push("Arquitetura async com Redis melhora throughput.");
   if (input.messaging.includes("Kafka")) warnings.push("Kafka adiciona complexidade operacional.");
   if (input.database === "SQLite") warnings.push("SQLite não é recomendado para alto volume.");

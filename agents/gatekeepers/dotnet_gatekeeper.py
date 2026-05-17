@@ -13,7 +13,7 @@ class DotNetGatekeeper(BaseGatekeeper):
     """Gatekeeper especializado em projetos .NET / ASP.NET Core."""
 
     def __init__(self):
-        super().__init__(name="DotNetGatekeeper", stack_id="dotnet_aspnetcore")
+        super().__init__(name="DotNetGatekeeper", stack_id="dotnet")
 
     # ── Fase 1: Pre-Generation ──────────────────────────────────────────
 

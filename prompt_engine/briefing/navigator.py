@@ -25,6 +25,8 @@ TYPO_MAP = {
     "laravel": "PHP + Laravel", "php": "PHP + Laravel",
     "spring": "Java + Spring Boot", "java": "Java + Spring Boot",
     "springboot": "Java + Spring Boot",
+    "spring_boot": "Java + Spring Boot",
+    "java_springboot": "Java + Spring Boot",
     # Estilos de site
     "futurista": "Futurista", "futuro": "Futurista",
     "minimal": "Minimalista", "minimalista": "Minimalista",

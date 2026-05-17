@@ -13,7 +13,7 @@ class ExpressGatekeeper(BaseGatekeeper):
     """Gatekeeper especializado em projetos Node.js Express."""
 
     def __init__(self):
-        super().__init__(name="ExpressGatekeeper", stack_id="node_express")
+        super().__init__(name="ExpressGatekeeper", stack_id="express")
 
     # ── Fase 1: Pre-Generation ──────────────────────────────────────────
 

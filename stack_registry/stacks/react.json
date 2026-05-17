@@ -1,0 +1,53 @@
+{
+  "display_name": "React",
+  "category": "frontend",
+  "status": "stable",
+  "generator": "ReactGenerator",
+  "gatekeeper": "ReactGatekeeper",
+  "prompt_template": "react_prompt.md",
+  "required_fields": [
+    "project_name",
+    "business_goal",
+    "pages",
+    "components",
+    "auth",
+    "routing",
+    "state_management",
+    "forms",
+    "api_client",
+    "ui_style",
+    "tests",
+    "language"
+  ],
+  "forbidden": [
+    "pom.xml",
+    "requirements.txt",
+    "Spring Boot",
+    "FastAPI"
+  ],
+  "supported_architectures": [
+    "spa",
+    "frontend_platform"
+  ],
+  "default_versions": {
+    "react_version": "18",
+    "node_version": "20",
+    "state_management": "zustand",
+    "ui_style": "design_system",
+    "tests": "vitest"
+  },
+  "aliases": [],
+  "modules": [
+    "pages",
+    "components",
+    "hooks",
+    "services"
+  ],
+  "features": [
+    "state",
+    "routing",
+    "forms",
+    "tests"
+  ],
+  "stack_id": "react"
+}

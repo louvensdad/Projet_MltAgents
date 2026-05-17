@@ -60,6 +60,14 @@ VERSION_MATRIX = {
         },
         "recommended": "18.x"
     },
+    "nextjs": {
+        "name": "Next.js",
+        "versions": {
+            "14.x": {"react": ["18.2.x", "18.3.x"], "node": ["18", "20", "22"]},
+            "13.x": {"react": ["18.2.x"], "node": ["16", "18"]}
+        },
+        "recommended": "14.x"
+    },
     "react_nextjs": {
         "name": "Next.js",
         "versions": {
@@ -77,6 +85,16 @@ VERSION_MATRIX = {
         "name": "Blazor",
         "versions": {"8.0": {"dotnet": ["8.0"]}},
         "recommended": "8.0"
+    },
+    "automation": {
+        "name": "Automation",
+        "versions": {"current": {"node": ["20"], "python": ["3.12"]}},
+        "recommended": "current"
+    },
+    "ai_agents": {
+        "name": "AI Agents",
+        "versions": {"current": {"openai": ["latest"], "gemini": ["latest"]}},
+        "recommended": "current"
     },
     "static_site": {
         "name": "Static Site",

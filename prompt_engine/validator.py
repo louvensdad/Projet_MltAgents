@@ -60,6 +60,6 @@ class PromptValidator:
             raise PromptValidationException("Incompatible Architecture: Static Sites cannot be microservices.")
         
         # E.g., Spring Boot microservices requires API Gateway
-        if stack_id == "springboot" and form_data.get("architecture") == "microservices":
+        if stack_id == "spring_boot" and form_data.get("architecture") == "microservices":
             if not form_data.get("api_gateway", False):
                 raise PromptValidationException("Incompatible Architecture: Spring Boot microservices must have an API Gateway enabled.")

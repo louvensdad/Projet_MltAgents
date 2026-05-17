@@ -1,7 +1,7 @@
 import { StackKey } from "./types";
 
 export const COMPATIBILITY_MATRIX: Record<StackKey, string[]> = {
-  springboot: ["Angular", "React", "Vue", "HTMX"],
+  spring_boot: ["Angular", "React", "Vue", "HTMX"],
   fastapi: ["React", "Vue", "Angular", "Next.js"],
   nestjs: ["Angular", "React", "Next.js"],
   express: ["React", "Vue", "Next.js"],

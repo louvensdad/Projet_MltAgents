@@ -14,8 +14,8 @@ const STEPS: WizardStep[] = [
 ];
 
 export const SPRING_BOOT_CONFIG: WizardConfig = {
-  slug: "springboot",
-  stackKey: "springboot",
+  slug: "spring_boot",
+  stackKey: "spring_boot",
   titleKey: "wizard.springboot.title",
   subtitleKey: "wizard.springboot.subtitle",
   steps: STEPS,

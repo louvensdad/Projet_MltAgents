@@ -13,7 +13,7 @@ class LaravelGatekeeper(BaseGatekeeper):
     """Gatekeeper especializado em projetos PHP Laravel."""
 
     def __init__(self):
-        super().__init__(name="LaravelGatekeeper", stack_id="php_laravel")
+        super().__init__(name="LaravelGatekeeper", stack_id="laravel")
 
     # ── Fase 1: Pre-Generation ──────────────────────────────────────────
 

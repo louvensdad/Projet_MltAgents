@@ -1,4 +1,4 @@
-export type StackKey = "springboot" | "fastapi" | "nestjs" | "express" | "laravel" | "dotnet" | "static";
+export type StackKey = "spring_boot" | "fastapi" | "nestjs" | "express" | "laravel" | "dotnet" | "static";
 
 export type SupportLevel = "full" | "partial" | "planned";
 
@@ -35,8 +35,8 @@ export const PROJECT_TYPES = [
 ];
 
 export const STACK_PROFILES: Record<StackKey, StackProfile> = {
-  springboot: {
-    key: "springboot",
+  spring_boot: {
+    key: "spring_boot",
     name: "Spring Boot Wizard",
     backendLabel: "Java + Spring Boot",
     versions: ["Java 17", "Java 21", "Spring Boot 3.2", "Spring Boot 3.3", "Node 20 (frontend toolchain)"],
@@ -150,7 +150,7 @@ export const STACK_PROFILES: Record<StackKey, StackProfile> = {
 };
 
 export const STACK_OPTIONS: { key: StackKey; label: string }[] = [
-  { key: "springboot", label: "Spring Boot" },
+  { key: "spring_boot", label: "Spring Boot" },
   { key: "fastapi", label: "FastAPI" },
   { key: "nestjs", label: "NestJS" },
   { key: "express", label: "Express" },

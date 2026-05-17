@@ -1,7 +1,7 @@
 import { runArchitectureEngine } from "./index";
 
 const out = runArchitectureEngine({
-  stack: "springboot",
+  stack: "spring_boot",
   backendLabel: "Java + Spring Boot",
   frontend: "Angular",
   architecture: "Microsserviços",

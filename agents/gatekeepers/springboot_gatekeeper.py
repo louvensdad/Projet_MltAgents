@@ -13,7 +13,7 @@ class SpringBootGatekeeper(BaseGatekeeper):
     """Gatekeeper especializado em projetos Java Spring Boot."""
 
     def __init__(self):
-        super().__init__(name="SpringBootGatekeeper", stack_id="java_springboot")
+        super().__init__(name="SpringBootGatekeeper", stack_id="spring_boot")
 
     # ── Fase 1: Pre-Generation ──────────────────────────────────────────
 

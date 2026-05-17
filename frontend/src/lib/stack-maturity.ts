@@ -134,7 +134,7 @@ const STACKS_INPUT: StackMaturityInput[] = [
     ],
   },
   {
-    key: "springboot",
+    key: "spring_boot",
     name: "Spring Boot",
     type: "backend",
     scores: {

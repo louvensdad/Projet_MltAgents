@@ -1,0 +1,49 @@
+{
+  "display_name": "Blazor",
+  "category": "frontend",
+  "status": "stable",
+  "generator": "BlazorGenerator",
+  "gatekeeper": "BlazorGatekeeper",
+  "prompt_template": "blazor_prompt.md",
+  "required_fields": [
+    "project_name",
+    "business_goal",
+    "pages",
+    "components",
+    "hosting_model",
+    "auth",
+    "api_client",
+    "forms",
+    "tests",
+    "language"
+  ],
+  "forbidden": [
+    "requirements.txt",
+    "pom.xml",
+    "Spring Boot",
+    "FastAPI"
+  ],
+  "supported_architectures": [
+    "server",
+    "wasm"
+  ],
+  "default_versions": {
+    "dotnet_version": "8.0",
+    "hosting_model": "server",
+    "tests": "bunit"
+  },
+  "aliases": [],
+  "modules": [
+    "pages",
+    "components",
+    "services",
+    "wwwroot"
+  ],
+  "features": [
+    "hosting",
+    "forms",
+    "auth",
+    "tests"
+  ],
+  "stack_id": "blazor"
+}

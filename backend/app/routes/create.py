@@ -49,12 +49,29 @@ class ValidateStackPayload(BaseModel):
 def _resolve_stack_id(raw: str) -> str:
     """Normalize stack_profile_id to our internal ID."""
     mapping = {
-        "java_springboot": "springboot",
+        "java_springboot": "spring_boot",
+        "java_spring_boot": "spring_boot",
+        "springboot": "spring_boot",
+        "spring_boot": "spring_boot",
         "python_fastapi": "fastapi",
+        "fast-api": "fastapi",
+        "fast_api": "fastapi",
         "node_nestjs": "nestjs",
+        "node-nestjs": "nestjs",
+        "nest-js": "nestjs",
         "node_express": "express",
+        "node-express": "express",
         "php_laravel": "laravel",
+        "php-laravel": "laravel",
         "dotnet_aspnetcore": "dotnet",
+        "aspnet_core": "dotnet",
+        "asp-net": "dotnet",
+        "aspnet": "dotnet",
+        "next-js": "nextjs",
+        "next.js": "nextjs",
+        "ai-agents": "ai_agents",
+        "agentes-ia": "ai_agents",
+        "automation": "automation",
         "static_site": "static",
     }
     return mapping.get(raw, raw)

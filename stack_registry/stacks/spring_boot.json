@@ -1,0 +1,76 @@
+{
+  "display_name": "Java + Spring Boot",
+  "category": "backend",
+  "status": "stable",
+  "generator": "SpringBootGenerator",
+  "gatekeeper": "SpringBootGatekeeper",
+  "prompt_template": "spring_boot_prompt.md",
+  "required_fields": [
+    "project_name",
+    "business_goal",
+    "target_audience",
+    "business_rules",
+    "entities",
+    "features",
+    "architecture",
+    "java_version",
+    "spring_boot_version",
+    "build_tool",
+    "database",
+    "auth",
+    "messaging",
+    "cache",
+    "observability",
+    "docker",
+    "tests",
+    "language"
+  ],
+  "forbidden": [
+    "requirements.txt",
+    "package.json",
+    "Pydantic-only",
+    "Uvicorn-only",
+    "Flask-only",
+    "Django-only"
+  ],
+  "supported_architectures": [
+    "monolith",
+    "modular_monolith",
+    "microservices",
+    "event_driven"
+  ],
+  "default_versions": {
+    "java_version": "21",
+    "spring_boot_version": "3.3.x",
+    "build_tool": "maven",
+    "database": "postgresql",
+    "auth": "jwt",
+    "messaging": "kafka",
+    "cache": "redis",
+    "observability": "actuator",
+    "docker": true,
+    "tests": "junit"
+  },
+  "aliases": [
+    "springboot",
+    "java_springboot",
+    "java_spring_boot",
+    "java-spring",
+    "spring-boot"
+  ],
+  "modules": [
+    "api-gateway",
+    "auth-service",
+    "business-services",
+    "audit",
+    "notifications"
+  ],
+  "features": [
+    "security",
+    "observability",
+    "messaging",
+    "cache",
+    "testing"
+  ],
+  "stack_id": "spring_boot"
+}

@@ -1,9 +1,15 @@
 FEATURE_SUPPORT_MATRIX = {
-    "springboot": {"Kafka": "full", "Keycloak": "partial", "gRPC": "planned"},
+    "spring_boot": {"Kafka": "full", "Keycloak": "partial", "gRPC": "planned"},
     "fastapi": {"Kafka": "full", "Keycloak": "planned", "gRPC": "partial"},
     "nestjs": {"Kafka": "full", "Keycloak": "partial", "gRPC": "full"},
     "express": {"Kafka": "partial", "Keycloak": "planned", "gRPC": "planned"},
     "laravel": {"Kafka": "partial", "Keycloak": "planned", "gRPC": "planned"},
     "dotnet": {"Kafka": "partial", "Keycloak": "partial", "gRPC": "full"},
-    "static": {"Kafka": "planned", "Keycloak": "planned", "gRPC": "planned"},
+    "angular": {"Kafka": "planned", "Keycloak": "planned", "gRPC": "planned"},
+    "react": {"Kafka": "planned", "Keycloak": "planned", "gRPC": "planned"},
+    "nextjs": {"Kafka": "planned", "Keycloak": "planned", "gRPC": "planned"},
+    "vue": {"Kafka": "planned", "Keycloak": "planned", "gRPC": "planned"},
+    "blazor": {"Kafka": "planned", "Keycloak": "planned", "gRPC": "planned"},
+    "automation": {"Kafka": "planned", "Keycloak": "planned", "gRPC": "planned"},
+    "ai_agents": {"Kafka": "planned", "Keycloak": "planned", "gRPC": "planned"},
 }
