@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Documentao Viva - Factory AI</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0d1117; color: #c9d1d9; margin: 0; padding: 2rem; }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { border-bottom: 1px solid #30363d; padding-bottom: 1rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; background: #161b22; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #30363d; }
+        th { background: #21262d; font-weight: bold; }
+        .status { padding: 0.3rem 0.6rem; border-radius: 12px; font-size: 0.85rem; font-weight: bold; }
+        .status.ok { background: #238636; color: white; }
+        .status.outdated { background: #d29922; color: black; }
+        .status.failed { background: #f85149; color: white; }
+        .btn-small { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; }
+        .btn-small:hover { background: #30363d; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📚 Documentao Oficial (Controlled Docs)</h1>
+    <p>O gerador no acessa a internet livremente. As documentaes das stacks so atualizadas atravs de fontes estruturadas (APIs oficiais e releases) para garantir consistncia.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tecnologia</th>
+                <th>Fonte</th>
+                <th>Status do Cache</th>
+                <th>ltima Atualizao</th>
+                <th>Aes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>FastAPI</td>
+                <td>GitHub Releases (tiangolo/fastapi)</td>
+                <td><span class="status ok">Atualizado</span></td>
+                <td>Hoje, 10:30</td>
+                <td>
+                    <button class="btn-small">Sincronizar</button>
+                    <button class="btn-small">Ver Resumo</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Spring Boot</td>
+                <td>GitHub Releases (spring-projects/spring-boot)</td>
+                <td><span class="status outdated">Desatualizado</span></td>
+                <td>H 2 meses</td>
+                <td>
+                    <button class="btn-small">Sincronizar</button>
+                    <button class="btn-small">Ver Resumo</button>
+                </td>
+            </tr>
+            <tr>
+                <td>NestJS</td>
+                <td>Local Fallback (Cache esttico)</td>
+                <td><span class="status failed">Falha na API</span></td>
+                <td>-</td>
+                <td>
+                    <button class="btn-small">Forar Sincronizao</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

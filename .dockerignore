@@ -1,0 +1,44 @@
+# Python / virtualenv
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/venv/
+**/.venv/
+**/env/
+
+# Node / frontend build artifacts
+**/node_modules/
+**/.next/
+**/out/
+**/.turbo/
+**/dist/
+**/build/
+
+# Local/generated data
+backups/
+generated_projects/
+data/
+output/
+_temp/
+_tmp_*/
+_temp*/
+
+# VCS / IDE / OS
+.git/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Secrets / local env
+.env
+*.log
+audit.log
+
+# Frontend local build cache
+control_panel/frontend/.next/

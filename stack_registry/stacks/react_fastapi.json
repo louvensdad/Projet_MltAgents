@@ -1,0 +1,40 @@
+{
+    "id": "react_fastapi",
+    "name": "React + FastAPI",
+    "description": "Modern full-stack web application using React for the frontend and FastAPI for the backend.",
+    "complexity": "medium",
+    "architecture": [
+        "frontend/src/components",
+        "frontend/src/pages",
+        "frontend/src/services",
+        "backend/app/api",
+        "backend/app/core",
+        "backend/app/db",
+        "backend/app/models",
+        "backend/app/schemas",
+        "backend/app/services"
+    ],
+    "rules": {
+        "require_auth": true,
+        "require_db": true,
+        "allow_static_only": false
+    },
+    "limits": {
+        "max_endpoints": 50,
+        "max_components": 100
+    },
+    "best_practices": {
+        "examples": [
+            "Clean Architecture snippet",
+            "DTO usage example"
+        ],
+        "rules": [
+            "Always validate DTOs",
+            "Use structured logging"
+        ],
+        "patterns": [
+            "Repository Pattern",
+            "Service Layer"
+        ]
+    }
+}

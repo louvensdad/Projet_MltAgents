@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Transparncia - Factory AI</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0d1117; color: #c9d1d9; margin: 0; padding: 2rem; }
+        .board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 2rem; }
+        .column { background: #161b22; border-radius: 8px; padding: 1rem; border: 1px solid #30363d; }
+        .column h3 { text-align: center; margin-top: 0; font-size: 1.1rem; border-bottom: 1px solid #30363d; padding-bottom: 0.5rem; }
+        .card { background: #21262d; border-radius: 6px; padding: 1rem; margin-bottom: 1rem; border-left: 4px solid; }
+        .card.suggested { border-color: #58a6ff; } /* Azul */
+        .card.confirmed { border-color: #3fb950; } /* Verde */
+        .card.implemented { border-color: #8957e5; } /* Roxo */
+        .card.blocked { border-color: #f85149; } /* Vermelho */
+        .card-title { font-weight: bold; margin-bottom: 0.5rem; }
+        .card-desc { font-size: 0.9rem; color: #8b949e; }
+        .header { display: flex; justify-content: space-between; align-items: center; }
+        .btn { background: #238636; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn:hover { background: #2ea043; }
+        .btn-disabled { background: #484f58; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Painel de Transparncia (Pré-Download)</h1>
+        <button class="btn btn-disabled" id="downloadBtn">Download Bloqueado</button>
+    </div>
+    
+    <p>Revise as configuraes antes de liberar o projeto. Os <strong>Quality & Security Gates</strong> analisam o que foi implementado.</p>
+
+    <div class="board">
+        <!-- Coluna Sugerido -->
+        <div class="column">
+            <h3>🤖 Sugerido (IA)</h3>
+            <div class="card suggested">
+                <div class="card-title">Arquitetura Microservios</div>
+                <div class="card-desc">Sugerido devido alta carga. Aguardando confirmao.</div>
+            </div>
+            <div class="card suggested">
+                <div class="card-title">OAuth2 via Keycloak</div>
+                <div class="card-desc">Padro corporativo sugerido pelo motor.</div>
+            </div>
+        </div>
+
+        <!-- Coluna Confirmado -->
+        <div class="column">
+            <h3>✅ Confirmado</h3>
+            <div class="card confirmed">
+                <div class="card-title">Monolito Modular</div>
+                <div class="card-desc">O usurio preferiu esta arquitetura em vez de microservios.</div>
+            </div>
+            <div class="card confirmed">
+                <div class="card-title">Rate Limiting</div>
+                <div class="card-desc">Selecionado para proteo da API.</div>
+            </div>
+        </div>
+
+        <!-- Coluna Implementado -->
+        <div class="column">
+            <h3>⚙️ Implementado</h3>
+            <div class="card implemented">
+                <div class="card-title">FastAPI + SQLAlchemy</div>
+                <div class="card-desc">Cdigo gerado com sucesso. Docs consultadas via API (Cache: OK).</div>
+            </div>
+        </div>
+
+        <!-- Coluna Bloqueado -->
+        <div class="column">
+            <h3>🚫 Bloqueado (Gates)</h3>
+            <div class="card blocked">
+                <div class="card-title">Security Gate: Auth</div>
+                <div class="card-desc">JWT confirmado, mas dependncias no encontradas no requirements.txt.</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

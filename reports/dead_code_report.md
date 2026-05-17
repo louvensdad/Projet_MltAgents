@@ -1,0 +1,287 @@
+# Dead Code & Mocks Report
+
+## TODOs & FIXMEs
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\backend_agent.py:22 - todos, parâmetros)`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\orchestrator_agent.py:12 - TODO: Implementar lógica de inteligência e roteamento`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\reviewer_agent.py:18 - todos os planos gerados na pipeline para a Fase de Especificação.`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\agent_context.py:5 - todos os agentes na Pipeline."""`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\base_agent.py:8 - todos os agentes."""`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\ai_agents_gatekeeper.py:148 - todos os componentes essenciais de um sistema multi-agente:`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\ai_agents_gatekeeper.py:165 - Todo sistema multi-agente precisa de um orquestrador/coordenador central."`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\angular_gatekeeper.py:113 - Todo projeto Angular usa RxJS — "`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\base_gatekeeper.py:2 - todos os gatekeepers.`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\base_gatekeeper.py:19 - todos os gatekeepers de stack."""`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\base_gatekeeper.py:26 - todos abstratos (cada gatekeeper implementa) ─────────────────────`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\blazor_gatekeeper.py:226 - Todo projeto Blazor precisa de um layout principal."`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\gatekeeper_registry.py:122 - todos os gatekeepers registrados com seus nomes."""`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\nextjs_gatekeeper.py:214 - Todo App Router precisa de um layout raiz obrigatório."`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\springboot_gatekeeper.py:177 - todos os tipos)`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\static_site_gatekeeper.py:593 - todos os arquivos para UTF-8."`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\vue_gatekeeper.py:107 - Todo SPA Vue precisa de Vue Router 4."`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\blueprints\blueprint_builder.py:40 - todos os registros de {display_name}",`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\briefing\automation.py:70 - TODOS os tipos de projeto.`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi\validator.py:51 - Todos os testes passaram!")`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\validator.py:35 - todos os arquivos essenciais gerados).")`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\springboot\templates.py:224 - TODO: Configurar restrições reais`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\config\config_generator.py:36 - todos os arquivos de configuração.`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\config\config_generator.py:215 - TODO: Implementar chamada real para {label}`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\content_generator.py:94 - todo o conteúdo disponível para você.", "date": "28 Abr 2025", "icon": "👋"},`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\content_generator.py:96 - todos os recursos disponíveis.", "date": "25 Abr 2025", "icon": "📖"},`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\content_generator.py:108 - todo o conteúdo."},`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_builder.py:140 - Todos"]))`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_builder.py:375 - Todos os direitos reservados.</p>`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_template.py:105 - Todos os direitos reservados. <span style="color:#3b82f6; font-weight:bold;">Ldcn</span></p>`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\other_templates.py:173 - Todos os links externos usam `rel="noopener noreferrer"`.`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\other_templates.py:231 - todos os campos`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\other_templates.py:247 - todos os tamanhos de tela`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\other_templates.py:257 - todos os elementos interativos`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\templates.py:2 - todos os templates do gerador estático.`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\main.py:3 - todos os routers e configura CORS.`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:328 - todos os endpoints",`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\upgrades.py:15 - todos os projetos registrados."""`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\gemini_service.py:211 - todo apenas reporta se existe.`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:239 - TODO: implementar lógica de automação\n"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:249 - TODO: conectar ao LLM (OpenAI/Gemini/Ollama)\n"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\zip_service.py:277 - todo'`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\settings\page.tsx:74 - toDocs, setAutoDocs] = useState(true);`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\settings\page.tsx:86 - toDocs(localStorage.getItem("ldcn_auto_docs") !== "false");`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\settings\page.tsx:107 - toDocs));`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\settings\page.tsx:257 - toDocs}`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\settings\page.tsx:258 - toDocs}`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\components\visual-builder\builderSchema.ts:170 - Todos os direitos reservados." },`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\components\wizard\steps\Step6Briefing.tsx:36 - todos os detalhes técnicos e de negócio do seu software."}`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\i18n\dictionaries\es-ES.ts:38 - Todos",`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\i18n\dictionaries\es-ES.ts:91 - todos",`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\i18n\dictionaries\es-ES.ts:476 - Todo listo! Revise y genere su sitio.",`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\i18n\dictionaries\es-ES.ts:870 - Todos los generadores registrados con nivel de madurez calculado dinámicamente.",`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\i18n\dictionaries\pt-BR.ts:38 - Todos",`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\i18n\dictionaries\pt-BR.ts:91 - todos",`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\i18n\dictionaries\pt-BR.ts:870 - Todos os geradores registrados com nível de maturidade calculado dinamicamente.",`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\createPageConfigs.ts:642 - todos dispositivos", impact: "core" },`
+
+## Passes / Empty Blocks
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\orchestrator_agent.py:8 - def __init__(self):
+        pass`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\briefing\briefing.py:331 - def show_history(self):
+        pass`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\express_generator.py:2 - def __init__(self, blueprint_data: dict, output_base_dir: str):
+        pass`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\laravel_generator.py:2 - def __init__(self, blueprint_data: dict, output_base_dir: str):
+        pass`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\springboot_generator.py:2 - def __init__(self, blueprint_data: dict, output_base_dir: str):
+        pass`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\training_engine\pattern_extractor.py:7 - def __init__(self):
+        pass`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\validators\fidelity_gate.py:10 - def __init__(self):
+        pass`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\validators\quality_gate.py:9 - def __init__(self):
+        pass`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\validators\security_gate.py:16 - def __init__(self):
+        pass`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\validators\stack_gate.py:9 - def __init__(self):
+        pass`
+
+## Mocks / Fakes
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\agent_context.py:15 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\architecture_decision_engine.py:219 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\base_agent.py:39 - MOCK`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\base_agent.py:40 - MOCK`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\base_agent.py:53 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\base_agent.py:57 - MOCK`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\gemini_client.py:14 - MOCK`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\gemini_client.py:14 - MOCK`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\gemini_client.py:55 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\gemini_client.py:65 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\gemini_client.py:75 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\gemini_client.py:87 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\gemini_client.py:102 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\gemini_client.py:113 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\gemini_client.py:128 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\gemini_client.py:169 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\gemini_client.py:183 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\gemini_client.py:194 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\gemini_client.py:205 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\pipeline.py:20 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\pipeline.py:48 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\pipeline.py:48 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\project_runner.py:102 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\project_runner.py:102 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\project_runner.py:243 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\project_runner.py:244 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\project_runner.py:249 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\project_runner.py:250 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\project_runner.py:445 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\core\project_runner.py:445 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\briefing\architecture.py:154 - Mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\briefing\credentials.py:72 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\briefing\credentials.py:310 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\config\stack_profiles.py:10 - Mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi_templates.py:360 - MOCK`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\template_engine.py:34 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi\templates.py:367 - MOCK`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi\test_templates.py:85 - fake`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi\test_templates.py:86 - fake`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\templates.py:3 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\templates.py:96 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\test_templates.py:3 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\test_templates.py:11 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\test_templates.py:25 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\test_templates.py:29 - Mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\test_templates.py:40 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\test_templates.py:40 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\test_templates.py:42 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\test_templates.py:49 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\test_templates.py:49 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\test_templates.py:57 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\test_templates.py:57 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\test_templates.py:62 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\test_templates.py:62 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\test_templates.py:70 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\test_templates.py:70 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\test_templates.py:77 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\test_templates.py:77 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\validator.py:42 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\springboot\test_templates.py:14 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\springboot\test_templates.py:14 - Mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\springboot\test_templates.py:15 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\springboot\test_templates.py:15 - Mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\springboot\test_templates.py:16 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\springboot\test_templates.py:16 - Mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\springboot\test_templates.py:24 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\springboot\test_templates.py:25 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\springboot\test_templates.py:25 - Mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\springboot\test_templates.py:27 - Mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\springboot\test_templates.py:30 - Mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\springboot\test_templates.py:33 - Mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\springboot\test_templates.py:45 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\frontend\angular\generator.py:30 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\frontend\angular\generator.py:78 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\frontend\react\generator.py:19 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\prompt_engine\prompt_schema.py:35 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\.env.example:4 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\.env.example:5 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\ai_boost.py:43 - Mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\ai_boost.py:189 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\ai_boost.py:190 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\ai_boost.py:190 - Mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\ai_boost.py:191 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\payments.py:11 - Mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\payments.py:21 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\payments.py:22 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\payments.py:22 - Mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\payments.py:23 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:23 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:385 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\upgrades.py:84 - Mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\upgrades.py:101 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\upgrades.py:102 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\upgrades.py:102 - Mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\upgrades.py:103 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\security\auth_guard.py:8 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\security\auth_guard.py:10 - MOCK`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\security\auth_guard.py:13 - MOCK`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\security\auth_guard.py:16 - mock`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\gemini_service.py:17 - MOCK`
+
+## Parallel Generators / Duplicates
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:21 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:47 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:209 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:335 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:337 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:338 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:339 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:339 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:340 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:340 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:341 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:342 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:344 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:346 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:346 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:350 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:351 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:352 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:352 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\automation_gatekeeper.py:355 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\express_gatekeeper.py:35 - _old`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\express_gatekeeper.py:40 - _old`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\laravel_gatekeeper.py:37 - _old`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\laravel_gatekeeper.py:42 - _old`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\nextjs_gatekeeper.py:37 - _old`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\agents\gatekeepers\react_gatekeeper.py:37 - _old`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi_generator.py:17 - Backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi_generator.py:19 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi_generator.py:19 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi_generator.py:20 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi_generator.py:21 - Backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi_generator.py:21 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs_generator.py:15 - Backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs_generator.py:17 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs_generator.py:17 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs_generator.py:18 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs_generator.py:19 - Backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs_generator.py:19 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi\generator.py:334 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi\generator.py:334 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi\generator.py:335 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\generator.py:22 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\generator.py:22 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\generator.py:23 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\generator.py:24 - Backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\nestjs\generator.py:24 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\springboot\generator.py:426 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\springboot\generator.py:426 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\springboot\generator.py:427 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\springboot\generator.py:447 - V1`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\static_site_generator.py:72 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:115 - v1`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:137 - v1`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:274 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:90 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:91 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:93 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:93 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:94 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:95 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:95 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:96 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:97 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:106 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:120 - Backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:121 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:123 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:123 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:124 - Backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:124 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:126 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:129 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:151 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\services\upgrade_service.py:151 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\package-lock.json:58 - V1`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\package-lock.json:466 - V1`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\package-lock.json:590 - V1`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\package-lock.json:759 - V1`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\package-lock.json:2890 - v1`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\package-lock.json:4274 - v1`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\package-lock.json:4402 - v1`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\package-lock.json:5171 - V1`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\package-lock.json:5524 - v1`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\package-lock.json:5987 - v1`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\globals.css:50 - v1`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\settings\page.tsx:77 - Backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\settings\page.tsx:77 - Backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\settings\page.tsx:89 - Backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\settings\page.tsx:89 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\settings\page.tsx:110 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\settings\page.tsx:110 - Backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\settings\page.tsx:275 - Backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\settings\page.tsx:276 - Backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\settings\page.tsx:277 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\settings\page.tsx:278 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\components\Sidebar.tsx:54 - v1`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\i18n\dictionaries\en-US.ts:696 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\i18n\dictionaries\en-US.ts:811 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\i18n\dictionaries\en-US.ts:811 - backup`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\i18n\dictionaries\en-US.ts:812 - backup`
+

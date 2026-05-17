@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Factory AI - Criar Python + FastAPI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <header class="p-6 border-b border-slate-700 bg-slate-900 flex justify-between items-center">
+        <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
+            SaaS Factory AI
+        </h1>
+        <div class="text-sm text-slate-400">Modo Estrito: Python + FastAPI</div>
+    </header>
+
+    <main class="flex-grow p-8 max-w-5xl mx-auto w-full">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold mb-2">Configurao Especfica: Python + FastAPI</h2>
+            <p class="text-slate-400">Apenas tecnologias e padres 100% compatveis com FastAPI esto disponveis.</p>
+        </div>
+
+        <form id="creationForm" class="space-y-6">
+            <input type="hidden" name="stack_profile_id" value="fastapi">
+            <input type="hidden" name="backend_stack" value="Python + FastAPI">
+
+            <div class="glass-panel p-6 rounded-xl">
+                <h3 class="text-xl font-semibold mb-4 text-emerald-400">1. Dados Bsicos</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm mb-1 text-slate-300">Nome do Projeto</label>
+                        <input type="text" name="project_name" class="w-full bg-slate-800 border border-slate-600 rounded p-2 text-white" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-6 rounded-xl">
+                <h3 class="text-xl font-semibold mb-4 text-yellow-400">1.5. Versões da Stack (Obrigatório)</h3>
+                <p class="text-sm text-slate-400 mb-4">Selecione as versões exatas. O sistema garantirá que as escolhas são compatíveis.</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm mb-1 text-slate-300">Modo de Escolha</label>
+                        <select id="version_mode" class="w-full bg-slate-800 border border-slate-600 rounded p-2 text-white" onchange="toggleGuidedMode()">
+                            <option value="manual">Seleção Manual</option>
+                            <option value="guided">Não sei (Modo Guiado / Recomendado LTS)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mt-4" id="version_selectors">
+                    <div>
+                        <label class="block text-sm mb-1 text-slate-300">Versão FastAPI</label>
+                        <select name="selected_versions[fastapi_version]" id="fastapi_version" class="w-full bg-slate-800 border border-slate-600 rounded p-2 text-white" onchange="updateCompatibility()">
+                            <option value="">Selecione...</option>
+                            <option value="0.111.x">0.111.x (Recomendado)</option>
+                            <option value="0.109.x">0.109.x</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm mb-1 text-slate-300">Versão Python</label>
+                        <select name="selected_versions[python_version]" id="python_version" class="w-full bg-slate-800 border border-slate-600 rounded p-2 text-white">
+                            <option value="">Selecione...</option>
+                            <option value="3.10">Python 3.10</option>
+                            <option value="3.11">Python 3.11</option>
+                            <option value="3.12">Python 3.12</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm mb-1 text-slate-300">Versão Pydantic</label>
+                        <select name="selected_versions[pydantic_version]" id="pydantic_version" class="w-full bg-slate-800 border border-slate-600 rounded p-2 text-white">
+                            <option value="">Selecione...</option>
+                            <option value="2.7.x">2.7.x</option>
+                            <option value="2.6.x">2.6.x</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-6 rounded-xl">
+                <h3 class="text-xl font-semibold mb-4 text-blue-400">2. Opes Restritas da Stack</h3>
+                
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm mb-2 text-slate-300 font-medium">Banco de Dados Compatvel</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-2"><input type="checkbox" value="SQLite" name="database" class="form-checkbox text-blue-500 rounded bg-slate-800 border-slate-600"> <span>SQLite</span></label>
+                            <label class="flex items-center space-x-2"><input type="checkbox" value="PostgreSQL" name="database" class="form-checkbox text-blue-500 rounded bg-slate-800 border-slate-600"> <span>PostgreSQL</span></label>
+                            <label class="flex items-center space-x-2"><input type="checkbox" value="MySQL" name="database" class="form-checkbox text-blue-500 rounded bg-slate-800 border-slate-600"> <span>MySQL</span></label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm mb-2 text-slate-300 font-medium">Segurana / Auth Compatvel</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-2"><input type="checkbox" value="JWT" name="security" class="form-checkbox text-blue-500 rounded bg-slate-800 border-slate-600"> <span>JWT</span></label>
+                            <label class="flex items-center space-x-2"><input type="checkbox" value="OAuth2" name="security" class="form-checkbox text-blue-500 rounded bg-slate-800 border-slate-600"> <span>OAuth2</span></label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm mb-2 text-slate-300 font-medium">Testes Nativo da Stack</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-2"><input type="checkbox" value="Pytest" name="testing" class="form-checkbox text-blue-500 rounded bg-slate-800 border-slate-600"> <span>Pytest</span></label>
+                            <label class="flex items-center space-x-2"><input type="checkbox" value="httpx/TestClient" name="testing" class="form-checkbox text-blue-500 rounded bg-slate-800 border-slate-600"> <span>httpx/TestClient</span></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-6 rounded-xl border-emerald-500/30">
+                <h3 class="text-xl font-semibold mb-4 text-emerald-300">3. Frontend Compatvel (Opcional)</h3>
+                <div class="mb-4">
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="frontend_enabled" name="frontend_enabled" value="true" class="form-checkbox text-emerald-500 rounded bg-slate-800 border-slate-600">
+                        <span>Gerar Frontend Separado</span>
+                    </label>
+                </div>
+                
+                <div id="frontend_selection" class="hidden space-y-2 pl-6 border-l-2 border-slate-700">
+                    <label class="block text-sm mb-2 text-slate-300 font-medium">Frameworks Recomendados pela Matriz</label>
+                    <label class="flex items-center space-x-2"><input type="radio" name="frontend_stack" value="react" class="form-radio text-blue-500 bg-slate-800 border-slate-600" checked> <span>React</span></label>
+                    <label class="flex items-center space-x-2"><input type="radio" name="frontend_stack" value="nextjs" class="form-radio text-blue-500 bg-slate-800 border-slate-600"> <span>NextJS</span></label>
+                    <label class="flex items-center space-x-2"><input type="radio" name="frontend_stack" value="vue" class="form-radio text-blue-500 bg-slate-800 border-slate-600"> <span>Vue</span></label>
+                </div>
+            </div>
+
+            <div class="flex justify-end mt-8">
+                <button type="submit" class="bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-400 hover:to-blue-400 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform transition hover:scale-105">
+                    Gerar Projeto com Python + FastAPI
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        document.getElementById('frontend_enabled').addEventListener('change', function(e) {
+            document.getElementById('frontend_selection').style.display = e.target.checked ? 'block' : 'none';
+        });
+
+        function toggleGuidedMode() {
+            const mode = document.getElementById('version_mode').value;
+            const faSelect = document.getElementById('fastapi_version');
+            const pySelect = document.getElementById('python_version');
+            const pySelect2 = document.getElementById('pydantic_version');
+            
+            if (mode === 'guided') {
+                faSelect.value = '0.111.x';
+                pySelect.value = '3.12';
+                pySelect2.value = '2.7.x';
+                
+                faSelect.disabled = true;
+                pySelect.disabled = true;
+                pySelect2.disabled = true;
+                
+                if(!document.getElementById('hidden_fa')) {
+                    const faHidden = document.createElement('input'); faHidden.type = 'hidden'; faHidden.name = 'selected_versions[fastapi_version]'; faHidden.id = 'hidden_fa'; faHidden.value = '0.111.x';
+                    const p1Hidden = document.createElement('input'); p1Hidden.type = 'hidden'; p1Hidden.name = 'selected_versions[python_version]'; p1Hidden.id = 'hidden_p1'; p1Hidden.value = '3.12';
+                    const p2Hidden = document.createElement('input'); p2Hidden.type = 'hidden'; p2Hidden.name = 'selected_versions[pydantic_version]'; p2Hidden.id = 'hidden_p2'; p2Hidden.value = '2.7.x';
+                    document.getElementById('creationForm').appendChild(faHidden);
+                    document.getElementById('creationForm').appendChild(p1Hidden);
+                    document.getElementById('creationForm').appendChild(p2Hidden);
+                }
+            } else {
+                faSelect.disabled = false;
+                pySelect.disabled = false;
+                pySelect2.disabled = false;
+                
+                if(document.getElementById('hidden_fa')) {
+                    document.getElementById('hidden_fa').remove();
+                    document.getElementById('hidden_p1').remove();
+                    document.getElementById('hidden_p2').remove();
+                }
+            }
+            updateCompatibility();
+        }
+
+        function updateCompatibility() {
+            // Can be expanded to filter Pydantic/Python versions dynamically based on FastAPI version
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+# Route Conflicts & Broken Routes
+
+## Backend Routes
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi_templates.py:126 - @app.get("/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi_templates.py:295 - @router.get("/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi_templates.py:299 - @router.get("/{{id}}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi_templates.py:306 - @router.post("/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi_templates.py:310 - @router.put("/{{id}}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi_templates.py:317 - @router.delete("/{{id}}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi_templates.py:358 - @router.post("/login"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi\generator.py:64 - @app.get("/health"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi\generator.py:175 - @router.get("/health"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi\generator.py:281 - @router.get("/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi\generator.py:286 - @router.post("/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi\generator.py:307 - @router.get("/health"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi\templates.py:139 - @app.get("/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi\templates.py:303 - @router.get("/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi\templates.py:307 - @router.get("/{{id}}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi\templates.py:314 - @router.post("/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi\templates.py:318 - @router.put("/{{id}}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi\templates.py:325 - @router.delete("/{{id}}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\backend\fastapi\templates.py:365 - @router.post("/login"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\config\config_generator.py:892 - @router.post("/form-submit"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\config\config_generator.py:898 - @router.post("/lead"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\config\config_generator.py:904 - @router.post("/trigger"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\main.py:59 - @app.get("/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\ai_boost.py:75 - @router.get("/plans"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\ai_boost.py:81 - @router.get("/status/{project_id}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\ai_boost.py:108 - @router.get("/check-permission/{project_id}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\ai_boost.py:158 - @router.post("/activate"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\ai_boost.py:178 - @router.post("/deactivate/{project_id}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\ai_boost.py:189 - @router.post("/mock-confirm"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\ai_boost.py:223 - @router.post("/projects/{project_id}/ai/improve-code"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\ai_boost.py:249 - @router.post("/projects/{project_id}/ai/generate-feature"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\ai_boost.py:282 - @router.post("/projects/{project_id}/ai/generate-tests"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\ai_boost.py:306 - @router.post("/projects/{project_id}/ai/generate-docs"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\ai_boost.py:336 - @router.post("/projects/{project_id}/ai/chat"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\ai_boost.py:367 - @router.get("/usage/{project_id}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\create.py:127 - @router.get("/create/stacks"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\create.py:134 - @router.get("/create/stack/{raw_id}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\create.py:169 - @router.post("/create/validate"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\create.py:200 - @router.post("/create"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\downloads.py:30 - @router.get("/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\downloads.py:38 - @router.get("/{project_id}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\downloads.py:205 - @router.post("/{project_id}/prepare"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\downloads.py:217 - @router.get("/{project_id}/download"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\generate.py:40 - @router.get("/health"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\generate.py:207 - @router.post("/generate"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\payments.py:14 - @router.post("/create-checkout"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\payments.py:21 - @router.post("/mock-confirm"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\payments.py:32 - @router.get("/status/{project_id}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\payments.py:44 - @router.get("/generation-access/{project_id}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\prompt_routes.py:35 - @router.get("/stacks"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\prompt_routes.py:46 - @router.get("/profile/{stack_id}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\prompt_routes.py:85 - @router.post("/build"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\prompt_routes.py:121 - @router.post("/validate"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\prompt_routes.py:163 - @router.get("/template/{stack_id}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:9 - @router.get("/system/status"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:45 - @router.get("/ai/status"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:82 - @router.get("/ai-models"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:160 - @router.get("/templates"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:194 - @router.get("/documentation"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:214 - @router.get("/documentation/sources"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:222 - @router.get("/security-status"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:240 - @router.get("/billing"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:264 - @router.get("/settings"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:279 - @router.get("/generators"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:298 - @router.get("/activity"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:319 - @router.get("/recommendations"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:346 - @router.get("/validation-center"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:361 - @router.get("/validation/summary"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\system.py:376 - @router.post("/ai-models/{slug}/test"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\upgrades.py:13 - @router.get("/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\upgrades.py:20 - @router.get("/{project_id}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\upgrades.py:29 - @router.get("/{project_id}/details"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\upgrades.py:70 - @router.delete("/{project_id}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\upgrades.py:90 - @router.get("/{project_id}/upgrades"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\upgrades.py:94 - @router.post("/{project_id}/upgrades/request"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\upgrades.py:101 - @router.post("/{project_id}/upgrades/mock-confirm"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\backend\app\routes\upgrades.py:108 - @router.post("/{project_id}/upgrades/apply"`
+
+## Frontend Routes
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_builder.py:11 - href="#{anchor}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_builder.py:161 - href="https://fonts.googleapis.com"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_builder.py:162 - href="assets/css/style.css"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_builder.py:177 - href="#inicio"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_builder.py:188 - href="#newsletter"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_builder.py:208 - href="#artigos"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_builder.py:209 - href="#sobre"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_builder.py:219 - href="#artigos"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_builder.py:281 - href="#contato"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_builder.py:369 - href="#inicio"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_builder.py:370 - href="#artigos"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_builder.py:371 - href="#sobre"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_builder.py:372 - href="#contato"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_builder.py:373 - href="docs/SECURITY.md"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_builder.py:404 - href="#contato"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_template.py:11 - href="https://fonts.googleapis.com"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_template.py:12 - href="assets/css/style.css"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_template.py:18 - href="#"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_template.py:20 - href="#features"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_template.py:21 - href="#about"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_template.py:22 - href="#contact"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_template.py:34 - href="#contact"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_template.py:35 - href="#features"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\src\generators\static\html_template.py:107 - href="docs/SECURITY.md"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\page.tsx:71 - href="/wizard"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\page.tsx:74 - href="/projects"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\page.tsx:77 - href="/ai-models"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\page.tsx:80 - href="/validation-center"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\page.tsx:119 - href="/validation-center"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\page.tsx:140 - href="/projects"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\page.tsx:149 - href="/wizard"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\downloads\page.tsx:196 - href="/wizard"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\downloads\[id]\page.tsx:55 - href="/downloads"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\downloads\[id]\page.tsx:67 - href="/downloads"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\projects\page.tsx:195 - href="/wizard"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\projects\[id]\page.tsx:47 - href="/projects"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\projects\[id]\page.tsx:58 - href="/projects"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\projects\[id]\details\page.tsx:41 - href="/projects"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\projects\[id]\details\page.tsx:52 - href="/projects"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\wizard\[slug]\page.tsx:37 - href="/wizard"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\wizard\[slug]\page.tsx:49 - href="/wizard"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\app\wizard\[slug]\page.tsx:65 - href="/wizard"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\components\visual-builder\builderSchema.ts:414 - href="${el.props.href}"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\components\visual-builder\builderSchema.ts:446 - href="#"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\components\visual-builder\builderSchema.ts:470 - href="https://fonts.googleapis.com"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\components\visual-builder\builderSchema.ts:471 - href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:60 - path: "index.html"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:61 - path: "assets"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:62 - path: "css/style.css"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:63 - path: "js/main.js"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:65 - path: "sections"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:66 - path: "hero.html"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:67 - path: "about.html"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:68 - path: "contact.html"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:70 - path: "docs"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:71 - path: "SEO.md"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:72 - path: "SECURITY.md"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:74 - path: "README.md"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:95 - path: "sections"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:95 - path: "faq.html"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:100 - path: "sections"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:100 - path: "newsletter.html"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:105 - path: "content"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:105 - path: "articles.json"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:110 - path: "assets/js/analytics.js"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:115 - path: "assets/js/form-validation.js"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:123 - path: "src"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:124 - path: "controllers/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:125 - path: "services/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:126 - path: "repositories/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:127 - path: "models/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:128 - path: "dtos/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:129 - path: "security/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:131 - path: "tests/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:132 - path: "docs/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:133 - path: "README.md"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:134 - path: ".env.example"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:162 - path: "src/security/jwt"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:163 - path: "JwtProvider.ts"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:164 - path: "JwtGuard.ts"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:170 - path: "src/messaging/kafka"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:171 - path: "producer.ts"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:172 - path: "consumer.ts"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:178 - path: "src/cache/redis"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:179 - path: "cache.service.ts"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:185 - path: "docs/openapi"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:186 - path: "openapi.yaml"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:193 - path: "tests/unit/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:194 - path: "tests/integration/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:203 - path: "components/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:204 - path: "pages/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:205 - path: "services/api/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:206 - path: "auth/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:207 - path: "forms/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:208 - path: "layouts/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:209 - path: "hooks/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:210 - path: "store/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:211 - path: "styles/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:212 - path: "tests/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:239 - path: "auth"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:240 - path: "guards/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:241 - path: "interceptors/"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:242 - path: "AuthProvider.tsx"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:249 - path: "components/dashboard"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:250 - path: "Charts.tsx"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:251 - path: "Metrics.tsx"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:257 - path: "forms/validation"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:258 - path: "validators.ts"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:264 - path: "services/api"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:265 - path: "client.ts"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\lib\live-builder.ts:266 - path: "endpoints.ts"`
+- `c:\Users\louvens\OneDrive\Projet_MltAgents\control_panel\frontend\src\__tests__\route-separation.test.ts:36 - href='/wizard'`
+

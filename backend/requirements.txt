@@ -1,0 +1,5 @@
+fastapi>=0.100.0
+uvicorn>=0.23.0
+pydantic>=2.0.0
+# The backend uses the root project libraries (google-generativeai, etc.)
+# Run this from the root venv, or install them here if isolated.

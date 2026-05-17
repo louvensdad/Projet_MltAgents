@@ -1,0 +1,78 @@
+{
+    "id": "static-site",
+    "name": "Static Site",
+    "description": "HTML/CSS/JS with SEO-first architecture",
+    "form_schema": [
+        {
+            "id": "site_type",
+            "label": "Site Type",
+            "type": "select",
+            "options": [
+                "landing_page",
+                "portfolio",
+                "blog"
+            ],
+            "default": "landing_page"
+        },
+        {
+            "id": "seo",
+            "label": "Enable Advanced SEO",
+            "type": "boolean",
+            "default": true
+        },
+        {
+            "id": "cms",
+            "label": "CMS Integration",
+            "type": "select",
+            "options": [
+                "none",
+                "netlify_cms",
+                "sanity"
+            ],
+            "default": "none"
+        },
+        {
+            "id": "analytics",
+            "label": "Analytics",
+            "type": "select",
+            "options": [
+                "none",
+                "google_analytics",
+                "plausible"
+            ],
+            "default": "none"
+        },
+        {
+            "id": "animations",
+            "label": "Animations Library",
+            "type": "select",
+            "options": [
+                "none",
+                "framer_motion",
+                "gsap"
+            ],
+            "default": "none"
+        },
+        {
+            "id": "forms",
+            "label": "Forms & Newsletter",
+            "type": "boolean",
+            "default": false
+        }
+    ],
+    "validation_rules": [],
+    "best_practices": {
+        "examples": [
+            "Clean Architecture snippet",
+            "DTO usage example"
+        ],
+        "rules": [
+            "Always validate DTOs",
+            "Use structured logging"
+        ],
+        "patterns": [
+            "Repository Pattern",
+            "Service Layer"
+        ]
+    }
+}

@@ -1,0 +1,118 @@
+{
+    "id": "springboot",
+    "name": "Java + Spring Boot",
+    "description": "Enterprise Java with full Spring ecosystem",
+    "form_schema": [
+        {
+            "id": "java_version",
+            "label": "Java Version",
+            "type": "select",
+            "options": [
+                "17",
+                "21"
+            ],
+            "default": "21"
+        },
+        {
+            "id": "architecture",
+            "label": "Architecture",
+            "type": "select",
+            "options": [
+                "monolith",
+                "microservices"
+            ],
+            "default": "monolith"
+        },
+        {
+            "id": "api_gateway",
+            "label": "API Gateway",
+            "type": "boolean",
+            "default": false
+        },
+        {
+            "id": "messaging",
+            "label": "Messaging",
+            "type": "select",
+            "options": [
+                "none",
+                "kafka"
+            ],
+            "default": "none"
+        },
+        {
+            "id": "cache",
+            "label": "Cache",
+            "type": "select",
+            "options": [
+                "none",
+                "redis"
+            ],
+            "default": "none"
+        },
+        {
+            "id": "infrastructure",
+            "label": "Infrastructure",
+            "type": "select",
+            "options": [
+                "docker",
+                "kubernetes"
+            ],
+            "default": "docker"
+        },
+        {
+            "id": "auth",
+            "label": "Auth Provider",
+            "type": "select",
+            "options": [
+                "jwt",
+                "keycloak",
+                "oauth2"
+            ],
+            "default": "jwt"
+        },
+        {
+            "id": "observability",
+            "label": "Observability / Tracing",
+            "type": "select",
+            "options": [
+                "none",
+                "zipkin",
+                "datadog",
+                "prometheus"
+            ],
+            "default": "prometheus"
+        },
+        {
+            "id": "cicd",
+            "label": "CI/CD",
+            "type": "select",
+            "options": [
+                "none",
+                "github_actions",
+                "gitlab_ci"
+            ],
+            "default": "github_actions"
+        }
+    ],
+    "validation_rules": [
+        {
+            "condition": "architecture == 'microservices' and api_gateway == False",
+            "level": "warning",
+            "message": "Using Microservices without an API Gateway is an anti-pattern."
+        }
+    ],
+    "best_practices": {
+        "examples": [
+            "Clean Architecture snippet",
+            "DTO usage example"
+        ],
+        "rules": [
+            "Always validate DTOs",
+            "Use structured logging"
+        ],
+        "patterns": [
+            "Repository Pattern",
+            "Service Layer"
+        ]
+    }
+}
