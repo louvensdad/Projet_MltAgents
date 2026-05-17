@@ -23,10 +23,21 @@ const PREVIEW_MAP: Record<string, ComponentType<{ template: any }>> = {
   ai_saas: AiSaasMiniPreview,
 };
 
+function safeArray(arr: any): any[] {
+  if (Array.isArray(arr)) return arr;
+  if (arr && typeof arr === "object") return Object.values(arr);
+  return [];
+}
+
 function findFallbackTemplate(slug: string) {
   const base = apiFallbacks["/api/templates"] as any;
   const catalog = Array.isArray(base?.catalog) ? base.catalog : [];
   return catalog.find((template: any) => template.slug === slug || template.id === slug) || null;
+}
+
+function templateAsset(template: any, index = 0) {
+  const images = safeArray(template?.demo_images);
+  return template?.image || images[index] || "";
 }
 
 export default function TemplateDetailPage() {
@@ -57,6 +68,43 @@ export default function TemplateDetailPage() {
 
   const Preview = useMemo(() => PREVIEW_MAP[template?.preview_type] || BackendArchitectureMiniPreview, [template?.preview_type]);
   const ready = template?.generation_supported !== false && template?.status === "ready";
+  const heroImage = templateAsset(template);
+
+  const handleUseTemplate = async () => {
+    if (!template) return;
+    setBusy(true);
+    try {
+      const prep = await apiPost<any>(`/api/templates/${template.id}/prepare-generation`, {
+        project_name: template.name,
+        project_description: template.description,
+        answers: template.default_answers,
+      });
+      if (!prep.ok || !prep.data) {
+        throw new Error(prep.backendError?.message || prep.networkError || "Falha ao preparar template");
+      }
+
+      const prepared = prep.data;
+      if (typeof window !== "undefined") {
+        const templateContext = {
+          template_id: template.id,
+          stack_id: prepared.stack_id || template.stack_profile_id,
+          project_type: prepared.project_type || template.project_type,
+          default_answers: prepared.default_answers || template.default_answers,
+          blueprint: prepared.blueprint || template.blueprint,
+          prompt_master_seed: prepared.prompt_master?.seed || template.prompt_master_seed,
+          redirect_url: prepared.redirect_url || `/create/${template.stack_profile_id}?template_id=${template.id}`,
+        };
+        window.sessionStorage.setItem("template_context", JSON.stringify(templateContext));
+        window.localStorage.setItem("template_context", JSON.stringify(templateContext));
+      }
+
+      router.push(prepared.redirect_url || `/create/${template.stack_profile_id}?template_id=${template.id}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const handleBuild = async () => {
     if (!template || !template.generation_supported) return;
@@ -116,7 +164,7 @@ export default function TemplateDetailPage() {
       <div className="flex items-center justify-between gap-4">
         <Link href="/templates" className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-slate-300 transition-all hover:bg-white/10">
           <ArrowLeft size={16} />
-          Catalogo
+          Catálogo
         </Link>
         <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-slate-500">
           <BadgeInfo size={14} />
@@ -136,7 +184,7 @@ export default function TemplateDetailPage() {
                 {template.architecture_label || template.architecture}
               </span>
               <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] text-slate-300">
-                Score {template.quality_score}
+                Nota {template.quality_score}
               </span>
             </div>
             <div>
@@ -157,6 +205,14 @@ export default function TemplateDetailPage() {
                 <Sparkles size={16} />
                 {ready ? (busy ? "Preparando..." : "Gerar projeto com este template") : "Em construção"}
               </button>
+              <button
+                onClick={handleUseTemplate}
+                disabled={busy}
+                className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-medium text-slate-200 transition-all hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <GitBranch size={16} />
+                Usar template
+              </button>
               <Link href={`/create/${template.stack_profile_id}?template_id=${template.id}`} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-medium text-slate-200 transition-all hover:bg-white/10">
                 <GitBranch size={16} />
                 Abrir wizard
@@ -166,16 +222,20 @@ export default function TemplateDetailPage() {
         </div>
 
         <div className="rounded-3xl border border-white/10 bg-surface p-4">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">Preview real</p>
           <div className="overflow-hidden rounded-2xl border border-white/10 bg-black p-2">
-            <StackPreview template={template} />
+            {heroImage ? (
+              <img src={heroImage} alt={template.name} className="h-full w-full rounded-xl object-cover" />
+            ) : (
+              <StackPreview template={template} />
+            )}
           </div>
+          <p className="mt-3 text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">Preview real</p>
         </div>
       </section>
 
       <section className="grid gap-6 lg:grid-cols-3">
         <InfoPanel title="Arquitetura" icon={<GitBranch size={16} />} items={template.architecture_flow || []} />
-        <InfoPanel title="Requisitos de seguranca" icon={<Shield size={16} />} items={template.security_requirements || []} />
+        <InfoPanel title="Requisitos de segurança" icon={<Shield size={16} />} items={template.security_requirements || []} />
         <InfoPanel title="Arquivos previstos" icon={<FileCode2 size={16} />} items={template.required_files || []} />
       </section>
 
@@ -226,6 +286,12 @@ export default function TemplateDetailPage() {
         <TemplateArchitectureDiagram template={template} />
         <TemplateFileTreePreview template={template} />
       </section>
+
+      {error && (
+        <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-200">
+          {error}
+        </div>
+      )}
     </div>
   );
 }
