@@ -112,8 +112,8 @@ export default function StaticSiteWizard() {
       const healthRes = await fetch(healthUrl).catch(() => null);
       if (!healthRes?.ok) {
         setGenerateError(
-          `Backend nao esta rodando em ${API_URL}\n\n` +
-          "Comando para iniciar:\nuvicorn backend.app.main:app --reload --port 8001"
+          "O serviço de API não está disponível neste ambiente.\n\n" +
+          "Inicie a API local e tente novamente:\nuvicorn backend.app.main:app --reload --port 8001"
         );
         return;
       }
@@ -123,7 +123,7 @@ export default function StaticSiteWizard() {
         { stack_id: "static_site", answers: buildPromptAnswers() }
       );
       if (!promptRes.ok || !promptRes.data?.prompt_master || promptRes.data.status === "rejected") {
-        throw new Error((promptRes.data?.errors || [promptRes.backendError?.message || promptRes.networkError || "Prompt Master invalido"]).join("\n"));
+        throw new Error((promptRes.data?.errors || [promptRes.backendError?.message || promptRes.networkError || "Prompt Master inválido"]).join("\n"));
       }
 
       const payload = buildStaticSitePayload(data, locale) as Record<string, unknown>;
@@ -144,9 +144,12 @@ export default function StaticSiteWizard() {
       }
 
       const errorMsg = res.backendError?.message || res.networkError || "Erro ao gerar projeto";
-      setGenerateError(`${errorMsg}\n\nEndpoint: POST ${generateUrl}\nStatus: ${res.status || "sem resposta"}`);
+      console.error("[StaticSiteWizard] generate failed", { generateUrl, status: res.status, errorMsg });
+      setGenerateError(errorMsg);
     } catch (err: any) {
-      setGenerateError(`${err?.message || "Erro inesperado"}\n\nEndpoint: POST ${generateUrl}`);
+      const message = err?.message || "Erro inesperado";
+      console.error("[StaticSiteWizard] unexpected generate error", message);
+      setGenerateError(message);
     } finally {
       setGenerating(false);
     }

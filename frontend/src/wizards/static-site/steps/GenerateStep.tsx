@@ -15,6 +15,8 @@ interface Props {
   t: (k: string) => string;
 }
 
+const CAPABILITIES = ["Prompt Master", "SEO", "Acessibilidade", "Analytics"];
+
 export default function GenerateStep({
   generating,
   generateError,
@@ -28,10 +30,22 @@ export default function GenerateStep({
   t,
 }: Props) {
   return (
-    <div className="space-y-6 animate-in slide-in-from-right-4">
-      <div className="text-center">
-        <h2 className="text-xl font-bold text-white">{t("wizard.static.generate_title")}</h2>
-        <p className="mt-1 text-sm text-gray-400">{t("wizard.static.generate_subtitle")}</p>
+    <div className="space-y-4 animate-in slide-in-from-right-4">
+      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div className="space-y-2">
+            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-cyan-300">Passo final</p>
+            <h2 className="text-xl font-bold text-white">{t("wizard.static.generate_title")}</h2>
+            <p className="max-w-2xl text-sm text-gray-400">{t("wizard.static.generate_subtitle")}</p>
+          </div>
+          <div className="flex flex-wrap gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-300">
+            {CAPABILITIES.map((cap) => (
+              <span key={cap} className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
+                {cap}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="grid gap-3 md:grid-cols-2">
@@ -41,7 +55,7 @@ export default function GenerateStep({
           className={`rounded-2xl border p-4 text-left transition-all ${aiMode === "local_build_90" ? "border-emerald-400/40 bg-emerald-500/10" : "border-white/10 bg-white/[0.02]"}`}
         >
           <p className="text-sm font-bold text-emerald-300">Local Build 90%</p>
-          <p className="mt-1 text-xs text-gray-400">Fluxo local com gatekeepers, preview e zero exposicao de chave.</p>
+          <p className="mt-1 text-xs leading-relaxed text-gray-400">Fluxo local com gatekeepers, preview e zero exposição de chave.</p>
         </button>
         <button
           type="button"
@@ -49,13 +63,13 @@ export default function GenerateStep({
           className={`rounded-2xl border p-4 text-left transition-all ${aiMode === "agent_boost_100" ? "border-violet-400/40 bg-violet-500/10" : "border-white/10 bg-white/[0.02]"}`}
         >
           <p className="text-sm font-bold text-violet-300">Agent Boost 100%</p>
-          <p className="mt-1 text-xs text-gray-400">Usa IA premium no backend da plataforma. O checkout desbloqueia o modo pago.</p>
+          <p className="mt-1 text-xs leading-relaxed text-gray-400">IA premium no backend da plataforma. O checkout desbloqueia o modo pago.</p>
         </button>
       </div>
 
       <div className={`rounded-xl border p-4 ${promptReady ? "border-cyan-500/30 bg-cyan-500/10" : "border-amber-500/30 bg-amber-500/10"}`}>
         <p className={`text-sm font-semibold ${promptReady ? "text-cyan-200" : "text-amber-200"}`}>
-          {promptReady ? "Prompt Master pronto para atuar como source of truth." : "Preencha os campos obrigatorios para validar o Prompt Master."}
+          {promptReady ? "Prompt Master pronto para atuar como source of truth." : "Preencha os campos obrigatórios para validar o Prompt Master."}
         </p>
       </div>
 
@@ -86,7 +100,7 @@ export default function GenerateStep({
         <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-4">
           <div className="flex items-start gap-3">
             <AlertTriangle className="mt-0.5 h-5 w-5 text-rose-400" />
-            <p className="whitespace-pre-wrap text-sm text-rose-200">{generateError}</p>
+            <p className="whitespace-pre-wrap text-sm leading-relaxed text-rose-200">{generateError}</p>
           </div>
         </div>
       )}
@@ -100,14 +114,14 @@ export default function GenerateStep({
       )}
 
       {generating && (
-        <div className="flex flex-col items-center gap-3 py-8">
+        <div className="flex flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] py-8">
           <Loader2 className="h-10 w-10 animate-spin text-primary" />
           <p className="text-sm font-medium text-gray-300">{t("wizard.static.generating")}</p>
         </div>
       )}
 
       {!generating && !generateSuccess && (
-        <div className="flex justify-center">
+        <div className="flex justify-center pt-2">
           <button
             onClick={onGenerate}
             disabled={!isValid || !promptReady}

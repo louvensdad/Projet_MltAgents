@@ -67,7 +67,7 @@ export async function apiGet<T>(path: string, fallback: T): Promise<ApiEnvelope<
   return {
     status: "offline",
     data: fallback,
-    message: `Backend não está rodando em ${API_URL}`
+    message: `Serviço de API indisponível em ${API_URL}`
   };
 }
 
@@ -75,7 +75,7 @@ export interface PostResult<T> {
   ok: boolean;
   status?: number;
   data?: T;
-  /** Erro de rede (CORS, backend offline) – sem resposta HTTP */
+  /** Erro de rede (CORS, backend offline) sem resposta HTTP */
   networkError?: string;
   /** Mensagem de erro vinda do backend */
   backendError?: BackendError;

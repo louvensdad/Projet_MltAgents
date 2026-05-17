@@ -16,31 +16,39 @@ export default function ContentStep({ siteName, slogan, companyDescription, main
   const labelClass = "block text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] ml-1";
 
   return (
-    <div className="space-y-6 animate-in slide-in-from-right-4">
-      <div>
-        <label className={labelClass}>{t("wizard.static.site_name")}</label>
-        <input type="text" className={inputClass} value={siteName} onChange={e => onChange("site_name", e.target.value)} />
+    <div className="space-y-5 animate-in slide-in-from-right-4">
+      <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4">
+        <p className="text-sm font-semibold text-cyan-100">
+          Descreva qualquer negócio, oferta ou objetivo. O Prompt Master converte isso em landing pages independentes com SEO, acessibilidade, formulário e analytics.
+        </p>
       </div>
-      <div>
-        <label className={labelClass}>{t("wizard.static.slogan")}</label>
-        <input type="text" className={inputClass} value={slogan} onChange={e => onChange("slogan", e.target.value)} />
-      </div>
-      <div>
-        <label className={labelClass}>{t("wizard.static.company_description")}</label>
-        <textarea rows={4} className={inputClass} value={companyDescription} onChange={e => onChange("company_description", e.target.value)} />
-      </div>
-      <div>
-        <label className={labelClass}>{t("wizard.static.main_texts")}</label>
-        <textarea rows={4} className={inputClass} value={mainTexts} onChange={e => onChange("main_texts", e.target.value)} />
-      </div>
-      <div className="grid gap-4 md:grid-cols-2">
+
+      <div className="space-y-6">
         <div>
-          <label className={labelClass}>{t("wizard.static.ctas")}</label>
-          <input type="text" className={inputClass} value={ctas} onChange={e => onChange("ctas", e.target.value)} />
+          <label className={labelClass}>{t("wizard.static.site_name")}</label>
+          <input type="text" className={inputClass} value={siteName} onChange={e => onChange("site_name", e.target.value)} />
         </div>
         <div>
-          <label className={labelClass}>{t("wizard.static.target_audience")}</label>
-          <input type="text" className={inputClass} value={targetAudience} onChange={e => onChange("target_audience", e.target.value)} />
+          <label className={labelClass}>{t("wizard.static.slogan")}</label>
+          <input type="text" className={inputClass} value={slogan} onChange={e => onChange("slogan", e.target.value)} />
+        </div>
+        <div>
+          <label className={labelClass}>{t("wizard.static.company_description")}</label>
+          <textarea rows={4} className={inputClass} value={companyDescription} onChange={e => onChange("company_description", e.target.value)} />
+        </div>
+        <div>
+          <label className={labelClass}>{t("wizard.static.main_texts")}</label>
+          <textarea rows={4} className={inputClass} value={mainTexts} onChange={e => onChange("main_texts", e.target.value)} />
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label className={labelClass}>{t("wizard.static.ctas")}</label>
+            <input type="text" className={inputClass} value={ctas} onChange={e => onChange("ctas", e.target.value)} />
+          </div>
+          <div>
+            <label className={labelClass}>{t("wizard.static.target_audience")}</label>
+            <input type="text" className={inputClass} value={targetAudience} onChange={e => onChange("target_audience", e.target.value)} />
+          </div>
         </div>
       </div>
     </div>

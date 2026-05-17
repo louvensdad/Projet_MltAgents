@@ -1,10 +1,33 @@
 "use client";
 
-import type { StaticSiteData } from "../staticSitePayload";
 import { SECTIONS } from "../staticSiteConfig";
 
 interface Props {
-  data: StaticSiteData;
+  data: {
+    site_type: string;
+    visual_style: string;
+    color_palette: string;
+    brand_tone: string;
+    has_logo: boolean;
+    dark_mode: boolean;
+    sections: string[];
+    site_name: string;
+    slogan: string;
+    company_description: string;
+    target_audience: string;
+    ux_options: string[];
+    meta_title: string;
+    open_graph: boolean;
+    sitemap: boolean;
+    robots_txt: boolean;
+    lazy_loading: boolean;
+    form_options: string[];
+    csp_enabled: boolean;
+    js_sanitization: boolean;
+    unsafe_link_protection: boolean;
+    no_credentials_frontend: boolean;
+    form_validation: boolean;
+  };
   t: (k: string) => string;
 }
 
@@ -19,7 +42,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="flex items-center justify-between border-b border-white/5 py-2 text-sm">
+    <div className="flex items-center justify-between border-b border-white/5 py-2 text-sm last:border-b-0">
       <span className="text-gray-500">{label}</span>
       <span className="font-medium text-gray-200">{value || "—"}</span>
     </div>
@@ -48,8 +71,15 @@ function ListTags({ items, t }: { items: string[]; t: (k: string) => string }) {
 export default function PreviewStep({ data, t }: Props) {
   return (
     <div className="space-y-4 animate-in slide-in-from-right-4">
+      <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4">
+        <p className="text-sm font-semibold text-cyan-100">
+          Landing page independente, pronta para qualquer setor, com SEO, acessibilidade, formulário e performance como padrão.
+        </p>
+      </div>
+
       <Section title={t("wizard.static.preview_site_type")}>
         <Row label={t("wizard.static.site_type")} value={data.site_type ? t(data.site_type) : "—"} />
+        <Row label={t("wizard.static.target_audience")} value={data.target_audience || "—"} />
       </Section>
 
       <Section title={t("wizard.static.preview_visual")}>
@@ -73,10 +103,9 @@ export default function PreviewStep({ data, t }: Props) {
       </Section>
 
       <Section title={t("wizard.static.preview_content")}>
-        <Row label={t("wizard.static.site_name")} value={data.site_name} />
-        <Row label={t("wizard.static.slogan")} value={data.slogan} />
-        <Row label={t("wizard.static.company_description")} value={data.company_description?.slice(0, 80)} />
-        <Row label={t("wizard.static.target_audience")} value={data.target_audience} />
+        <Row label={t("wizard.static.site_name")} value={data.site_name || "—"} />
+        <Row label={t("wizard.static.slogan")} value={data.slogan || "—"} />
+        <Row label={t("wizard.static.company_description")} value={data.company_description?.slice(0, 80) || "—"} />
       </Section>
 
       <Section title={t("wizard.static.preview_ux")}>
@@ -84,7 +113,7 @@ export default function PreviewStep({ data, t }: Props) {
       </Section>
 
       <Section title={t("wizard.static.preview_seo")}>
-        <Row label={t("wizard.static.meta_title")} value={data.meta_title} />
+        <Row label={t("wizard.static.meta_title")} value={data.meta_title || "—"} />
         <Row label={t("wizard.static.open_graph")} value={<BoolBadge value={data.open_graph} />} />
         <Row label={t("wizard.static.sitemap")} value={<BoolBadge value={data.sitemap} />} />
         <Row label={t("wizard.static.robots_txt")} value={<BoolBadge value={data.robots_txt} />} />
