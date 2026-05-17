@@ -103,54 +103,55 @@ export default function UpgradePage({ params }: { params: { id: string } }) {
           <AnimatedBadge tone="cyan">upgrade studio</AnimatedBadge>
           <AnimatedBadge tone="violet">delivery backlog</AnimatedBadge>
         </div>
-        <div className="mt-5 flex items-center gap-4">
-        <button onClick={() => router.back()} className="flex items-center gap-2 text-gray-500 hover:text-gray-200 transition-colors mb-4 text-sm font-medium">
-          <ArrowLeft size={16} /> {t("common.back")}
-        </button>
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-purple-500/10 rounded-xl border border-purple-500/20 shadow-lg shadow-purple-500/10">
-            <Zap size={32} className="text-purple-400" />
-          </div>
+        <div className="mt-5 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">{t("upgrade.title")}</h1>
-            <p className="text-gray-400">{t("upgrade.subtitle")} {t("upgrade.project")}: <code className="text-primary font-mono">{id}</code></p>
+            <button onClick={() => router.back()} className="mb-4 flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-200">
+              <ArrowLeft size={16} /> {t("common.back")}
+            </button>
+            <div className="flex items-center gap-4">
+              <div className="rounded-xl border border-purple-500/20 bg-purple-500/10 p-3 shadow-lg shadow-purple-500/10">
+                <Zap size={32} className="text-purple-400" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">{t("upgrade.title")}</h1>
+                <p className="text-gray-400">{t("upgrade.subtitle")} {t("upgrade.project")}: <code className="font-mono text-primary">{id}</code></p>
+              </div>
+            </div>
           </div>
+          <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            <MetricOrb label="Upgrades" value={upgrades.length} accent="cyan" />
+            <MetricOrb label="Selected" value={selected || "-"} accent="violet" />
+            <MetricOrb label="State" value={selected ? "Draft" : "Idle"} accent="emerald" />
           </div>
-        </div>
-        <div className="mt-8 grid gap-3 sm:grid-cols-3">
-          <MetricOrb label="Upgrades" value={upgrades.length} accent="cyan" />
-          <MetricOrb label="Selected" value={selected || "-"} accent="violet" />
-          <MetricOrb label="State" value={selected ? "Draft" : "Idle"} accent="emerald" />
         </div>
       </HolographicCard>
 
-      {/* Seletor de Upgrade */}
       <HolographicCard className="p-6 space-y-6">
         <SectionHeader eyebrow="catalog" title="Upgrade catalog" subtitle="Request and apply enhancements with clear operational status." />
         <div className="absolute top-0 right-0 p-6 opacity-[0.03] pointer-events-none">
           <Zap size={150} />
         </div>
-        
+
         <h2 className="text-lg font-bold text-foreground">{t("upgrade.request_new")}</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {UPGRADE_CATALOG.map(item => (
             <div
               key={item.id}
               onClick={() => setSelected(item.id)}
-              className={`p-4 rounded-xl border cursor-pointer transition-all ${
+              className={`cursor-pointer rounded-xl border p-4 transition-all ${
                 selected === item.id
-                  ? "bg-primary/10 border-primary shadow-[0_0_15px_rgba(59,130,246,0.15)] ring-1 ring-primary/30"
-                  : "border-border hover:bg-white/5 hover:border-gray-700"
+                  ? "border-primary bg-primary/10 shadow-[0_0_15px_rgba(59,130,246,0.15)] ring-1 ring-primary/30"
+                  : "border-border hover:border-gray-700 hover:bg-white/5"
               }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className={`font-bold text-sm ${selected === item.id ? "text-primary" : "text-foreground"}`}>{t(`upgrade.catalog.${item.id}`)}</p>
-                  <p className="text-[10px] text-gray-500 mt-1 uppercase tracking-wider font-bold">{item.tier}</p>
+                  <p className={`text-sm font-bold ${selected === item.id ? "text-primary" : "text-foreground"}`}>{t(`upgrade.catalog.${item.id}`)}</p>
+                  <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-gray-500">{item.tier}</p>
                 </div>
-                <div className="text-right shrink-0">
-                  <p className={`font-bold text-sm ${selected === item.id ? "text-primary" : "text-gray-300"}`}>{item.price}</p>
+                <div className="shrink-0 text-right">
+                  <p className={`text-sm font-bold ${selected === item.id ? "text-primary" : "text-gray-300"}`}>{item.price}</p>
                 </div>
               </div>
             </div>
@@ -158,35 +159,35 @@ export default function UpgradePage({ params }: { params: { id: string } }) {
         </div>
 
         {selected && (
-          <div className="space-y-4 pt-6 border-t border-border animate-in slide-in-from-top-2 duration-300">
-            <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl flex items-center justify-between">
+          <div className="space-y-4 border-t border-border pt-6 animate-in slide-in-from-top-2 duration-300">
+            <div className="flex items-center justify-between rounded-xl border border-primary/20 bg-primary/5 p-4">
               <p className="text-sm text-gray-300">
                 {t("common.status")}: <strong className="text-primary">{t(`upgrade.catalog.${selected}`)}</strong>
               </p>
-              <span className="text-primary font-bold">{selectedCatalog?.price}</span>
+              <span className="font-bold text-primary">{selectedCatalog?.price}</span>
             </div>
             <textarea
               rows={3}
               placeholder={t("upgrade.placeholder")}
-              className="w-full bg-black/20 border border-border rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-primary transition-all shadow-inner"
+              className="w-full rounded-xl border border-border bg-black/20 px-4 py-3 text-sm text-white shadow-inner transition-all focus:border-primary focus:outline-none"
               value={description}
               onChange={e => setDescription(e.target.value)}
             />
-            <div className="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-xl text-yellow-500 text-[11px] flex items-start gap-3 leading-relaxed">
+            <div className="flex items-start gap-3 rounded-xl border border-yellow-500/20 bg-yellow-500/10 p-3 text-[11px] leading-relaxed text-yellow-500">
               <AlertTriangle size={16} className="shrink-0" />
               <span>{t("upgrade.disclaimer")}</span>
             </div>
             <button
               onClick={handleRequest}
               disabled={loading}
-              className="w-full md:w-auto flex items-center justify-center gap-2 px-8 py-3 bg-primary hover:bg-blue-600 text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/20 disabled:opacity-50 active:scale-95"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-8 py-3 font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-blue-600 disabled:opacity-50 active:scale-95 md:w-auto"
             >
               {loading ? <Loader2 className="animate-spin" size={18} /> : <Zap size={18} />}
               {t("upgrade.request_new")}
             </button>
           </div>
         )}
-      </div>
+      </HolographicCard>
 
       {/* Histórico de Upgrades */}
       <div className="space-y-6">
