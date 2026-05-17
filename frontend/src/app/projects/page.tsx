@@ -215,7 +215,7 @@ export default function ProjectsPage() {
             <SectionHeader
               eyebrow="pipeline"
               title="Project delivery mesh"
-              subtitle="Projetos passam da geração ao pagamento e download por uma única superfície operacional."
+              subtitle="Projetos passam da geracao ao pagamento e download por uma unica superficie operacional."
             />
             <div className="mt-5">
               <EngineNodeGraph nodes={pipelineNodes} />

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -43,10 +43,10 @@ function safeArray(value: any): string[] {
   return [];
 }
 
-function prettyValue(value: any, fallback = "Pending") {
+function prettyValue(value: any, fallback = "Pendente") {
   if (Array.isArray(value)) return value.length ? value.length : fallback;
   if (typeof value === "string") return value || fallback;
-  if (typeof value === "boolean") return value ? "Yes" : "No";
+  if (typeof value === "boolean") return value ? "Sim" : "Não";
   if (typeof value === "number") return value;
   if (value && typeof value === "object") return Object.keys(value).length || fallback;
   return fallback;
@@ -59,15 +59,15 @@ function getProjectNodes(details: ProjectDetailsData) {
   return [
     { name: details.name || "Project", status: "online", hint: stack },
     { name: "Blueprint", status: "synced", hint: `${recommendations.length} recommendations` },
-    { name: "Architecture", status: "live", hint: details.blueprint?.generated_architecture_summary ? "Generated summary available" : "Awaiting summary" },
-    { name: "Docs", status: details.readme ? "synced" : "draft", hint: details.readme ? "README ready" : "Documentation pending" },
+    { name: "Architecture", status: "live", hint: details.blueprint?.generated_architecture_summary ? "Resumo gerado disponível" : "Aguardando resumo" },
+    { name: "Docs", status: details.readme ? "synced" : "draft", hint: details.readme ? "README pronto" : "Documentação pendente" },
     { name: "Delivery", status: details.download_status || "ready", hint: `${presets.length} presets applied` },
   ];
 }
 
 export default function ProjectDetailView({ projectId }: { projectId: string }) {
   const [details, setDetails] = useState<ProjectDetailsData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setCarregando] = useState(true);
   const [activeTab, setActiveTab] = useState<DetailTab>("readme");
   const { t } = usePreferences();
 
@@ -83,7 +83,7 @@ export default function ProjectDetailView({ projectId }: { projectId: string }) 
         console.error(error);
         if (alive) setDetails(null);
       } finally {
-        if (alive) setLoading(false);
+        if (alive) setCarregando(false);
       }
     };
 
@@ -122,7 +122,7 @@ export default function ProjectDetailView({ projectId }: { projectId: string }) 
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/[0.04]">
             <div className="h-5 w-5 animate-spin rounded-full border-2 border-cyan-400 border-t-transparent" />
           </div>
-          <p className="mt-5 text-xs uppercase tracking-[0.35em] text-slate-500">Loading project cockpit</p>
+          <p className="mt-5 text-xs uppercase tracking-[0.35em] text-slate-500">Carregando cockpit do projeto</p>
           <p className="mt-3 text-sm text-slate-300">{t("common.loading")}</p>
         </HolographicCard>
       </div>
@@ -133,9 +133,9 @@ export default function ProjectDetailView({ projectId }: { projectId: string }) 
     return (
       <div className="mx-auto flex max-w-4xl flex-col items-center justify-center px-4 py-20 text-center">
         <HolographicCard className="w-full max-w-lg p-8">
-          <p className="text-[10px] uppercase tracking-[0.35em] text-slate-500">Project not found</p>
+          <p className="text-[10px] uppercase tracking-[0.35em] text-slate-500">Projeto não encontrado</p>
           <h2 className="mt-3 text-2xl font-semibold text-white">{t("common.error")}</h2>
-          <p className="mt-3 text-sm leading-7 text-slate-400">The project detail view could not load the requested record.</p>
+          <p className="mt-3 text-sm leading-7 text-slate-400">A visualização de detalhes do projeto não conseguiu carregar o registro solicitado.</p>
           <Link href="/projects" className="mt-6 inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-semibold text-slate-200 transition-all hover:bg-white/[0.08]">
             <ArrowLeft size={16} />
             {t("common.back")}
@@ -146,7 +146,7 @@ export default function ProjectDetailView({ projectId }: { projectId: string }) 
   }
 
   const projectNodes = getProjectNodes(details);
-  const intelligenceSummary = details.blueprint?.generated_architecture_summary || "No generated summary is available yet. The blueprint panel still exposes the raw engineering signal.";
+  const intelligenceSummary = details.blueprint?.generated_architecture_summary || "Nenhum resumo gerado está disponível ainda. O painel de blueprint ainda expõe o sinal bruto de engenharia.";
   const tabs = [
     { id: "readme" as const, label: "README & Docs", icon: FileText },
     { id: "blueprint" as const, label: "Blueprint JSON", icon: FileJson },
@@ -163,15 +163,15 @@ export default function ProjectDetailView({ projectId }: { projectId: string }) 
         <HolographicCard className="p-6 md:p-8">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent" />
           <div className="flex flex-wrap items-center gap-2">
-            <AnimatedBadge tone="cyan">Project cockpit</AnimatedBadge>
+            <AnimatedBadge tone="cyan">Cockpit do projeto</AnimatedBadge>
             <AnimatedBadge tone="violet">{details.type || "enterprise"}</AnimatedBadge>
             <AnimatedBadge tone="emerald">{details.payment_status || "status: live"}</AnimatedBadge>
           </div>
           <div className="mt-6 max-w-3xl">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-500">Project ID</p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-500">ID do projeto</p>
             <h1 className="mt-3 text-4xl font-semibold tracking-tight text-white md:text-5xl">{details.name}</h1>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300 md:text-base">
-              Engineering cockpit for generated projects. Inspect the blueprint, validate the architecture, and move directly into AI Boost or upgrade flow without leaving the detail view.
+              Cockpit de engenharia para projetos gerados. Inspecione o blueprint, valide a arquitetura e siga diretamente para o AI Boost ou fluxo de upgrade sem sair da tela.
             </p>
             <p className="mt-4 text-[10px] font-bold uppercase tracking-[0.35em] text-slate-500">
               ID: <code className="text-cyan-200">{details.id}</code>
@@ -196,7 +196,7 @@ export default function ProjectDetailView({ projectId }: { projectId: string }) 
           <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <MetricOrb label="Architecture" value={analytics.architectureValid ? "Live" : "Draft"} icon={<Layers3 size={16} />} accent="cyan" />
             <MetricOrb label="Security" value={analytics.securityPassed ? "OK" : "Review"} icon={<Sparkles size={16} />} accent="violet" />
-            <MetricOrb label="Docs" value={analytics.docsSynced ? "Synced" : "Pending"} icon={<FileText size={16} />} accent="emerald" />
+            <MetricOrb label="Docs" value={analytics.docsSynced ? "Synced" : "Pendente"} icon={<FileText size={16} />} accent="emerald" />
             <MetricOrb label="Guidance" value={analytics.recommendationCount} icon={<Zap size={16} />} accent="cyan" />
           </div>
         </HolographicCard>
@@ -210,7 +210,7 @@ export default function ProjectDetailView({ projectId }: { projectId: string }) 
             partialFeatures={analytics.partialFeatures}
           />
           <LiveArchitecturePanel
-            title="Live architecture spine"
+            title="Espinha de arquitetura ao vivo"
             graph={
               details.blueprint?.generated_architecture_summary
                 ? details.blueprint.generated_architecture_summary
@@ -241,7 +241,7 @@ export default function ProjectDetailView({ projectId }: { projectId: string }) 
                       </span>
                     ))
                   ) : (
-                    <span className="text-sm text-slate-500">No UX decisions captured.</span>
+                    <span className="text-sm text-slate-500">Nenhuma decisao de UX registrada.</span>
                   )}
                 </div>
               </div>
@@ -256,7 +256,7 @@ export default function ProjectDetailView({ projectId }: { projectId: string }) 
                       </span>
                     ))
                   ) : (
-                    <span className="text-sm text-slate-500">No presets recorded.</span>
+                    <span className="text-sm text-slate-500">Nenhum preset registrado.</span>
                   )}
                 </div>
               </div>
@@ -269,17 +269,17 @@ export default function ProjectDetailView({ projectId }: { projectId: string }) 
                   {safeArray(details.blueprint?.smart_recommendations).length ? (
                     safeArray(details.blueprint?.smart_recommendations).map((item) => <li key={item}>- {item}</li>)
                   ) : (
-                    <li>No recommendations stored.</li>
+                    <li>Nenhuma recomendacao registrada.</li>
                   )}
                 </ul>
               </div>
 
               <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4">
-                <p className="text-[10px] uppercase tracking-[0.3em] text-slate-500">Pending checks</p>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-slate-500">Pendente checks</p>
                 <ul className="mt-3 space-y-2 text-sm text-amber-200">
                   <li>- Partial features detected: {analytics.partialFeatures}</li>
                   <li>- Generated blueprints: {prettyValue(details.blueprint?.generated_architecture_summary, "Missing")}</li>
-                  <li>- Project path: {details.path || "Not set"}</li>
+                  <li>- Project path: {details.path || "N?o definido"}</li>
                 </ul>
               </div>
             </div>
@@ -322,7 +322,7 @@ export default function ProjectDetailView({ projectId }: { projectId: string }) 
                       </pre>
                     ) : (
                       <div className="py-8 text-center">
-                        <p className="text-sm text-slate-500">No README found for this project.</p>
+                        <p className="text-sm text-slate-500">Nenhum README encontrado para este projeto.</p>
                       </div>
                     )}
                   </motion.div>
@@ -374,7 +374,7 @@ export default function ProjectDetailView({ projectId }: { projectId: string }) 
               <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4">
                 <p className="text-xs uppercase tracking-[0.25em] text-slate-500">Created</p>
                 <p className="mt-2 text-sm text-white">
-                  {details.created_at ? new Date(details.created_at).toLocaleString() : "Not available"}
+                  {details.created_at ? new Date(details.created_at).toLocaleString() : "Nao disponivel"}
                 </p>
               </div>
               <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4">

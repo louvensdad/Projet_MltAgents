@@ -193,7 +193,7 @@ export default function Dashboard() {
               {projects.length === 0 ? (
                 <EmptyState3D
                   title="Nenhum projeto gerado ainda"
-                  description="Crie o primeiro projeto no wizard para ativar o histórico, downloads e o painel de gera??o ao vivo."
+                  description="Crie o primeiro projeto no wizard para ativar o histórico, downloads e o painel de geração ao vivo."
                   actionHref="/wizard"
                   actionLabel={t("dashboard.create_button")}
                 />

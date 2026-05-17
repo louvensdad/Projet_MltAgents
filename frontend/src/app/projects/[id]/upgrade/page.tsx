@@ -12,13 +12,13 @@ import SectionHeader from "@/components/premium/SectionHeader";
 
 const UPGRADE_CATALOG = [
   { id: "connect_frontend_backend", price: "R$ 19,90", tier: "simples" },
-  { id: "add_external_api",         price: "R$ 49,90", tier: "médio" },
-  { id: "add_feature",              price: "R$ 49,90", tier: "médio" },
-  { id: "add_entity_crud",          price: "R$ 49,90", tier: "médio" },
-  { id: "add_automation",           price: "R$ 49,90", tier: "médio" },
-  { id: "add_agent",                price: "R$ 99,90", tier: "avançado" },
-  { id: "add_authentication",       price: "R$ 49,90", tier: "médio" },
-  { id: "add_payment",              price: "R$ 99,90", tier: "avançado" },
+  { id: "add_external_api",         price: "R$ 49,90", tier: "medio" },
+  { id: "add_feature",              price: "R$ 49,90", tier: "medio" },
+  { id: "add_entity_crud",          price: "R$ 49,90", tier: "medio" },
+  { id: "add_automation",           price: "R$ 49,90", tier: "medio" },
+  { id: "add_agent",                price: "R$ 99,90", tier: "avancado" },
+  { id: "add_authentication",       price: "R$ 49,90", tier: "medio" },
+  { id: "add_payment",              price: "R$ 99,90", tier: "avancado" },
   { id: "improve_design_ux",        price: "R$ 19,90", tier: "simples" },
   { id: "fix_configuration",        price: "R$ 19,90", tier: "simples" },
   { id: "generate_extra_docs",      price: "R$ 19,90", tier: "simples" },
@@ -26,8 +26,8 @@ const UPGRADE_CATALOG = [
 
 const TIER_COLOR: Record<string, string> = {
   simples:  "bg-green-500/10 text-green-400 border-green-500/20",
-  médio:    "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
-  avançado: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+  "medio":    "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
+  "avancado": "bg-purple-500/10 text-purple-400 border-purple-500/20",
 };
 
 export default function UpgradePage({ params }: { params: { id: string } }) {
@@ -91,7 +91,7 @@ export default function UpgradePage({ params }: { params: { id: string } }) {
     });
     setApplyingId(null);
     fetchUpgrades();
-    if (!res.ok) alert("Erro ao aplicar upgrade. Ver log.");
+    if (!res.ok) alert("Erro ao aplicar upgrade. Verifique o log.");
   };
 
   const selectedCatalog = UPGRADE_CATALOG.find(u => u.id === selected);
@@ -100,8 +100,8 @@ export default function UpgradePage({ params }: { params: { id: string } }) {
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 lg:py-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <HolographicCard className="p-6 md:p-8">
         <div className="flex flex-wrap items-center gap-2">
-          <AnimatedBadge tone="cyan">upgrade studio</AnimatedBadge>
-          <AnimatedBadge tone="violet">delivery backlog</AnimatedBadge>
+          <AnimatedBadge tone="cyan">estudio de upgrades</AnimatedBadge>
+          <AnimatedBadge tone="violet">fila de entregas</AnimatedBadge>
         </div>
         <div className="mt-5 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -127,7 +127,7 @@ export default function UpgradePage({ params }: { params: { id: string } }) {
       </HolographicCard>
 
       <HolographicCard className="p-6 space-y-6">
-        <SectionHeader eyebrow="catalog" title="Upgrade catalog" subtitle="Request and apply enhancements with clear operational status." />
+        <SectionHeader eyebrow="catalog" title="Catalogo de upgrades" subtitle="Solicite e aplique melhorias com status operacional claro." />
         <div className="absolute top-0 right-0 p-6 opacity-[0.03] pointer-events-none">
           <Zap size={150} />
         </div>
@@ -189,7 +189,7 @@ export default function UpgradePage({ params }: { params: { id: string } }) {
         )}
       </HolographicCard>
 
-      {/* Histórico de Upgrades */}
+      {/* Histórico de upgrades */}
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold text-foreground">{t("upgrade.history")}</h2>
@@ -212,7 +212,7 @@ export default function UpgradePage({ params }: { params: { id: string } }) {
                     <p className="font-bold text-lg text-foreground">{t(`upgrade.catalog.${u.upgrade_type}`) || u.upgrade_label}</p>
                      {u.description && <p className="text-sm text-gray-400 italic">&quot;{u.description}&quot;</p>}
                     <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
-                      {new Date(u.created_at).toLocaleString(lang === "pt" ? "pt-BR" : "en-US")} · ID: <code className="text-primary/70">{u.upgrade_id}</code>
+                      {new Date(u.created_at).toLocaleString(lang === "pt" ? "pt-BR" : "en-US")} - ID: <code className="text-primary/70">{u.upgrade_id}</code>
                     </p>
                   </div>
                   <div className="text-right space-y-1">
