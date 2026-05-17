@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { apiGet, apiFallbacks } from "@/lib/api";
 import { usePreferences } from "@/context/PreferencesContext";
 import AnimatedBadge from "@/components/premium/AnimatedBadge";
+import EngineNodeGraph from "@/components/premium/EngineNodeGraph";
 import HolographicCard from "@/components/premium/HolographicCard";
 import MetricOrb from "@/components/premium/MetricOrb";
 import SectionHeader from "@/components/premium/SectionHeader";
@@ -21,6 +22,12 @@ export default function SystemPage() {
   }, []);
 
   const perf = data?.performance;
+  const runtimeNodes = [
+    { name: "Memory", status: "live", hint: `${perf?.memory_mb ?? "-"} MB` },
+    { name: "Generators", status: "live", hint: `${perf?.generators_loaded ?? "-"} loaded` },
+    { name: "Queue", status: "ready", hint: `${perf?.queue_size ?? "-"} pending` },
+    { name: "Uptime", status: "online", hint: `${perf?.uptime_seconds ?? "-"} s` },
+  ];
 
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 lg:py-10">
@@ -38,6 +45,13 @@ export default function SystemPage() {
             <MetricOrb label="Uptime" value={perf?.uptime_seconds ?? "-"} accent="emerald" />
           </div>
         )}
+      </HolographicCard>
+
+      <HolographicCard className="p-5">
+        <SectionHeader eyebrow="runtime" title="System mesh" subtitle="Operational map for memory, queue, generators and uptime." />
+        <div className="mt-5">
+          <EngineNodeGraph nodes={runtimeNodes} />
+        </div>
       </HolographicCard>
 
       {loading ? (

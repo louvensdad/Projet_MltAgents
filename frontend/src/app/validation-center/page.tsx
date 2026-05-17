@@ -58,24 +58,32 @@ export default function ValidationCenterPage() {
         </div>
       </HolographicCard>
 
-      <div className="mt-6 rounded-xl border border-white/10 bg-surface p-5">
-        {loading ? (
-          <div className="space-y-2">
-            <div className="h-14 animate-pulse rounded bg-white/10" />
-            <div className="h-14 animate-pulse rounded bg-white/10" />
-            <div className="h-14 animate-pulse rounded bg-white/10" />
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {items.map((item) => (
-              <div key={item.rule} className={`rounded-lg border p-3 ${tone(item.status)}`}>
-                <p className="font-semibold">{item.rule}</p>
-                <p className="text-sm opacity-90">{item.detail}</p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      <HolographicCard className="p-5">
+        <div className="flex items-center justify-between">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Rule details</p>
+          <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-slate-400">
+            {items.length} rules
+          </span>
+        </div>
+        <div className="mt-4">
+          {loading ? (
+            <div className="space-y-2">
+              <div className="h-14 animate-pulse rounded bg-white/10" />
+              <div className="h-14 animate-pulse rounded bg-white/10" />
+              <div className="h-14 animate-pulse rounded bg-white/10" />
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {items.map((item) => (
+                <div key={item.rule} className={`rounded-2xl border p-4 ${tone(item.status)}`}>
+                  <p className="font-semibold">{item.rule}</p>
+                  <p className="text-sm opacity-90">{item.detail}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </HolographicCard>
     </div>
   );
 }
