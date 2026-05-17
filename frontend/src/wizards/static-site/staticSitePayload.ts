@@ -58,11 +58,22 @@ export const DEFAULT_STATIC_SITE_DATA: StaticSiteData = {
   form_validation: true,
 };
 
+function buildFallbackDescription(data: StaticSiteData) {
+  const name = data.site_name.trim() || "o site";
+  const type = data.site_type.trim() || "landing page";
+  const audience = data.target_audience.trim() || "seu público";
+  return `${name} é uma ${type} independente, criada para apresentar a marca, capturar leads e converter ${audience} com SEO, acessibilidade e performance.`;
+}
+
 export function buildStaticSitePayload(data: StaticSiteData, locale: string) {
+  const projectDescription = data.company_description.trim() || buildFallbackDescription(data);
   return {
     wizard_type: "static_site",
     project_type: "static_site",
     project_name: data.site_name || "Meu Site",
+    project_description: projectDescription,
+    user_idea: projectDescription,
+    stack: "static-site",
     backend_stack: "Static HTML",
     project_language: locale,
     stack_profile_id: "static_site",
@@ -79,7 +90,7 @@ export function buildStaticSitePayload(data: StaticSiteData, locale: string) {
     content: {
       site_name: data.site_name,
       slogan: data.slogan,
-      company_description: data.company_description,
+      company_description: projectDescription,
       main_texts: data.main_texts,
       ctas: data.ctas,
       target_audience: data.target_audience,
@@ -106,6 +117,18 @@ export function buildStaticSitePayload(data: StaticSiteData, locale: string) {
       no_credentials_frontend: data.no_credentials_frontend,
       form_validation: data.form_validation,
     },
+    answers: {
+      project_name: data.site_name || "Meu Site",
+      project_description: projectDescription,
+      site_type: data.site_type,
+      visual_style: data.visual_style,
+      color_palette: data.color_palette,
+      brand_tone: data.brand_tone,
+      sections: data.sections,
+      ux_options: data.ux_options,
+      form_options: data.form_options,
+    },
+    generation_quality_mode: "local_90",
     locale,
   };
 }

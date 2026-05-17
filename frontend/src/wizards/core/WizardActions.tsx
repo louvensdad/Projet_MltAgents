@@ -18,10 +18,10 @@ export default function WizardActions({ step, totalSteps, loading, canProceed, o
     <div className="mt-6 flex items-center justify-between">
       <button
         onClick={onPrev}
-        disabled={step === 1 || loading}
-        className={`flex items-center gap-2 rounded-lg px-4 py-2 transition-colors disabled:opacity-0 disabled:pointer-events-none ${step === 1 ? "invisible" : "text-gray-300 hover:text-white"}`}
+        disabled={loading}
+        className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-300 transition-colors hover:text-white disabled:opacity-40 disabled:pointer-events-none"
       >
-        <ArrowLeft size={16} /> {t("wizard.prev")}
+        <ArrowLeft size={16} /> {step === 1 ? t("wizard.back_to_selector") : t("wizard.prev")}
       </button>
       {step < totalSteps ? (
         <button

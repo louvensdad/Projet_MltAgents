@@ -68,7 +68,7 @@ export default function Sidebar() {
   const isActive = (href: string) => pathname === href || (href !== "/" && pathname.startsWith(href + "/"));
 
   return (
-    <aside className="sticky top-4 z-40 hidden h-[calc(100vh-2rem)] w-[18rem] shrink-0 overflow-hidden rounded-[28px] border border-white/10 bg-slate-950/70 backdrop-blur-2xl shadow-[0_18px_60px_rgba(0,0,0,0.35)] lg:flex lg:flex-col">
+    <aside className="sticky top-4 z-50 hidden h-[calc(100vh-2rem)] w-[18rem] shrink-0 overflow-hidden rounded-[28px] border border-white/10 bg-slate-950/70 backdrop-blur-2xl shadow-[0_18px_60px_rgba(0,0,0,0.35)] pointer-events-auto lg:flex lg:flex-col">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(94,160,255,0.12),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.02),transparent)]" />
       <div className="relative z-10 flex h-full flex-col">
         <div className="border-b border-white/10 p-5">

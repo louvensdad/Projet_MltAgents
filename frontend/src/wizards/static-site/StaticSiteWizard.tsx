@@ -123,11 +123,13 @@ export default function StaticSiteWizard() {
         { stack_id: "static_site", answers: buildPromptAnswers() }
       );
       if (!promptRes.ok || !promptRes.data?.prompt_master || promptRes.data.status === "rejected") {
-        throw new Error((promptRes.data?.errors || [promptRes.backendError?.message || promptRes.networkError || "Prompt Master inválido"]).join("\n"));
+        const detail = (promptRes.data?.errors || [promptRes.backendError?.message || promptRes.networkError || "Prompt Master inválido"]).join("\n");
+        throw new Error(`Prompt Master bloqueado.\nEndpoint: POST ${API_URL}/api/prompt/build\n${detail}`);
       }
 
       const payload = buildStaticSitePayload(data, locale) as Record<string, unknown>;
       payload.ai_generation_mode = aiMode;
+      payload.generation_quality_mode = aiMode === "agent_boost_100" ? "agent_boost_100" : "local_90";
       payload.prompt_master = promptRes.data.prompt_master;
       const trace = liveBuilder.getTrace();
       if (trace) {
@@ -143,7 +145,20 @@ export default function StaticSiteWizard() {
         return;
       }
 
-      const errorMsg = res.backendError?.message || res.networkError || "Erro ao gerar projeto";
+      const minimalPayload = {
+        project_type: payload.project_type,
+        stack: payload.stack,
+        project_name: payload.project_name,
+        generation_quality_mode: payload.generation_quality_mode,
+        locale: payload.locale,
+      };
+      const errorMsg = [
+        "Falha ao gerar projeto.",
+        `Endpoint: POST ${generateUrl}`,
+        `Status: ${res.status || "sem resposta"}`,
+        `Backend: ${res.backendError?.message || res.networkError || "sem detalhe"}`,
+        `Payload: ${JSON.stringify(minimalPayload)}`,
+      ].join("\n");
       console.error("[StaticSiteWizard] generate failed", { generateUrl, status: res.status, errorMsg });
       setGenerateError(errorMsg);
     } catch (err: any) {
@@ -268,7 +283,7 @@ export default function StaticSiteWizard() {
       errors={errors}
       warnings={[]}
       onStepClick={(s) => setCurrentStep(s)}
-      onPrev={() => setCurrentStep((s) => Math.max(1, s - 1))}
+      onPrev={() => (currentStep === 1 ? router.push("/wizard") : setCurrentStep((s) => Math.max(1, s - 1)))}
       onNext={() => setCurrentStep((s) => Math.min(s + 1, config.totalSteps))}
       onGenerate={handleGenerate}
       t={t}

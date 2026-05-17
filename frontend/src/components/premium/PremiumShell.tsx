@@ -19,7 +19,7 @@ export default function PremiumShell({
 
   return (
     <div className={shellClass}>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(94,160,255,0.10),transparent_35%),linear-gradient(180deg,#05070d_0%,#05070d_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(94,160,255,0.10),transparent_35%),linear-gradient(180deg,#05070d_0%,#05070d_100%)]" />
       {!reduced && (
         <>
           <AuroraBackground />

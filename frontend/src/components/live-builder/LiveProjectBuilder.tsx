@@ -147,12 +147,12 @@ export default function LiveProjectBuilder() {
   };
 
   return (
-    <div className="w-80 shrink-0">
+    <div className="w-80 shrink-0 pointer-events-auto">
       <motion.div
         initial={false}
         animate={{ width: collapsed ? 40 : 320 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="sticky top-6 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-surface/90 to-surface/60 backdrop-blur-xl shadow-xl shadow-black/20 overflow-hidden"
+        className="sticky top-6 rounded-2xl border border-white/[0.08] bg-gradient-to-b from-surface/90 to-surface/60 backdrop-blur-xl shadow-xl shadow-black/20 overflow-hidden pointer-events-auto"
       >
         <button
           onClick={() => setCollapsed(!collapsed)}
