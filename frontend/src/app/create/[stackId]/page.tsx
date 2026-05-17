@@ -102,7 +102,7 @@ const STACK_PREVIEW_MAP: Record<string, { title: string; subtitle: string; nodes
     performance: "Excellent",
     tone: "violet",
   },
-  agentes_ia: {
+  ai_agents: {
     title: "AI orchestration plane",
     subtitle: "Planner, agents, memory and observability for premium multi-agent systems.",
     nodes: ["Planner", "Agents", "Memory", "Tools", "Observability"],
@@ -113,7 +113,7 @@ const STACK_PREVIEW_MAP: Record<string, { title: string; subtitle: string; nodes
     performance: "Adaptive",
     tone: "rose",
   },
-  automacao: {
+  automation: {
     title: "Automation runtime",
     subtitle: "Workflow engine with jobs, queues and durable orchestration.",
     nodes: ["Scheduler", "Queue", "Workers", "Events", "Audit"],

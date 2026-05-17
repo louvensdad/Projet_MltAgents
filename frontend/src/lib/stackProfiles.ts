@@ -1,4 +1,4 @@
-export type StackKey = "spring_boot" | "fastapi" | "nestjs" | "express" | "laravel" | "dotnet" | "static";
+export type StackKey = "spring_boot" | "fastapi" | "nestjs" | "express" | "laravel" | "dotnet" | "automation" | "ai_agents" | "static";
 
 export type SupportLevel = "full" | "partial" | "planned";
 
@@ -131,6 +131,38 @@ export const STACK_PROFILES: Record<StackKey, StackProfile> = {
     features: { Keycloak: "partial", Kafka: "partial", gRPC: "full", Identity: "full" },
     identity: { accent: "from-violet-500 to-indigo-500", tone: "Enterprise Microsoft", highlight: "Integração natural com ecossistema .NET" }
   },
+  automation: {
+    key: "automation",
+    name: "Automation Wizard",
+    backendLabel: "Automation",
+    versions: ["Node 20", "Python 3.12", "Queue Workers", "Scheduler"],
+    architectures: ["Workflow Engine", "Event Driven", "Durable Jobs"],
+    frontends: ["React", "Next.js", "Control Panel"],
+    databases: ["PostgreSQL", "Redis", "SQLite"],
+    security: ["API Keys", "RBAC", "Secrets Isolation"],
+    messaging: ["Queue", "Webhooks", "Redis"],
+    docs: ["Workflow Docs", "Runbooks"],
+    templates: ["Automation Runtime"],
+    aiModels: ["gpt-4o-mini"],
+    features: { Keycloak: "planned", Kafka: "partial", gRPC: "planned", Workflow: "full" },
+    identity: { accent: "from-amber-500 to-orange-500", tone: "Workflow Automation", highlight: "Automation flows and durable jobs" }
+  },
+  ai_agents: {
+    key: "ai_agents",
+    name: "AI Agents Wizard",
+    backendLabel: "AI Agents",
+    versions: ["Python 3.12", "Node 20", "Orchestrator Runtime", "Tracing"],
+    architectures: ["Agent Graph", "Control Plane", "Orchestrated Tools"],
+    frontends: ["React", "Next.js", "Control Panel"],
+    databases: ["PostgreSQL", "Redis", "Vector DB"],
+    security: ["Guardrails", "API Keys", "RBAC"],
+    messaging: ["Queue", "WebSocket", "Event Bus"],
+    docs: ["Agent Docs", "Trace Maps"],
+    templates: ["AI Agents Control Plane"],
+    aiModels: ["gpt-4.1", "gpt-4o-mini"],
+    features: { Keycloak: "planned", Kafka: "partial", gRPC: "planned", Agents: "full" },
+    identity: { accent: "from-fuchsia-500 to-pink-500", tone: "AI Orchestration", highlight: "Multi-agent systems with memory and tools" }
+  },
   static: {
     key: "static",
     name: "Static Site Wizard",
@@ -156,5 +188,7 @@ export const STACK_OPTIONS: { key: StackKey; label: string }[] = [
   { key: "express", label: "Express" },
   { key: "laravel", label: "Laravel" },
   { key: "dotnet", label: "ASP.NET" },
+  { key: "automation", label: "Automation" },
+  { key: "ai_agents", label: "AI Agents" },
   { key: "static", label: "Static Site" }
 ];

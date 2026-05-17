@@ -16,8 +16,8 @@ export default function Step1ProjectType() {
     { id: "saas", type: "saas" as const, auto: false, agents: false },
     { id: "api", type: "api" as const, auto: false, agents: false },
     { id: "static", type: "static" as const, auto: false, agents: false },
-    { id: "automacao", type: "api" as const, auto: true, agents: false },
-    { id: "agentes", type: "api" as const, auto: true, agents: true },
+    { id: "automation", type: "api" as const, auto: true, agents: false },
+    { id: "ai_agents", type: "api" as const, auto: true, agents: true },
     { id: "saas_full", type: "saas" as const, auto: true, agents: true },
     { id: "site_full", type: "static" as const, auto: true, agents: true },
   ];

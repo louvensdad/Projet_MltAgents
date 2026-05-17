@@ -150,8 +150,8 @@ const STACKS: CreateStackCard[] = [
     techBadge: "edge",
   },
   {
-    id: "agentes-ia",
-    name: "Agentes IA",
+    id: "ai_agents",
+    name: "AI Agents",
     description: "Multi-agents com coordenação, memória e workflows premium.",
     category: "AI",
     icon: <Bot size={18} />,
@@ -165,13 +165,13 @@ const STACKS: CreateStackCard[] = [
     chips: ["Prompt Master", "Orchestrator", "Tracing", "Memory"],
     previewTitle: "Agent orchestration plane",
     previewSubtitle: "Graph of agents working over prompts, tools and traceable memory.",
-    href: "/create/agentes-ia",
+    href: "/create/ai_agents",
     ready: false,
     techBadge: "planned",
   },
   {
-    id: "automacao",
-    name: "Automação",
+    id: "automation",
+    name: "Automation",
     description: "Workflows, filas e jobs para operações repetitivas com controle.",
     category: "Automation",
     icon: <Zap size={18} />,
@@ -185,7 +185,7 @@ const STACKS: CreateStackCard[] = [
     chips: ["Workers", "Queue", "Jobs", "Notifications"],
     previewTitle: "Automation runtime",
     previewSubtitle: "Event-driven workflows with workers and durable orchestration.",
-    href: "/create/automacao",
+    href: "/create/automation",
     ready: false,
     techBadge: "planned",
   },
@@ -219,7 +219,7 @@ function describeStack(stack: CreateStackCard) {
   if (stack.id === "react" || stack.id === "nextjs") {
     return "Use this when the product needs a premium frontend surface, SSR and a fluid component architecture.";
   }
-  if (stack.id === "agentes-ia") {
+  if (stack.id === "ai_agents") {
     return "AI agents need orchestration, memory and tracing. This stack points toward a control plane, not a simple UI.";
   }
   return "This stack balances delivery speed with clear engineering structure and room for growth.";

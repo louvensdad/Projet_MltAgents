@@ -81,6 +81,50 @@ export const PROJECT_TYPE_PROFILES: Record<string, ProjectTypeProfile> = {
     icon: "Globe",
     stackKey: "static"
   },
+  automation: {
+    id: "automation",
+    title: "Automacao Inteligente",
+    description: "Sistema de automacao com workflows, notificacoes e integracoes. Ideal para eliminar processos repetitivos.",
+    audience: "Operacoes, processos repetitivos, integracoes",
+    outputs: [
+      "API RESTful",
+      "Workflow Engine",
+      "Notificacoes",
+      "Integracoes",
+      "Dashboard",
+      "Docker",
+      "README"
+    ],
+    recommended: ["Python + FastAPI", "Redis", "PostgreSQL"],
+    complexity: "Media",
+    estimatedTime: "Moderado",
+    tags: ["Automacao", "Workflow", "Integracoes", "Notificacoes"],
+    gradient: "from-amber-500 to-orange-500",
+    icon: "Zap",
+    stackKey: "automation"
+  },
+  ai_agents: {
+    id: "ai_agents",
+    title: "Agentes Inteligentes",
+    description: "Multi-agentes com IA, processamento de linguagem natural e tomada de decisao autonoma.",
+    audience: "Suporte IA, analise de dados, automacao cognitiva",
+    outputs: [
+      "API RESTful",
+      "AI Agent Engine",
+      "Processamento NLP",
+      "Memoria Contextual",
+      "Dashboard",
+      "Docker",
+      "README"
+    ],
+    recommended: ["Python + FastAPI", "OpenAI/GPT", "Redis", "PostgreSQL"],
+    complexity: "Alta",
+    estimatedTime: "Avancado",
+    tags: ["IA", "Agents", "NLP", "Automacao"],
+    gradient: "from-fuchsia-500 to-pink-500",
+    icon: "Bot",
+    stackKey: "ai_agents"
+  },
   automacao: {
     id: "automacao",
     title: "Automação Inteligente",
