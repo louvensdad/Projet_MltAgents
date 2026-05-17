@@ -255,8 +255,8 @@ def _build_prompt_answers(payload: dict[str, Any], stack_id: str) -> dict[str, A
 
 
 def _load_documentation_context(stack_id: str) -> dict[str, Any]:
-    from documentation_engine.docs_fetcher import DocsFetcher
-    from documentation_engine.docs_registry import DocsRegistry
+    from knowledge_engine.docs_fetcher import DocsFetcher
+    from knowledge_engine.docs_registry import DocsRegistry
 
     fetcher = DocsFetcher(DocsRegistry())
     docs_result = fetcher.fetch_docs(stack_id)
