@@ -28,6 +28,7 @@ class PromptGeneratorEngine:
     def __init__(self, stack_id: str):
         self.stack_id = stack_id
         self.stack_registry = StackRegistry()
+        self.stack_definition = self.stack_registry.get_stack(stack_id)
         self.prompt_validator = PromptValidator(self.stack_registry)
         self.prompt_master_builder = PromptMaster(self.stack_registry)
         self.answers: dict[str, Any] = {}
@@ -41,6 +42,23 @@ class PromptGeneratorEngine:
 
     def answer_bulk(self, answers: dict[str, Any]) -> None:
         self.answers.update(answers or {})
+
+    def answer(self, key: str, value: Any) -> None:
+        if key:
+            self.answers[key] = value
+
+    @property
+    def stack_name(self) -> str:
+        return str(self.stack_definition.get("name", self.stack_id))
+
+    @property
+    def total_questions(self) -> int:
+        form_schema = self.stack_definition.get("form_schema", [])
+        return len(form_schema) if isinstance(form_schema, list) else 0
+
+    @property
+    def answered_count(self) -> int:
+        return len(self.answers)
 
     def validate(self) -> bool:
         self.errors = []

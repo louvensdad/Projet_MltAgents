@@ -8,7 +8,7 @@ import { computeStaticSiteSnapshot } from "@/lib/live-builder";
 import { WizardShell } from "../core";
 import { apiPost, API_URL } from "@/lib/api";
 import type { StaticSiteData } from "./staticSitePayload";
-import { DEFAULT_STATIC_SITE_DATA, buildStaticSitePayload } from "./staticSitePayload";
+import { DEFAULT_STATIC_SITE_DATA, buildStaticSitePayload, buildStaticSitePromptAnswers } from "./staticSitePayload";
 import { STATIC_SITE_CONFIG, SITE_TYPES, VISUAL_STYLES, COLOR_PALETTES, BRAND_TONES, SECTIONS, UX_OPTIONS, FORM_OPTIONS } from "./staticSiteConfig";
 import SiteTypeStep from "./steps/SiteTypeStep";
 import VisualIdentityStep from "./steps/VisualIdentityStep";
@@ -84,22 +84,9 @@ export default function StaticSiteWizard() {
   }, [data, t]);
 
   const buildPromptAnswers = useCallback(() => ({
-    project_name: data.site_name || "Meu Site",
-    site_name: data.site_name,
-    site_type: data.site_type,
-    visual_style: data.visual_style,
-    color_palette: data.color_palette,
-    brand_tone: data.brand_tone,
-    sections: data.sections,
-    ux_options: data.ux_options,
-    form_options: data.form_options,
-    meta_title: data.meta_title,
-    meta_description: data.meta_description,
-    keywords: data.keywords,
-    company_description: data.company_description,
-    target_audience: data.target_audience,
+    ...buildStaticSitePromptAnswers(data, locale),
     ai_generation_mode: aiMode,
-  }), [aiMode, data]);
+  }), [aiMode, data, locale]);
 
   const handleGenerate = useCallback(async () => {
     setGenerating(true);

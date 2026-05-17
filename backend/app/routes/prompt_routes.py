@@ -92,10 +92,7 @@ def build_prompt_master(req: PromptAnswersRequest):
 
     try:
         engine = PromptGeneratorEngine(req.stack_id)
-
-        for key, val in req.answers.items():
-            if isinstance(val, (str, list, bool)):
-                engine.answer(key, val)
+        engine.answer_bulk(req.answers)
 
         if not engine.validate():
             return {
@@ -131,10 +128,7 @@ def validate_prompt(req: PromptValidateRequest):
 
         # Always set project_name explicitly
         engine.answer("project_name", req.project_name)
-
-        for key, val in req.answers.items():
-            if isinstance(val, (str, list, bool)):
-                engine.answer(key, val)
+        engine.answer_bulk(req.answers)
 
         if not engine.validate():
             return {
