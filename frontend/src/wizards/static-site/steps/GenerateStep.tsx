@@ -116,7 +116,7 @@ export default function GenerateStep({
         </div>
       )}
 
-      {generateError && (
+      {generateError && !generateSuccess && (
         <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-4">
           <div className="flex items-start gap-3">
             <AlertTriangle className="mt-0.5 h-5 w-5 text-rose-400" />
@@ -185,7 +185,7 @@ export default function GenerateStep({
             onClick={onPrev}
             className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-semibold text-gray-200 transition-all hover:border-white/20 hover:bg-white/[0.06]"
           >
-            Back
+            Voltar
           </button>
           <button
             type="button"
