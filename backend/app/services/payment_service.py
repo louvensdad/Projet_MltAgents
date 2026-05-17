@@ -67,12 +67,16 @@ def register_project(name: str, project_type: str, stack: str, path: str = None)
         "id": project_id,
         "name": name,
         "type": project_type,
+        "project_type": project_type,
         "stack": stack,
+        "stack_id": stack,
         "project_path": project_path,               # relative: generated_projects/{id}
         "absolute_project_path": absolute_project_path,  # absolute: C:/.../generated_projects/{id}
         "path": project_path,                        # kept for backward compatibility
         "created_at": datetime.now().isoformat(),
         "status": "generated",
+        "generation_status": "registered",
+        "download_ready": False,
         "payment_status": "pending_payment",
         "agent_boost_status": "inactive",
         "ai_boost_status": "inactive",

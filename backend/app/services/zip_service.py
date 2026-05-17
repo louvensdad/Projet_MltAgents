@@ -398,8 +398,8 @@ def create_project_zip(project_id: str, projects_data_path: Path) -> Tuple[io.By
         with open(blueprint_path, "r", encoding="utf-8") as f:
             blueprint_data = json.load(f)
             
-    from validators.quality_gate import QualityGate
-    from validators.security_gate import SecurityGate
+    from security_engine.validators.quality_gate import QualityGate
+    from security_engine.validators.security_gate import SecurityGate
     
     q_gate = QualityGate()
     s_gate = SecurityGate()

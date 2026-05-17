@@ -3,6 +3,7 @@ from fastapi.responses import StreamingResponse, JSONResponse
 from ..services import payment_service, zip_service
 from ..services.log_service import log_event
 from ..security.path_guard import PathGuard
+from datetime import datetime
 import os
 import sys
 from pathlib import Path
@@ -19,6 +20,10 @@ router = APIRouter(prefix="/api/downloads", tags=["downloads"])
 PROJECTS_DATA_PATH = Path(__file__).parent.parent.parent / "data" / "projects.json"
 
 
+def _is_download_ready(project: dict) -> bool:
+    return bool(project.get("download_ready")) or str(project.get("payment_status", "")).lower() in {"paid", "free"}
+
+
 def normalize_project_path(project_name: str) -> str:
     """
     Normalize project name to a valid path name.
@@ -31,7 +36,7 @@ def normalize_project_path(project_name: str) -> str:
 def list_downloads():
     """List all projects available for download (paid projects)."""
     projects = payment_service.get_all_projects()
-    downloadable = [p for p in projects if p.get("payment_status") == "paid"]
+    downloadable = [p for p in projects if _is_download_ready(p)]
     return {"projects": downloadable, "total": len(downloadable)}
 
 
@@ -65,7 +70,7 @@ def get_download_info(project_id: str, request: Request):
         )
 
     # 2. Payment validation
-    if project.get("payment_status") != "paid":
+    if not _is_download_ready(project):
         log_event("download_info_blocked", project_id, {
             "reason": "payment_not_confirmed",
             "project_id": project_id
@@ -208,10 +213,29 @@ def prepare_download(project_id: str, request: Request):
     project = payment_service.get_project(project_id)
     if not project:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Projeto nao encontrado.")
-    if project.get("payment_status") != "paid":
+    if not _is_download_ready(project):
         raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED, detail="Pagamento necessario para liberar o download.")
-    log_event("download_prepared", project_id, {"message": "Download preparado com sucesso."})
-    return {"status": "ok", "message": "Download preparado. Use GET /api/downloads/{project_id}/download para baixar."}
+    try:
+        zip_buffer, checksum, filename = zip_service.create_project_zip(project_id, PROJECTS_DATA_PATH)
+        log_event("download_prepared", project_id, {"message": "Download preparado com sucesso.", "checksum": checksum, "filename": filename, "zip_size": zip_buffer.getbuffer().nbytes})
+        payment_service.update_project(project_id, {
+            "download_ready": True,
+            "download_checksum": checksum,
+            "download_filename": filename,
+            "download_prepared_at": datetime.utcnow().isoformat(),
+        })
+        return {
+            "success": True,
+            "project_id": project_id,
+            "zip_ready": True,
+            "checksum": checksum,
+            "filename": filename,
+            "download_url": f"/api/downloads/{project_id}/download",
+            "message": "Download preparado com sucesso.",
+        }
+    except Exception as exc:
+        log_event("download_prepare_failed", project_id, {"error": str(exc)})
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(exc))
 
 
 @router.get("/{project_id}/download")
@@ -234,7 +258,7 @@ def download_project(project_id: str, request: Request):
         )
 
     # 2. Payment validation
-    if project.get("payment_status") != "paid":
+    if not _is_download_ready(project):
         log_event("download_blocked", project_id, {
             "reason": "payment_not_confirmed",
             "project_id": project_id,

@@ -1,5 +1,6 @@
 import hashlib
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -17,8 +18,15 @@ class DocsFetcher:
 
     def __init__(self, registry: DocsRegistry):
         self.registry = registry
-        self.cache_dir = Path(__file__).resolve().parents[2] / ".cache" / "docs"
-        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        repo_root = Path(__file__).resolve().parents[1]
+        cache_root = os.getenv("SAAS_FACTORY_DOCS_CACHE_DIR")
+        self.cache_dir = Path(cache_root) if cache_root else repo_root / ".cache" / "docs"
+        try:
+            self.cache_dir.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            fallback_dir = repo_root / ".cache" / "docs"
+            fallback_dir.mkdir(parents=True, exist_ok=True)
+            self.cache_dir = fallback_dir
 
     def fetch_docs(self, stack: str) -> dict:
         source_config = self.registry.get_source(stack)
@@ -44,7 +52,10 @@ class DocsFetcher:
         }
 
         cache_path = self.cache_dir / f"{stack}.json"
-        cache_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        try:
+            cache_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        except OSError:
+            payload["cached"] = False
         return payload
 
     def load_cached_docs(self, stack: str) -> dict:

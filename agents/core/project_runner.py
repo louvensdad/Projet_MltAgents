@@ -354,7 +354,7 @@ def run_project(payload: Dict[str, Any]) -> Dict[str, Any]:
                     {"integrations": (integrations.get("external_integrations", []) if isinstance(integrations, dict) else [])},
                     auto
                 )
-                from validators.quality_gate import QualityGate
+                from security_engine.validators.quality_gate import QualityGate
                 q_gate = QualityGate()
                 q_res = q_gate.validate(site_path, {"project_type": "static"})
                 if q_res["status"] == "failed":
@@ -559,7 +559,7 @@ def run_project(payload: Dict[str, Any]) -> Dict[str, Any]:
                     f.write(f"# Integracao: {backend_stack} + {frontend_stack}\n\nO backend e o frontend foram gerados em pastas separadas. Configure o CORS no backend para aceitar requisies do frontend.")
 
             # 6. Rodar Quality Gate
-            from validators.quality_gate import QualityGate
+            from security_engine.validators.quality_gate import QualityGate
             quality_gate = QualityGate()
             q_res = quality_gate.validate(project_root, brief)
             if q_res["status"] == "failed":
@@ -568,7 +568,7 @@ def run_project(payload: Dict[str, Any]) -> Dict[str, Any]:
                 return output
 
             # 7. Rodar Fidelity Gate
-            from validators.fidelity_gate import FidelityGate
+            from security_engine.validators.fidelity_gate import FidelityGate
             fidelity = FidelityGate()
             f_res = fidelity.validate(actual_backend_path, brief)
             if f_res["status"] == "failed":
@@ -577,7 +577,7 @@ def run_project(payload: Dict[str, Any]) -> Dict[str, Any]:
                 return output
 
             # 8. Rodar Stack Gate
-            from validators.stack_gate import StackGate
+            from security_engine.validators.stack_gate import StackGate
             stack_gate = StackGate()
             s_res = stack_gate.validate(actual_backend_path, brief)
             if s_res["status"] == "failed":
@@ -586,7 +586,7 @@ def run_project(payload: Dict[str, Any]) -> Dict[str, Any]:
                 return output
 
             # 9. Rodar Security Gate (Security gate varre o projeto inteiro por seguranca)
-            from validators.security_gate import SecurityGate
+            from security_engine.validators.security_gate import SecurityGate
             sec_gate = SecurityGate()
             sec_res = sec_gate.validate(project_root, brief)
             if sec_res["status"] == "failed":

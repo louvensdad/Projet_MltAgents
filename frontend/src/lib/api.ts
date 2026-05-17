@@ -122,6 +122,7 @@ export async function apiPost<TRes = unknown>(
     return {
       ok: false,
       status: res.status,
+      data: json as TRes,
       backendError: {
         success: false,
         error_code: json?.error_code ?? "HTTP_ERROR",

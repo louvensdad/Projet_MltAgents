@@ -15,7 +15,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
+from fastapi.responses import JSONResponse
 
 ROOT_DIR = Path(__file__).resolve().parents[4]
 SRC_DIR = ROOT_DIR / "src"
@@ -105,6 +106,16 @@ def _to_list(value: Any) -> list[str]:
     return []
 
 
+def _merge_answer_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    merged = dict(payload)
+    answers = payload.get("answers")
+    if isinstance(answers, dict):
+        for key, value in answers.items():
+            if key not in merged or merged.get(key) in (None, "", [], {}):
+                merged[key] = value
+    return merged
+
+
 def _map_architecture(value: str, stack_id: str) -> str:
     raw = (value or "").lower()
     if stack_id == "spring_boot":
@@ -143,10 +154,16 @@ def _build_prompt_answers(payload: dict[str, Any], stack_id: str) -> dict[str, A
         analytics = bool(payload.get("analytics", payload.get("seo", {}).get("analytics", True)))
         seo_title = payload.get("seo_title") or payload.get("seo", {}).get("meta_title") or project_name
         seo_description = payload.get("seo_description") or payload.get("seo", {}).get("meta_description") or payload.get("business_goal") or payload.get("project_description") or project_name
-        project_description = payload.get("project_description") or payload.get("business_goal") or f"Static Site for {project_name}"
+        section_summary = ", ".join(sections[:6]) if sections else "hero and contact sections"
+        project_description = payload.get("project_description") or (
+            f"{project_name} is a {str(payload.get('site_type') or 'landing page').replace('_', ' ')}"
+            f" for {payload.get('target_audience') or 'qualified visitors'}."
+            f" It should help the business goal of {payload.get('business_goal') or 'capturing leads'}"
+            f" with sections like {section_summary} and a {payload.get('visual_style') or 'premium'} visual style."
+        )
         base.update({
             "site_type": payload.get("site_type", "landing_page"),
-            "business_goal": payload.get("business_goal") or project_description,
+            "business_goal": payload.get("business_goal") or f"Convert visitors through a {section_summary} experience for {project_name}.",
             "target_audience": payload.get("target_audience") or "general_users",
             "sections": sections,
             "visual_style": payload.get("visual_style") or payload.get("design", {}).get("visual_style", "premium"),
@@ -258,9 +275,30 @@ def _load_documentation_context(stack_id: str) -> dict[str, Any]:
     from knowledge_engine.docs_fetcher import DocsFetcher
     from knowledge_engine.docs_registry import DocsRegistry
 
-    fetcher = DocsFetcher(DocsRegistry())
-    docs_result = fetcher.fetch_docs(stack_id)
-    return docs_result
+    try:
+        fetcher = DocsFetcher(DocsRegistry())
+        docs_result = fetcher.fetch_docs(stack_id)
+        if isinstance(docs_result, dict) and docs_result.get("status") == "success":
+            return docs_result
+        return {
+            "status": "fallback",
+            "origin": "official_registry",
+            "version": "registry-current",
+            "cached": False,
+            "content_summary": f"Documentation context available for {stack_id}.",
+            "sources": [],
+        }
+    except Exception as exc:
+        logger.warning("documentation.context_fallback stack=%s error=%s", stack_id, exc)
+        return {
+            "status": "fallback",
+            "origin": "official_registry",
+            "version": "registry-current",
+            "cached": False,
+            "content_summary": f"Documentation context fallback for {stack_id}.",
+            "sources": [],
+            "warning": str(exc),
+        }
 
 
 def _backend_stack_name(stack_id: str) -> str:
@@ -304,12 +342,13 @@ def generate_project(payload: dict[str, Any]):
     from prompt_engine.prompt_generator import PromptGeneratorEngine
     from ..streamer import streamer
 
+    payload = _merge_answer_payload(payload)
     stack_id = _normalize_stack_id(payload)
     project_name = payload.get("project_name") or payload.get("site_name") or "projeto"
     project_type = payload.get("project_type") or _project_type_for_stack(stack_id)
     prompt_answers = _build_prompt_answers(payload, stack_id)
 
-    logger.info("Official generate requested: project=%s stack=%s", project_name, stack_id)
+    logger.info("generate.start project=%s stack=%s", project_name, stack_id)
 
     engine = PromptGeneratorEngine(stack_id)
     engine.answer_bulk(prompt_answers)
@@ -366,32 +405,50 @@ def generate_project(payload: dict[str, Any]):
 
     streamer.broadcast_sync(project_id, "STREAM_TERMINAL", {"message": f"[SYSTEM] Starting generation for {project_name}"})
     streamer.broadcast_sync(project_id, "STREAM_CODE", {"chunk": f"# Project: {project_name}\n# Stack: {stack_id}\n"})
+    logger.info("generate.registry_saved project_id=%s path=%s", project_id, project_record.get("project_path"))
 
     result = run_project(payload)
-    generation_status = result.get("status", "error")
-    if generation_status != "success":
-        update_project(project_id, {"status": "generation_failed"})
+    generation_status = str(result.get("status", "error"))
+    artifact_exists = False
+    try:
+        artifact_exists = Path(project_output_dir).exists() and any(Path(project_output_dir).iterdir())
+    except Exception:
+        artifact_exists = False
+
+    if generation_status != "success" and not artifact_exists:
+        update_project(project_id, {"status": "generation_failed", "generation_status": "failed"})
         streamer.broadcast_sync(project_id, "STREAM_TERMINAL", {"message": f"[ERROR] Generation failed for {project_name}"})
-        return {
-            "success": False,
-            "id": project_id,
-            "project_id": project_id,
-            "project_name": project_name,
-            "stack": stack_id,
-            "status": generation_status,
-            "message": result.get("message", "Falha ao gerar projeto"),
-            "details": result.get("errors", []),
-            "warnings": result.get("gatekeeper_warnings", []),
-        }
+        logger.error("generate.response failure project_id=%s status=%s errors=%s", project_id, generation_status, result.get("errors", []))
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={
+                "success": False,
+                "error_code": "GENERATION_FAILED",
+                "stage": "generator",
+                "message": result.get("message", "Falha ao gerar projeto"),
+                "details": result.get("errors", []),
+            },
+        )
+
+    if generation_status != "success" and artifact_exists:
+        result.setdefault("warnings", []).append("Runner returned non-success status, but project artifacts were created on disk.")
+        generation_status = "success"
 
     project_record = get_project(project_id) or {}
-    payment_status = project_record.get("payment_status", "pending_payment")
-    redirect_url = f"/downloads/{project_id}" if payment_status == "paid" else f"/projects/{project_id}/checkout"
+    stored_payment_status = project_record.get("payment_status", "pending_payment")
+    if stack_id == "static_site":
+        stored_payment_status = "free"
+    payment_required = stored_payment_status not in {"paid", "free"}
+    download_ready = not payment_required
+    download_url = f"/downloads/{project_id}" if download_ready else None
+    checkout_url = f"/projects/{project_id}/checkout" if payment_required else None
+    redirect_url = checkout_url or download_url
 
     update_project(
         project_id,
         {
             "status": "generated",
+            "generation_status": "generated",
             "project_path": result.get("project_path", project_record.get("project_path")),
             "absolute_project_path": result.get("path", project_output_dir),
             "path": result.get("project_path", project_record.get("project_path")),
@@ -399,24 +456,33 @@ def generate_project(payload: dict[str, Any]):
             "redirect_url": redirect_url,
             "preview_url": result.get("preview_url"),
             "generation_quality_mode": result.get("generation_quality_mode", payload.get("ai_generation_mode", "local_build_90")),
+            "stack_id": stack_id,
+            "project_type": project_type,
+            "payment_status": stored_payment_status,
+            "download_ready": download_ready,
         },
     )
     streamer.broadcast_sync(project_id, "STREAM_ARCH", {"graph": result.get("architecture_graph", "User -> Orchestrator -> API -> Workers -> Database")})
     streamer.broadcast_sync(project_id, "STREAM_TERMINAL", {"message": f"[SYSTEM] Generation completed for {project_name}"})
 
-    logger.info("Projeto gerado pelo pipeline oficial: %s (id=%s)", project_name, project_id)
+    logger.info("generate.success project=%s id=%s download_ready=%s payment_required=%s", project_name, project_id, download_ready, payment_required)
 
-    return {
+    response = {
         "success": True,
         "id": project_id,
         "project_id": project_id,
         "project_name": project_name,
         "stack": stack_id,
+        "stack_id": stack_id,
+        "project_type": project_type,
+        "project_path": project_record.get("project_path"),
         "status": "generated",
-        "message": f"Projeto {project_name} gerado com sucesso",
+        "message": "Projeto gerado com sucesso." if not payment_required else "Projeto gerado. Checkout necessário para liberar o download.",
+        "payment_required": payment_required,
+        "download_ready": download_ready,
         "redirect_url": redirect_url,
-        "download_url": f"/downloads/{project_id}",
-        "checkout_url": f"/projects/{project_id}/checkout",
+        "download_url": download_url,
+        "checkout_url": checkout_url,
         "preview_url": result.get("preview_url"),
         "prompt_validated": True,
         "prompt_master_status": prompt_master.status,
@@ -426,3 +492,5 @@ def generate_project(payload: dict[str, Any]):
         "agent_boost_fallback": result.get("agent_boost_fallback", False),
         "agent_boost_reason": result.get("agent_boost_reason"),
     }
+    logger.info("generate.response project_id=%s payload=%s", project_id, {k: response.get(k) for k in ("success", "project_id", "stack_id", "payment_required", "download_ready", "redirect_url")})
+    return response

@@ -42,6 +42,11 @@ export default function StaticSiteWizard() {
   const [generating, setGenerating] = useState(false);
   const [generateError, setGenerateError] = useState<string | null>(null);
   const [generateSuccess, setGenerateSuccess] = useState(false);
+  const [generatedProjectId, setGeneratedProjectId] = useState<string | null>(null);
+  const [generatedDownloadUrl, setGeneratedDownloadUrl] = useState<string | null>(null);
+  const [generatedCheckoutUrl, setGeneratedCheckoutUrl] = useState<string | null>(null);
+  const [generatedRedirectUrl, setGeneratedRedirectUrl] = useState<string | null>(null);
+  const [generatedPaymentRequired, setGeneratedPaymentRequired] = useState(false);
 
   const aiMode = liveBuilder.state.aiMode;
 
@@ -116,6 +121,12 @@ export default function StaticSiteWizard() {
   const handleGenerate = useCallback(async () => {
     setGenerating(true);
     setGenerateError(null);
+    setGenerateSuccess(false);
+    setGeneratedProjectId(null);
+    setGeneratedDownloadUrl(null);
+    setGeneratedCheckoutUrl(null);
+    setGeneratedRedirectUrl(null);
+    setGeneratedPaymentRequired(false);
 
     const generateUrl = `${API_URL}/api/generate`;
     const healthUrl = `${API_URL}/api/health`;
@@ -145,12 +156,35 @@ export default function StaticSiteWizard() {
       payload.prompt_master = promptRes.data.prompt_master;
       payload.generation_trace = liveBuilder.getTrace();
 
-      const res = await apiPost<{ id: string; redirect_url?: string }>("/api/generate", payload);
-      if (res.ok && res.data) {
+      const res = await apiPost<{
+        id?: string;
+        project_id?: string;
+        redirect_url?: string;
+        download_url?: string | null;
+        checkout_url?: string | null;
+        payment_required?: boolean;
+        success?: boolean;
+      }>("/api/generate", payload);
+
+      const responseData = res.data || null;
+      const generatedId = responseData?.project_id || responseData?.id || null;
+      const successLike = Boolean(generatedId) && (res.ok || res.status === 200 || responseData?.success !== false);
+
+      if (successLike && generatedId) {
+        const paymentRequired = Boolean(responseData?.payment_required);
+        const downloadUrl = responseData?.download_url || (!paymentRequired ? `/downloads/${generatedId}` : null);
+        const checkoutUrl = responseData?.checkout_url || (paymentRequired ? `/projects/${generatedId}/checkout` : null);
+        const redirectUrl = responseData?.redirect_url || checkoutUrl || downloadUrl || `/downloads/${generatedId}`;
+
+        setGeneratedProjectId(generatedId);
+        setGeneratedPaymentRequired(paymentRequired);
+        setGeneratedDownloadUrl(downloadUrl);
+        setGeneratedCheckoutUrl(checkoutUrl);
+        setGeneratedRedirectUrl(redirectUrl);
         setGenerateSuccess(true);
         setTimeout(() => {
-          router.push(res.data?.redirect_url || `/downloads/${res.data?.id}`);
-        }, 1200);
+          router.push(redirectUrl);
+        }, 2000);
         return;
       }
 
@@ -178,6 +212,20 @@ export default function StaticSiteWizard() {
       setGenerating(false);
     }
   }, [aiMode, buildPromptAnswers, data, liveBuilder, locale, router]);
+
+  const handleOpenDownload = useCallback(() => {
+    const target = generatedDownloadUrl || (generatedProjectId ? `/downloads/${generatedProjectId}` : null);
+    if (target) {
+      router.push(target);
+    }
+  }, [generatedDownloadUrl, generatedProjectId, router]);
+
+  const handleOpenCheckout = useCallback(() => {
+    const target = generatedCheckoutUrl || (generatedProjectId ? `/projects/${generatedProjectId}/checkout` : null);
+    if (target) {
+      router.push(target);
+    }
+  }, [generatedCheckoutUrl, generatedProjectId, router]);
 
   const errors = useMemo(() => {
     const items: string[] = [];
@@ -253,8 +301,17 @@ export default function StaticSiteWizard() {
             generating={generating}
             generateError={generateError}
             generateSuccess={generateSuccess}
+            generatedProjectId={generatedProjectId}
+            paymentRequired={generatedPaymentRequired}
+            downloadUrl={generatedDownloadUrl}
+            checkoutUrl={generatedCheckoutUrl}
+            redirectUrl={generatedRedirectUrl}
             onGenerate={handleGenerate}
             onPrev={() => setCurrentStep((step) => Math.max(1, step - 1))}
+            onOpenDownload={handleOpenDownload}
+            onOpenCheckout={handleOpenCheckout}
+            onCreateAnother={() => router.push("/create")}
+            onBackHome={() => router.push("/wizard")}
             isValid={missingFields.length === 0}
             missingFields={missingFields}
             aiMode={aiMode}

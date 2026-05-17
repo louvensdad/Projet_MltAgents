@@ -6,8 +6,17 @@ interface Props {
   generating: boolean;
   generateError: string | null;
   generateSuccess: boolean;
+  generatedProjectId?: string | null;
+  paymentRequired?: boolean;
+  downloadUrl?: string | null;
+  checkoutUrl?: string | null;
+  redirectUrl?: string | null;
   onGenerate: () => void;
   onPrev: () => void;
+  onOpenDownload?: () => void;
+  onOpenCheckout?: () => void;
+  onCreateAnother?: () => void;
+  onBackHome?: () => void;
   isValid: boolean;
   missingFields: string[];
   aiMode: "local_build_90" | "agent_boost_100";
@@ -22,8 +31,17 @@ export default function GenerateStep({
   generating,
   generateError,
   generateSuccess,
+  generatedProjectId,
+  paymentRequired,
+  downloadUrl,
+  checkoutUrl,
+  redirectUrl,
   onGenerate,
   onPrev,
+  onOpenDownload,
+  onOpenCheckout,
+  onCreateAnother,
+  onBackHome,
   isValid,
   missingFields,
   aiMode,
@@ -111,7 +129,45 @@ export default function GenerateStep({
         <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-6 text-center">
           <CheckCircle className="mx-auto mb-3 h-10 w-10 text-emerald-400" />
           <p className="text-lg font-bold text-emerald-300">{t("wizard.static.generate_success")}</p>
-          <p className="mt-1 text-sm text-gray-400">{t("wizard.static.generate_redirecting")}</p>
+          <p className="mt-1 text-sm text-gray-400">
+            {paymentRequired
+              ? "Projeto gerado. Finalize o checkout para liberar o download."
+              : "Projeto gerado com sucesso. O download já está disponível."}
+          </p>
+          {generatedProjectId && (
+            <p className="mt-3 text-xs text-gray-500">Project ID: {generatedProjectId}</p>
+          )}
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+            {!paymentRequired && downloadUrl && (
+              <button type="button" onClick={onOpenDownload} className="rounded-xl bg-emerald-400 px-4 py-2 text-sm font-semibold text-black transition-all hover:bg-emerald-300">
+                Baixar agora
+              </button>
+            )}
+            {paymentRequired && checkoutUrl && (
+              <button type="button" onClick={onOpenCheckout} className="rounded-xl bg-violet-400 px-4 py-2 text-sm font-semibold text-black transition-all hover:bg-violet-300">
+                Ir para checkout
+              </button>
+            )}
+            {downloadUrl && (
+              <a href={downloadUrl} className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm font-semibold text-gray-200 transition-all hover:bg-white/[0.06]">
+                Abrir downloads
+              </a>
+            )}
+            {checkoutUrl && paymentRequired && (
+              <a href={checkoutUrl} className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm font-semibold text-gray-200 transition-all hover:bg-white/[0.06]">
+                Abrir checkout
+              </a>
+            )}
+            <button type="button" onClick={onCreateAnother} className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm font-semibold text-gray-200 transition-all hover:bg-white/[0.06]">
+              Criar outro projeto
+            </button>
+            <button type="button" onClick={onBackHome} className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm font-semibold text-gray-200 transition-all hover:bg-white/[0.06]">
+              Voltar ao início
+            </button>
+          </div>
+          {redirectUrl && (
+            <p className="mt-3 text-xs text-gray-500">Redirecionamento sugerido: {redirectUrl}</p>
+          )}
         </div>
       )}
 
