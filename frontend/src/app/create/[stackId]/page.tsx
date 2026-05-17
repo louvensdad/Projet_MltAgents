@@ -30,7 +30,8 @@ interface StackSchema {
   id: string;
   name: string;
   description: string;
-  form_schema: FormField[];
+  form_schema?: FormField[];
+  required_fields?: string[];
 }
 
 type StackKeyOrStatic = StackKey | "static";
@@ -138,10 +139,66 @@ function getStackPreview(stackId: string) {
 function getArchitectureNodes(schema: StackSchema | null, stackId: string) {
   const preview = getStackPreview(stackId);
   const nodes = preview.nodes || [];
-  if (schema?.form_schema?.length) {
+  if (getWizardFields(schema, stackId).length) {
     return nodes.slice(0, 6);
   }
   return nodes;
+}
+
+function buildFieldFromName(fieldName: string, stackProfile: any): FormField {
+  const id = fieldName;
+  const title = fieldName
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (match) => match.toUpperCase());
+
+  const selectMap: Record<string, string[]> = {
+    architecture: stackProfile.architectures || [],
+    database: stackProfile.databases || [],
+    auth: stackProfile.security || [],
+    messaging: stackProfile.messaging || [],
+    build_tool: ["maven", "gradle"],
+    java_version: ["17", "21"],
+    spring_boot_version: ["3.2", "3.3"],
+    python_version: ["3.11", "3.12"],
+    orm: ["sqlalchemy", "sqlmodel", "tortoise", "prisma", "typeorm", "none"],
+    async_mode: ["true", "false"],
+    workers: ["celery", "rq", "none"],
+    cache: ["redis", "none"],
+    openapi: ["true", "false"],
+    tests: stackProfile.features ? Object.keys(stackProfile.features) : [],
+    language: ["pt-BR", "en-US", "es-ES", "fr-FR"],
+    sections: ["Hero", "Sobre", "Servicos", "Produtos", "Portfolio", "Depoimentos", "FAQ", "Contato", "Newsletter", "Blog"],
+    site_type: ["landing_page", "institutional", "portfolio", "sales_page", "service_site", "catalog_site", "blog"],
+    contact_method: ["whatsapp", "email", "form", "none"],
+    accessibility_level: ["basic", "strong"],
+    animations: ["none", "subtle", "premium"],
+    pages: ["dashboard", "settings", "reports", "analytics", "profile"],
+    hosting_model: ["server", "wasm"],
+    rendering: ["ssr", "ssg", "isr", "csr"],
+    state_management: ["zustand", "redux", "ngrx", "pinia"],
+  };
+
+  const options = selectMap[id] || [];
+  const isBoolean = ["docker", "analytics", "animations", "openapi", "async_mode"].includes(id);
+  const defaultValue = options[0] || "";
+
+  return {
+    id,
+    label: title,
+    type: isBoolean ? "boolean" : options.length > 0 ? "select" : "text",
+    options,
+    default: isBoolean ? true : defaultValue,
+  };
+}
+
+function getWizardFields(schema: StackSchema | null, stackId: string): FormField[] {
+  if (!schema) return [];
+  const explicit = Array.isArray(schema.form_schema) ? schema.form_schema : [];
+  if (explicit.length > 0) return explicit;
+
+  const stackProfile = (STACK_PROFILES as Record<string, any>)[normalizeStackId(stackId)] || (STACK_PROFILES as Record<string, any>).fastapi;
+  const required = Array.isArray(schema.required_fields) ? schema.required_fields : [];
+  return required.map((fieldName) => buildFieldFromName(fieldName, stackProfile));
 }
 
 export default function CreateWizardPage() {
@@ -166,6 +223,7 @@ export default function CreateWizardPage() {
   }, [stackId]);
 
   const stackPreview = useMemo(() => getStackPreview(stackId), [stackId]);
+  const wizardFields = useMemo(() => getWizardFields(schema, stackId), [schema, stackId]);
 
   useEffect(() => {
     fetch(`${getApiBaseUrl()}/api/v1/stacks/${stackId}/schema`)
@@ -176,7 +234,8 @@ export default function CreateWizardPage() {
       .then((data: StackSchema) => {
         setSchema(data);
         const initialData: Record<string, any> = {};
-        data.form_schema.forEach((field) => {
+        const fields = getWizardFields(data, stackId);
+        fields.forEach((field) => {
           initialData[field.id] = field.default;
         });
         setFormData(initialData);
@@ -261,14 +320,29 @@ export default function CreateWizardPage() {
 
   if (!schema) return <div className="p-8 text-white">Loading Stack Schema...</div>;
 
+  if (wizardFields.length === 0) {
+    return (
+      <div className="mx-auto max-w-3xl space-y-4 px-4 py-12 text-center text-white">
+        <h1 className="text-3xl font-semibold">Não há campos configurados para esta stack.</h1>
+        <p className="text-slate-400">
+          O registry atual não expõe form_schema nem required_fields para {stackId}. Abra a página de templates ou volte para criar com uma stack válida.
+        </p>
+        <Link href="/create" className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm text-slate-200 transition-all hover:bg-white/10">
+          <ArrowLeft size={16} />
+          Voltar
+        </Link>
+      </div>
+    );
+  }
+
   const handleChange = (id: string, value: any) => {
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const currentField = schema.form_schema[currentStep];
+  const currentField = wizardFields[currentStep] || wizardFields[0];
 
   const handleNext = () => {
-    if (currentStep < schema.form_schema.length - 1) {
+    if (currentStep < wizardFields.length - 1) {
       setCurrentStep((curr) => curr + 1);
     } else {
       submitProject();
@@ -362,8 +436,8 @@ export default function CreateWizardPage() {
           </div>
 
           <div className="mt-6 space-y-4">
-            <h1 className="text-4xl font-semibold tracking-tight text-white md:text-5xl">Configure {schema.name}</h1>
-            <p className="max-w-2xl text-sm leading-7 text-slate-300 md:text-base">{schema.description}</p>
+            <h1 className="text-4xl font-semibold tracking-tight text-white md:text-5xl">Configure {schema.name || stackProfile.name}</h1>
+            <p className="max-w-2xl text-sm leading-7 text-slate-300 md:text-base">{schema.description || stackProfile.identity.highlight}</p>
             <div className="flex flex-wrap gap-2">
               <HolographicBadge tone="cyan">{stackProfile.backendLabel}</HolographicBadge>
               <HolographicBadge tone="violet">{stackPreview.title}</HolographicBadge>
@@ -437,25 +511,25 @@ export default function CreateWizardPage() {
 
             <div className="mt-5">
               <div className="mb-4 flex items-center justify-between gap-3">
+                  <div className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
+                    Step {currentStep + 1} of {wizardFields.length}
+                  </div>
                 <div className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
-                  Step {currentStep + 1} of {schema.form_schema.length}
-                </div>
-                <div className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
-                  {currentField.label}
+                  {currentField?.label || "Configuration"}
                 </div>
               </div>
               <div className="h-2 overflow-hidden rounded-full bg-white/5">
                 <div
                   className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-violet-400 transition-all duration-300"
-                  style={{ width: `${Math.max(4, ((currentStep + 1) / schema.form_schema.length) * 100)}%` }}
+                  style={{ width: `${Math.max(4, ((currentStep + 1) / wizardFields.length) * 100)}%` }}
                 />
               </div>
             </div>
 
             {mode === "guided" ? (
               <div className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5">
-                <SectionHeader eyebrow="guided mode" title={currentField.label} subtitle="One field at a time with live validation and architecture context." />
-                <div className="mt-4">{renderField(currentField)}</div>
+                <SectionHeader eyebrow="guided mode" title={currentField?.label || "Configuration"} subtitle="One field at a time with live validation and architecture context." />
+                <div className="mt-4">{currentField ? renderField(currentField) : null}</div>
 
                 <div className="mt-8 flex items-center justify-between gap-3">
                   <button
@@ -469,13 +543,13 @@ export default function CreateWizardPage() {
                     onClick={handleNext}
                     className="inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary/90"
                   >
-                    {currentStep === schema.form_schema.length - 1 ? <><Send size={16} /> Generate project</> : <>Continue <ChevronRight size={16} /></>}
+                    {currentStep === wizardFields.length - 1 ? <><Send size={16} /> Generate project</> : <>Continue <ChevronRight size={16} /></>}
                   </button>
                 </div>
               </div>
             ) : (
               <div className="mt-6 space-y-4">
-                {schema.form_schema.map((field) => (
+                {wizardFields.map((field) => (
                   <div key={field.id} className="rounded-3xl border border-white/10 bg-black/20 p-5">
                     <div className="flex items-center justify-between gap-3">
                       <div>
