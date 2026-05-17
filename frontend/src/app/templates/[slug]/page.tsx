@@ -47,7 +47,7 @@ export default function TemplateDetailPage() {
         if (!mounted) return;
         setTemplate(res.data?.template || res.data);
       })
-      .catch(() => mounted && setError("Nao foi possivel carregar este template."))
+      .catch(() => mounted && setError("Não foi possível carregar este template."))
       .finally(() => mounted && setLoading(false));
 
     return () => {
@@ -96,11 +96,11 @@ export default function TemplateDetailPage() {
     return (
       <div className="mx-auto max-w-3xl space-y-4 py-20 text-center">
         <p className="text-sm uppercase tracking-[0.25em] text-slate-500">Template</p>
-        <h1 className="text-3xl font-semibold text-white">Nao foi possivel abrir o template</h1>
-        <p className="text-slate-400">{error || "Registro ausente no catalogo."}</p>
+        <h1 className="text-3xl font-semibold text-white">Não foi possível abrir o template</h1>
+        <p className="text-slate-400">{error || "Registro ausente no catálogo."}</p>
         <Link href="/templates" className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-5 py-3 text-sm text-slate-200 transition-all hover:bg-white/10">
           <ArrowLeft size={16} />
-          Voltar ao catalogo
+          Voltar ao catálogo
         </Link>
       </div>
     );

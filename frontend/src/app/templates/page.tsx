@@ -41,7 +41,7 @@ export default function TemplatesPage() {
   useEffect(() => {
     apiGet<any>("/api/templates", apiFallbacks["/api/templates"] as any)
       .then((r) => setData(r.data))
-      .catch(() => setError("Nao foi possivel carregar o marketplace de templates."))
+      .catch(() => setError("Não foi possível carregar o marketplace de templates."))
       .finally(() => setLoading(false));
   }, []);
 

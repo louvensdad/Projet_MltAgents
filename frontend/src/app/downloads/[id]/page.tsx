@@ -21,13 +21,13 @@ export default function DownloadDetailPage({ params }: { params: { id: string } 
         const data = await res.json();
         if (!active) return;
         if (!res.ok) {
-          setError(data.message || data.detail || "Falha ao carregar download.");
+          setError(data.message || data.detail || "Falha ao carregar o download.");
         } else {
           setInfo(data);
         }
       })
       .catch(() => {
-        if (active) setError("Falha de conexao ao consultar o download.");
+        if (active) setError("Falha de conexão ao consultar o download.");
       })
       .finally(() => {
         if (active) setLoading(false);
