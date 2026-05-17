@@ -3,22 +3,25 @@
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { ArrowRight, CheckCircle2, KeyRound, Lock } from "lucide-react";
+import { ArrowRight, CheckCircle2, KeyRound, Languages, Lock } from "lucide-react";
 import { motion } from "framer-motion";
 import HolographicCard from "@/components/premium/HolographicCard";
 import AnimatedBadge from "@/components/premium/AnimatedBadge";
 import SectionHeader from "@/components/premium/SectionHeader";
+import { usePreferences } from "@/context/PreferencesContext";
 import { resetPassword } from "@/lib/auth";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
   const params = useParams<{ token: string }>();
   const token = useMemo(() => (Array.isArray(params?.token) ? params?.token[0] : params?.token) || "", [params]);
+  const { lang, setLang, localeNames } = usePreferences();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [languageOpen, setLanguageOpen] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -50,20 +53,53 @@ export default function ResetPasswordPage() {
       <div className="pointer-events-none absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(148,163,184,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.12)_1px,transparent_1px)] [background-size:72px_72px]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(2,6,23,0.42)_78%)]" />
 
-      <div className="relative flex min-h-screen items-center justify-center px-4 py-8">
+      <div className="relative flex min-h-screen items-center justify-center px-3 py-4 sm:px-4 sm:py-8">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: "easeOut" }}
           className="w-full max-w-3xl"
         >
-            <HolographicCard className="p-6 md:p-8">
+          <HolographicCard className="p-5 sm:p-6 md:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <AnimatedBadge tone="violet">Reset</AnimatedBadge>
-                <span className="text-xs uppercase tracking-[0.35em] text-slate-500">Password reset</span>
+                <span className="text-[10px] uppercase tracking-[0.35em] text-slate-500 sm:text-xs">Password reset</span>
               </div>
+              <button
+                type="button"
+                onClick={() => setLanguageOpen((value) => !value)}
+                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-200 transition-all hover:bg-white/10"
+                aria-label="Change language"
+              >
+                <Languages size={14} />
+                {lang.toUpperCase()}
+              </button>
+            </div>
 
-              <div className="mt-4 grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+            {languageOpen && (
+              <div className="mt-4 grid grid-cols-2 gap-2 rounded-2xl border border-white/10 bg-black/30 p-2 sm:grid-cols-4">
+                {(["pt", "en", "es", "fr"] as const).map((code) => (
+                  <button
+                    key={code}
+                    type="button"
+                    onClick={() => {
+                      setLang(code);
+                      setLanguageOpen(false);
+                    }}
+                    className={`rounded-xl px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition-all ${
+                      lang === code
+                        ? "border border-cyan-400/20 bg-cyan-500/15 text-cyan-100"
+                        : "text-slate-300 hover:bg-white/5"
+                    }`}
+                  >
+                    {localeNames[code]}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-4 grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
                 <div className="space-y-4">
                   <SectionHeader
                     eyebrow="security"
@@ -86,11 +122,11 @@ export default function ResetPasswordPage() {
                   </div>
                 </div>
 
-                <HolographicCard className="p-5">
-                  <div className="flex items-center justify-between">
+                <HolographicCard className="p-4 sm:p-5">
+                  <div className="flex items-center justify-between gap-3">
                     <div>
                       <p className="text-[10px] uppercase tracking-[0.35em] text-slate-500">Reset panel</p>
-                      <h2 className="mt-1 text-2xl font-semibold text-white">Create password</h2>
+                      <h2 className="mt-1 text-xl font-semibold text-white sm:text-2xl">Create password</h2>
                     </div>
                     <div className="rounded-full border border-violet-500/20 bg-violet-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-violet-200">
                       Secure
@@ -100,10 +136,10 @@ export default function ResetPasswordPage() {
                   <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                     <label className="block space-y-2">
                       <span className="text-xs uppercase tracking-[0.28em] text-slate-500">New password</span>
-                      <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3">
-                        <Lock size={16} className="text-slate-500" />
-                        <input
-                          value={password}
+                    <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3">
+                      <Lock size={16} className="text-slate-500" />
+                      <input
+                        value={password}
                           onChange={(e) => setPassword(e.target.value)}
                           type="password"
                           required
@@ -115,10 +151,10 @@ export default function ResetPasswordPage() {
 
                     <label className="block space-y-2">
                       <span className="text-xs uppercase tracking-[0.28em] text-slate-500">Confirm password</span>
-                      <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3">
-                        <KeyRound size={16} className="text-slate-500" />
-                        <input
-                          value={confirmPassword}
+                    <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3">
+                      <KeyRound size={16} className="text-slate-500" />
+                      <input
+                        value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
                           type="password"
                           required
@@ -174,7 +210,7 @@ export default function ResetPasswordPage() {
                 </HolographicCard>
               </div>
 
-              <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-5">
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-5">
                 <Link href="/forgot-password" className="text-sm text-slate-400 transition-colors hover:text-white">
                   Back to recovery
                 </Link>
@@ -182,8 +218,8 @@ export default function ResetPasswordPage() {
                   <CheckCircle2 size={14} />
                   Secure reset flow
                 </div>
-              </div>
-            </HolographicCard>
+            </div>
+          </HolographicCard>
         </motion.div>
       </div>
     </div>

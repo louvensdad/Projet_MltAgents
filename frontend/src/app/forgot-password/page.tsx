@@ -3,19 +3,22 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Mail, ShieldCheck } from "lucide-react";
+import { ArrowRight, Languages, Mail, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import HolographicCard from "@/components/premium/HolographicCard";
 import AnimatedBadge from "@/components/premium/AnimatedBadge";
 import SectionHeader from "@/components/premium/SectionHeader";
+import { usePreferences } from "@/context/PreferencesContext";
 import { requestPasswordReset } from "@/lib/auth";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("admin@saasfactory.local");
+  const { lang, setLang, localeNames } = usePreferences();
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<{ message: string; reset_url?: string; reset_token?: string } | null>(null);
+  const [languageOpen, setLanguageOpen] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -42,20 +45,53 @@ export default function ForgotPasswordPage() {
       <div className="pointer-events-none absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(148,163,184,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.12)_1px,transparent_1px)] [background-size:72px_72px]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(2,6,23,0.42)_78%)]" />
 
-      <div className="relative flex min-h-screen items-center justify-center px-4 py-8">
+      <div className="relative flex min-h-screen items-center justify-center px-3 py-4 sm:px-4 sm:py-8">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: "easeOut" }}
           className="w-full max-w-3xl"
         >
-            <HolographicCard className="p-6 md:p-8">
+          <HolographicCard className="p-5 sm:p-6 md:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <AnimatedBadge tone="cyan">Recovery</AnimatedBadge>
-                <span className="text-xs uppercase tracking-[0.35em] text-slate-500">Password reset</span>
+                <span className="text-[10px] uppercase tracking-[0.35em] text-slate-500 sm:text-xs">Password reset</span>
               </div>
+              <button
+                type="button"
+                onClick={() => setLanguageOpen((value) => !value)}
+                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-200 transition-all hover:bg-white/10"
+                aria-label="Change language"
+              >
+                <Languages size={14} />
+                {lang.toUpperCase()}
+              </button>
+            </div>
 
-              <div className="mt-4 grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+            {languageOpen && (
+              <div className="mt-4 grid grid-cols-2 gap-2 rounded-2xl border border-white/10 bg-black/30 p-2 sm:grid-cols-4">
+                {(["pt", "en", "es", "fr"] as const).map((code) => (
+                  <button
+                    key={code}
+                    type="button"
+                    onClick={() => {
+                      setLang(code);
+                      setLanguageOpen(false);
+                    }}
+                    className={`rounded-xl px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition-all ${
+                      lang === code
+                        ? "border border-cyan-400/20 bg-cyan-500/15 text-cyan-100"
+                        : "text-slate-300 hover:bg-white/5"
+                    }`}
+                  >
+                    {localeNames[code]}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-4 grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
                 <div className="space-y-4">
                   <SectionHeader
                     eyebrow="access"
@@ -78,11 +114,11 @@ export default function ForgotPasswordPage() {
                   </div>
                 </div>
 
-                <HolographicCard className="p-5">
-                  <div className="flex items-center justify-between">
+                <HolographicCard className="p-4 sm:p-5">
+                  <div className="flex items-center justify-between gap-3">
                     <div>
                       <p className="text-[10px] uppercase tracking-[0.35em] text-slate-500">Recovery panel</p>
-                      <h2 className="mt-1 text-2xl font-semibold text-white">Send reset link</h2>
+                      <h2 className="mt-1 text-xl font-semibold text-white sm:text-2xl">Send reset link</h2>
                     </div>
                     <div className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-cyan-200">
                       Live
@@ -99,7 +135,7 @@ export default function ForgotPasswordPage() {
                           onChange={(e) => setEmail(e.target.value)}
                           type="email"
                           required
-                          placeholder="admin@saasfactory.local"
+                          placeholder="your-workspace@email.com"
                           className="w-full bg-transparent text-sm text-white outline-none placeholder:text-slate-600"
                         />
                       </div>
@@ -148,17 +184,17 @@ export default function ForgotPasswordPage() {
                       </div>
                     )}
 
-                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-300">
-                      <p className="font-semibold text-white">Local recovery</p>
-                      <p className="mt-1 text-slate-400">
-                        This generates a short-lived reset token and keeps the flow fully local for development.
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-300">
+                    <p className="font-semibold text-white">Local recovery</p>
+                    <p className="mt-1 text-slate-400">
+                      This generates a short-lived reset token and keeps the flow fully local for development.
                       </p>
                     </div>
                   </form>
                 </HolographicCard>
               </div>
 
-              <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-5">
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-5">
                 <Link href="/login" className="text-sm text-slate-400 transition-colors hover:text-white">
                   Back to login
                 </Link>
@@ -166,8 +202,8 @@ export default function ForgotPasswordPage() {
                   <ShieldCheck size={14} />
                   Recovery audit trail
                 </div>
-              </div>
-            </HolographicCard>
+            </div>
+          </HolographicCard>
         </motion.div>
       </div>
     </div>
