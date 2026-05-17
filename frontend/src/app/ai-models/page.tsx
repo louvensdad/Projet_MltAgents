@@ -139,11 +139,11 @@ function ActiveCard({ m, onSelect, t: T }: { m: any; onSelect: (m: any) => void;
       <div className="grid grid-cols-2 gap-2 text-xs">
         <div className="rounded-md bg-white/[0.03] px-2 py-1.5">
           <p className="text-[10px] uppercase tracking-widest text-gray-500">{fn("ai_models.memory")}</p>
-          <p className="text-gray-300 font-medium">{m.memory_usage || "N/A"}</p>
+          <p className="text-gray-300 font-medium">{m.memory_usage || "Indisponível"}</p>
         </div>
         <div className="rounded-md bg-white/[0.03] px-2 py-1.5">
           <p className="text-[10px] uppercase tracking-widest text-gray-500">{fn("ai_models.requests")}</p>
-          <p className="text-gray-300 font-medium">{m.request_limit || "N/A"}</p>
+          <p className="text-gray-300 font-medium">{m.request_limit || "Indisponível"}</p>
         </div>
         <div className="rounded-md bg-white/[0.03] px-2 py-1.5 col-span-2">
           <p className="text-[10px] uppercase tracking-widest text-gray-500">{fn("ai_models.price_label")}</p>
@@ -204,11 +204,11 @@ export default function AIModelsPage() {
       <section className="rounded-[32px] border border-white/10 bg-[linear-gradient(135deg,rgba(3,7,18,0.96),rgba(8,12,24,0.92),rgba(3,7,18,0.98))] p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div className="space-y-3">
-            <AnimatedBadge tone="violet">AI intelligence</AnimatedBadge>
+            <AnimatedBadge tone="violet">inteligência de IA</AnimatedBadge>
             <h1 className="text-4xl font-semibold tracking-tight text-white md:text-5xl">{T("ai_models.title")}</h1>
             <p className="max-w-2xl text-sm leading-7 text-slate-300 md:text-base">{T("ai_models.subtitle")}</p>
           </div>
-          <SectionHeader eyebrow="runtime" title="Model control plane" subtitle="Agent Boost, fallback local e status de execução em um único cockpit." />
+          <SectionHeader eyebrow="runtime" title="Plano de controle dos modelos" subtitle="Agent Boost, fallback local e status de execução em um único cockpit." />
         </div>
       </section>
 

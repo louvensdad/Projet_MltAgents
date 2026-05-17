@@ -117,22 +117,22 @@ export default function TemplatesPage() {
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-cyan-200">
               <Sparkles size={12} />
-              Real Template Marketplace
+              Marketplace real de templates
             </div>
             <h1 className="text-4xl font-semibold tracking-tight text-white md:text-5xl">{t("templates.title")}</h1>
             <p className="max-w-2xl text-sm leading-7 text-slate-300 md:text-base">{t("templates.subtitle")}</p>
             <p className="max-w-2xl text-sm text-slate-300/80">
               Cada template agora carrega blueprint, Prompt Master seed, gatekeeper e caminho oficial de geração.
-              Preview, arquitetura e build deixam de ser decoração e passam a operar sobre o contrato real.
+              Prévia, arquitetura e geração deixam de ser decoração e passam a operar sobre o contrato real.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link href="/wizard" className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary/90">
                 <Sparkles size={16} />
-                Abrir wizard
+                Abrir assistente
               </Link>
               <Link href="/billing" className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-medium text-slate-200 transition-all hover:bg-white/10">
                 <BadgeInfo size={16} />
-                Monetizacao
+                Monetização
               </Link>
             </div>
           </div>
@@ -156,8 +156,8 @@ export default function TemplatesPage() {
       {!loading && (featured.length > 0 || catalog.length > 0) && (
         <section className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold uppercase tracking-[0.25em] text-slate-400">Featured templates</h2>
-            <span className="text-xs text-slate-500">blueprint + preview + build</span>
+            <h2 className="text-sm font-bold uppercase tracking-[0.25em] text-slate-400">Templates em destaque</h2>
+            <span className="text-xs text-slate-500">blueprint + prévia + geração</span>
           </div>
           <div className="grid gap-4 xl:grid-cols-2">
             {(featured.length > 0 ? featured : catalog.slice(0, 2)).map((template: any) => (
@@ -177,8 +177,8 @@ export default function TemplatesPage() {
 
       <section className="space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold uppercase tracking-[0.25em] text-slate-400">Catalog by category</h2>
-          <span className="text-xs text-slate-500">templates reais, nao enfeites</span>
+          <h2 className="text-sm font-bold uppercase tracking-[0.25em] text-slate-400">Catálogo por categoria</h2>
+          <span className="text-xs text-slate-500">templates reais, não enfeites</span>
         </div>
 
         <div className="space-y-6">
@@ -255,7 +255,7 @@ function TemplateCard({
           <div className="flex flex-wrap gap-2">
             <span className={`rounded-full border px-2.5 py-0.5 text-[10px] uppercase tracking-[0.2em] ${badgeClass}`}>{template.status}</span>
             <span className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-0.5 text-[10px] uppercase tracking-[0.2em] text-slate-400">
-              Score {template.quality_score}
+              Nota {template.quality_score}
             </span>
             <span className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-0.5 text-[10px] uppercase tracking-[0.2em] text-slate-400">
               {template.architecture_label || template.architecture}
@@ -292,7 +292,7 @@ function TemplateCard({
       <div className="mt-4 flex flex-wrap gap-2">
         <button onClick={onPreview} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-xs text-slate-200 hover:bg-white/10">
           <PlayCircle size={14} />
-          Preview
+          Prévia
         </button>
         <button onClick={onArchitecture} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-xs text-slate-200 hover:bg-white/10">
           <GitBranch size={14} />
@@ -304,7 +304,7 @@ function TemplateCard({
           className="inline-flex items-center gap-2 rounded-xl bg-primary px-3 py-2 text-xs font-semibold text-white hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Sparkles size={14} />
-          {ready ? (isBuilding ? "Preparando..." : "Build") : "Em construção"}
+          {ready ? (isBuilding ? "Preparando..." : "Gerar") : "Em construção"}
         </button>
         <button onClick={onDetails} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-xs text-slate-200 hover:bg-white/10">
           Ver detalhes
