@@ -50,8 +50,8 @@ export default function WizardShell({
 
       <Stepper steps={steps} currentStep={step} onStepClick={onStepClick} accent={accent} t={t} />
 
-      <div className="flex gap-4">
-        <div className="flex-1 min-w-0">
+      <div className="flex flex-col gap-4 xl:flex-row">
+        <div className="min-w-0 flex-1">
           <div className="relative rounded-2xl border border-white/[0.08] bg-gradient-to-b from-surface/80 to-surface/40 backdrop-blur-xl p-6 shadow-xl shadow-black/20">
             {errors.length > 0 && (
               <div className="mb-4 rounded-xl border border-rose-500/30 bg-gradient-to-r from-rose-500/15 to-rose-500/5 p-4 text-sm text-rose-200 animate-in fade-in slide-in-from-top-2 duration-300">
@@ -87,7 +87,9 @@ export default function WizardShell({
           />
         </div>
 
-        <LiveProjectBuilder />
+        <div className="w-full xl:w-80 xl:shrink-0">
+          <LiveProjectBuilder />
+        </div>
       </div>
     </div>
   );

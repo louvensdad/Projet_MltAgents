@@ -242,6 +242,7 @@ export default function StaticSiteWizard() {
             generateError={generateError}
             generateSuccess={generateSuccess}
             onGenerate={handleGenerate}
+            onPrev={() => setCurrentStep((s) => Math.max(1, s - 1))}
             isValid={missingFields.length === 0}
             missingFields={missingFields}
             aiMode={aiMode}

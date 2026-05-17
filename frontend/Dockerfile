@@ -11,7 +11,7 @@ COPY . .
 EXPOSE 4321
 
 ENV NODE_ENV=production
-ENV NEXT_PUBLIC_API_URL=http://api:8001
+ENV NEXT_PUBLIC_API_URL=http://localhost:8001
 ENV PORT=4321
 
 RUN npm run build

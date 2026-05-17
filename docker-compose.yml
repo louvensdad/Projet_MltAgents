@@ -21,7 +21,7 @@ services:
     ports:
       - "4321:4321"
     environment:
-      - NEXT_PUBLIC_API_URL=http://api:8001
+      - NEXT_PUBLIC_API_URL=http://localhost:8001
       - PORT=4321
     depends_on:
       - api

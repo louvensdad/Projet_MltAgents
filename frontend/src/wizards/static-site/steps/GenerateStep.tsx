@@ -7,6 +7,7 @@ interface Props {
   generateError: string | null;
   generateSuccess: boolean;
   onGenerate: () => void;
+  onPrev: () => void;
   isValid: boolean;
   missingFields: string[];
   aiMode: "local_build_90" | "agent_boost_100";
@@ -22,6 +23,7 @@ export default function GenerateStep({
   generateError,
   generateSuccess,
   onGenerate,
+  onPrev,
   isValid,
   missingFields,
   aiMode,
@@ -121,7 +123,14 @@ export default function GenerateStep({
       )}
 
       {!generating && !generateSuccess && (
-        <div className="flex justify-center pt-2">
+        <div className="flex flex-col items-center justify-center gap-3 pt-2 sm:flex-row">
+          <button
+            type="button"
+            onClick={onPrev}
+            className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-semibold text-gray-200 transition-all hover:border-white/20 hover:bg-white/[0.06]"
+          >
+            Voltar um passo
+          </button>
           <button
             onClick={onGenerate}
             disabled={!isValid || !promptReady}
