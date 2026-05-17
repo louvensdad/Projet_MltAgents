@@ -155,7 +155,7 @@ const STACKS: CreateStackCard[] = [
     description: "Multi-agents com coordenação, memória e workflows premium.",
     category: "AI",
     icon: <Bot size={18} />,
-    badge: "Planned",
+    badge: "Planejado",
     tone: "rose",
     score: 98,
     complexity: "High",
@@ -175,7 +175,7 @@ const STACKS: CreateStackCard[] = [
     description: "Workflows, filas e jobs para operações repetitivas com controle.",
     category: "Automation",
     icon: <Zap size={18} />,
-    badge: "Planned",
+    badge: "Planejado",
     tone: "amber",
     score: 91,
     complexity: "Medium",
@@ -274,7 +274,7 @@ export default function CreatePage() {
     `Category: ${activeStack.category}`,
     `Architecture: ${activeStack.architecture.slice(0, 3).join(" -> ")}`,
     `Core chips: ${activeStack.chips.join(", ")}`,
-    activeStack.ready ? "Ready to enter the builder" : "Marked as planned, preview only",
+    activeStack.ready ? "Pronta para entrar no builder" : "Marcada como planejada, apenas preview",
   ];
 
   return (
@@ -445,10 +445,10 @@ export default function CreatePage() {
 
                 <div className="mt-4 flex items-center justify-between">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-slate-500">
-                    {stack.ready ? "Ready to build" : "Planned"}
+                    {stack.ready ? "Pronta para gerar" : "Planejado"}
                   </span>
                   <span className="inline-flex items-center gap-1 text-sm font-medium text-cyan-300">
-                    Open builder <ArrowRight size={14} />
+                    Abrir builder <ArrowRight size={14} />
                   </span>
                 </div>
               </div>

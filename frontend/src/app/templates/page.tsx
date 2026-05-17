@@ -123,7 +123,7 @@ export default function TemplatesPage() {
             <p className="max-w-2xl text-sm leading-7 text-slate-300 md:text-base">{t("templates.subtitle")}</p>
             <p className="max-w-2xl text-sm text-slate-300/80">
               Cada template agora carrega blueprint, Prompt Master seed, gatekeeper e caminho oficial de geração.
-              Preview, arquitetura e build deixam de ser decoracao e passam a operar sobre o contrato real.
+              Preview, arquitetura e build deixam de ser decoração e passam a operar sobre o contrato real.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link href="/wizard" className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary/90">
