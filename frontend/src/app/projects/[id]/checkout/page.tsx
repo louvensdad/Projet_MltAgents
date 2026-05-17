@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { CheckCircle, CreditCard, Download, FileText, Folder, Loader2, Lock, Sparkles, AlertTriangle } from "lucide-react";
+import { CheckCircle, CreditCard, Download, FileText, Folder, Loader2, Sparkles, AlertTriangle } from "lucide-react";
 import { usePreferences } from "@/context/PreferencesContext";
 import { DownloadStatusCard } from "@/components/ui/DownloadStatusCard";
 import { API_BASE } from "@/lib/config";

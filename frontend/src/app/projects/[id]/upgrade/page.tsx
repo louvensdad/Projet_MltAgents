@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { ArrowLeft, CreditCard, History, LayoutGrid, Loader2, Plus, Sparkles, Terminal, Zap, AlertTriangle, RefreshCw, Clock, CheckCircle, ChevronUp, ChevronDown } from "lucide-react";
 import { usePreferences } from "@/context/PreferencesContext";
 import { getApiBaseUrl } from "@/lib/config";
