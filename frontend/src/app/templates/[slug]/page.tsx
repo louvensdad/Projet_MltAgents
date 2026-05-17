@@ -62,25 +62,28 @@ export default function TemplateDetailPage() {
     if (!template || !template.generation_supported) return;
     setBusy(true);
     try {
-      const prep = await apiPost<any>(`/api/templates/${template.id}/prepare-generation`, {});
-      if (!prep.ok || !prep.data) {
-        throw new Error(prep.backendError?.message || prep.networkError || "Falha ao preparar template");
+      const buildResult = await apiPost<any>("/api/generate", {
+        stack_id: template.stack_profile_id,
+        project_type: template.project_type,
+        project_name: template.name,
+        answers: template.default_answers,
+        template_id: template.id,
+        blueprint: template.blueprint,
+        generation_quality_mode: "local_build_90",
+        locale: "pt",
+      });
+      const body = buildResult.data as any;
+      if (!buildResult.ok || !body?.success || !body?.project_id) {
+        const message = buildResult.backendError?.message || buildResult.networkError || body?.message || "Falha ao gerar projeto";
+        throw new Error(message);
       }
 
-      const prepared = prep.data;
-      const missing = prepared.required_questions_missing || [];
-      if (missing.length > 0) {
-        const route = prepared.next_route?.route || prepared.template?.wizard_route || `/create/${template.stack_profile_id}`;
-        router.push(`${route}?template_id=${template.id}`);
+      if (body.payment_required) {
+        router.push(body.checkout_url || `/projects/${body.project_id}/checkout`);
         return;
       }
 
-      const buildResult = await apiPost<any>("/api/create", prepared.create_payload);
-      if (!buildResult.ok || !buildResult.data?.success) {
-        throw new Error(buildResult.backendError?.message || buildResult.networkError || buildResult.data?.message || "Falha ao gerar projeto");
-      }
-
-      router.push(`/projects/${buildResult.data.project_id}`);
+      router.push(body.download_url || `/downloads/${body.project_id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {

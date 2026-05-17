@@ -230,6 +230,8 @@ def _public_summary(template: dict[str, Any]) -> dict[str, Any]:
         "complexity": template["complexity"],
         "stack_profile_id": template["stack_profile_id"],
         "preview_html": template["preview_html"],
+        "image": template["image"],
+        "demo_images": template["demo_images"],
         "demo_data": template["demo_data"],
         "blueprint": template["blueprint"],
         "prompt_master_seed": template["prompt_master_seed"],
@@ -297,6 +299,11 @@ def _template_catalog() -> list[dict[str, Any]]:
             "architecture_flow": ["Client", "Gateway", "Auth Service", "Accounts", "Transactions", "Audit", "PostgreSQL", "Kafka", "Redis", "Monitoring"],
             "file_tree": ["src/main/java/com/banking", "src/main/resources", "src/test/java", "docker-compose.yml", "README.md"],
             "preview_summary": "Banking microservices with gateway, audit and event streaming.",
+            "image": "/templates/banking-api-platform/cover.svg",
+            "demo_images": [
+                "/templates/banking-api-platform/dashboard.svg",
+                "/templates/banking-api-platform/architecture.svg",
+            ],
         },
         {
             "id": "erp-suite",
@@ -326,6 +333,11 @@ def _template_catalog() -> list[dict[str, Any]]:
             "architecture_flow": ["Frontend", "API", "Modules", "Database", "Redis", "Monitoring"],
             "file_tree": ["apps/api", "apps/web", "src/modules", "docs", "README.md"],
             "preview_summary": "ERP control center with finance and stock KPIs.",
+            "image": "/templates/erp-suite/cover.svg",
+            "demo_images": [
+                "/templates/erp-suite/dashboard.svg",
+                "/templates/erp-suite/architecture.svg",
+            ],
         },
         {
             "id": "marketplace-platform",
@@ -355,6 +367,11 @@ def _template_catalog() -> list[dict[str, Any]]:
             "architecture_flow": ["Client", "API Gateway", "Catalog", "Payments", "Orders", "PostgreSQL", "Redis", "Monitoring"],
             "file_tree": ["apps/api", "apps/web", "packages/ui", "docs", "README.md"],
             "preview_summary": "Commerce showcase with checkout and seller operations.",
+            "image": "/templates/marketplace-platform/cover.svg",
+            "demo_images": [
+                "/templates/marketplace-platform/store.svg",
+                "/templates/marketplace-platform/checkout.svg",
+            ],
         },
         {
             "id": "ai-saas-control-plane",
@@ -384,6 +401,11 @@ def _template_catalog() -> list[dict[str, Any]]:
             "architecture_flow": ["Client", "API", "Agents", "Redis", "Vector DB", "Workers", "PostgreSQL", "Monitoring"],
             "file_tree": ["app", "workers", "frontend", "tests", "README.md"],
             "preview_summary": "Agent control plane with workflow and usage tracking.",
+            "image": "/templates/ai-saas-control-plane/cover.svg",
+            "demo_images": [
+                "/templates/ai-saas-control-plane/agents.svg",
+                "/templates/ai-saas-control-plane/workflow.svg",
+            ],
         },
         {
             "id": "static-brand-site",
@@ -413,6 +435,11 @@ def _template_catalog() -> list[dict[str, Any]]:
             "architecture_flow": ["Browser", "Static Assets", "Forms", "Analytics"],
             "file_tree": ["app", "components", "content", "public", "README.md"],
             "preview_summary": "SEO-first landing page with conversion blocks.",
+            "image": "/templates/static-brand-site/cover.svg",
+            "demo_images": [
+                "/templates/static-brand-site/landing.svg",
+                "/templates/static-brand-site/mobile.svg",
+            ],
         },
         {
             "id": "realtime-analytics-platform",
@@ -442,6 +469,11 @@ def _template_catalog() -> list[dict[str, Any]]:
             "architecture_flow": ["Client", "Gateway", "API", "Redis", "Queue", "Workers", "PostgreSQL", "Dashboard"],
             "file_tree": ["app", "workers", "frontend", "tests", "README.md"],
             "preview_summary": "Realtime stream with alerts and dashboard KPIs.",
+            "image": "/templates/realtime-analytics-platform/cover.svg",
+            "demo_images": [
+                "/templates/realtime-analytics-platform/dashboard.svg",
+                "/templates/realtime-analytics-platform/alerts.svg",
+            ],
         },
     ]
 
@@ -471,6 +503,8 @@ class TemplateRegistry:
             "template_id": template["id"],
             "preview_type": template["preview_type"],
             "preview_html": template["preview_html"],
+            "image": template["image"],
+            "demo_images": deepcopy(template["demo_images"]),
             "demo_data": deepcopy(template["demo_data"]),
             "summary": template["preview_summary"],
             "template": self._summary(template),
@@ -504,6 +538,8 @@ class TemplateRegistry:
         return {
             "template_id": template["id"],
             "template": self._summary(template),
+            "stack_id": template["stack_profile_id"],
+            "project_type": template["project_type"],
             "generation_supported": template["generation_supported"],
             "prompt_master": {
                 "seed": template["prompt_master_seed"],
@@ -518,6 +554,7 @@ class TemplateRegistry:
             "required_questions_missing": required_questions_missing,
             "create_payload": create_payload,
             "direct_generate": complete,
+            "redirect_url": f"{template['wizard_route']}?template_id={template['id']}",
             "next_route": create_payload if complete else {"route": template["wizard_route"], "template_id": template["id"]},
         }
 
@@ -556,6 +593,8 @@ class TemplateRegistry:
         return {
             "id": template["id"],
             "slug": template["slug"],
+            "stack_id": template["stack_profile_id"],
+            "project_type": template["project_type"],
             "name": template["name"],
             "category": template["category"],
             "level": template["level"],
@@ -573,11 +612,13 @@ class TemplateRegistry:
             "complexity": template["complexity"],
             "generation_supported": template["generation_supported"],
             "preview_html": template["preview_html"],
+            "image": template["image"],
+            "demo_images": deepcopy(template["demo_images"]),
             "demo_data": deepcopy(template["demo_data"]),
+            "default_answers": deepcopy(template["default_answers"]),
             "blueprint": deepcopy(template["blueprint"]),
             "prompt_master_seed": template["prompt_master_seed"],
             "stack_profile_id": template["stack_profile_id"],
             "stack_profile": deepcopy(template["stack_profile"]),
             "wizard_route": template["wizard_route"],
         }
-

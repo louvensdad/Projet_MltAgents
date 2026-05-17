@@ -19,21 +19,31 @@ const PREVIEW_MAP: Record<string, ComponentType<{ template: any }>> = {
   ai_saas: AiSaasMiniPreview,
 };
 
+function safeArray(arr: any): any[] {
+  if (Array.isArray(arr)) return arr;
+  if (arr && typeof arr === "object") return Object.values(arr);
+  return [];
+}
+
 export default function TemplateInspectorModal({
   isOpen,
   mode,
   template,
   onClose,
-  onBuild,
+  onUseTemplate,
+  onGenerateNow,
 }: {
   isOpen: boolean;
   mode: "preview" | "architecture" | "blueprint";
   template: any;
   onClose: () => void;
-  onBuild: () => void | Promise<void>;
+  onUseTemplate: () => void | Promise<void>;
+  onGenerateNow: () => void | Promise<void>;
 }) {
   const Preview = PREVIEW_MAP[template?.preview_type] || BackendArchitectureMiniPreview;
   const isArchitectureMode = mode === "architecture" || mode === "blueprint";
+  const images = safeArray(template?.demo_images);
+  const heroImage = template?.image || images[0];
 
   return (
     <AnimatePresence>
@@ -62,18 +72,46 @@ export default function TemplateInspectorModal({
 
             <div className="grid gap-5 p-5 lg:grid-cols-[1.1fr_0.9fr]">
               <div className="space-y-4">
-                <div className="flex flex-wrap gap-2 text-[11px]">
-                  <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-slate-300">{template.stack?.join(" + ")}</span>
-                  <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-cyan-200">{template.status}</span>
-                  <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-slate-300">{template.architecture_label}</span>
+                <div className="grid gap-3 sm:grid-cols-[1.2fr_0.8fr]">
+                  <div className="overflow-hidden rounded-3xl border border-white/10 bg-slate-950/80">
+                    {heroImage ? (
+                      <img src={heroImage} alt={template.name} className="h-full w-full object-cover" />
+                    ) : (
+                      <div className="p-3">
+                        <Preview template={template} />
+                      </div>
+                    )}
+                  </div>
+                  <div className="space-y-3">
+                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                      <p className="text-[10px] uppercase tracking-[0.25em] text-slate-500">Preview visual</p>
+                      <p className="mt-2 text-sm leading-6 text-slate-200">{template.preview_summary || template.description}</p>
+                    </div>
+                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                      <p className="text-[10px] uppercase tracking-[0.25em] text-slate-500">Stack</p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {(template.stack || []).map((item: string) => (
+                          <span key={item} className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-slate-300">{item}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-
-                <Preview template={template} />
 
                 <div className="grid gap-3 sm:grid-cols-2">
                   <TemplateArchitectureDiagram template={template} />
                   <TemplateFileTreePreview template={template} />
                 </div>
+
+                {images.length > 1 && (
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {images.slice(0, 3).map((src: string, index: number) => (
+                      <div key={`${src}-${index}`} className="overflow-hidden rounded-2xl border border-white/10 bg-slate-950/70">
+                        <img src={src} alt={`${template.name} preview ${index + 1}`} className="h-full w-full object-cover" />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="space-y-4">
@@ -102,16 +140,27 @@ export default function TemplateInspectorModal({
                     ))}
                   </div>
                 </div>
-
+                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                  <p className="text-[10px] uppercase tracking-[0.25em] text-slate-500">Live preview</p>
+                  <div className="mt-3 overflow-hidden rounded-2xl border border-white/10 bg-slate-950/80">
+                    <iframe title={`${template.name} live preview`} srcDoc={template.preview_html} className="h-[260px] w-full" />
+                  </div>
+                </div>
                 <div className="flex flex-wrap gap-3 pt-2">
-                  <button onClick={onBuild} className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary/90">
+                  <button onClick={onUseTemplate} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm text-slate-200 hover:bg-white/10">
                     <Sparkles size={16} />
-                    Build
+                    Usar template
                   </button>
-                  <button onClick={onBuild} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm text-slate-200 hover:bg-white/10">
-                    Use template
+                  <button onClick={onGenerateNow} className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary/90">
+                    <Sparkles size={16} />
+                    Gerar agora
                   </button>
                 </div>
+                {isArchitectureMode && (
+                  <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4 text-sm text-cyan-100">
+                    {mode === "blueprint" ? "Blueprint completo e arquivos previstos." : "Arquitetura real e blueprint t?cnico."}
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>

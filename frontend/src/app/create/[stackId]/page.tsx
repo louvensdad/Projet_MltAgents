@@ -158,6 +158,7 @@ export default function CreateWizardPage() {
   const [warnings, setWarnings] = useState<string[]>([]);
   const [isValidating, setIsValidating] = useState(false);
   const templatePrefilled = useRef(false);
+  const [templateContext, setTemplateContext] = useState<any>(null);
 
   const stackProfile = useMemo(() => {
     const normalized = normalizeStackId(stackId) as StackKeyOrStatic;
@@ -186,10 +187,22 @@ export default function CreateWizardPage() {
   }, [stackId]);
 
   useEffect(() => {
-    if (!schema || !templateId || templatePrefilled.current) return;
+    if (typeof window === "undefined") return;
+    const raw = window.sessionStorage.getItem("template_context") || window.localStorage.getItem("template_context");
+    if (!raw) return;
+    try {
+      setTemplateContext(JSON.parse(raw));
+    } catch (err) {
+      console.warn("Invalid template context", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    const effectiveTemplateId = templateId || templateContext?.template_id;
+    if (!schema || !effectiveTemplateId || templatePrefilled.current) return;
 
     let cancelled = false;
-    fetch(`${getApiBaseUrl()}/api/templates/${templateId}/prepare-generation`, {
+    fetch(`${getApiBaseUrl()}/api/templates/${effectiveTemplateId}/prepare-generation`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({}),
@@ -204,8 +217,10 @@ export default function CreateWizardPage() {
         const selectedVersions = defaults.selected_versions || {};
         const selectedOptions = defaults.selected_stack_options || {};
         const selectedVersion = Object.values(selectedVersions).find((value) => Boolean(value));
+        const contextDefaults = templateContext?.default_answers || {};
         setFormData((prev) => ({
           ...prev,
+          ...contextDefaults,
           project_name: defaults.project_name || prev.project_name || schema.name,
           project_description: defaults.project_description || prev.project_description || schema.description,
           version: selectedVersion || prev.version,
@@ -223,7 +238,7 @@ export default function CreateWizardPage() {
     return () => {
       cancelled = true;
     };
-  }, [schema, templateId]);
+  }, [schema, templateId, templateContext]);
 
   useEffect(() => {
     if (!schema || Object.keys(formData).length === 0) return;
