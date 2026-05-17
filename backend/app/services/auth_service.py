@@ -21,6 +21,9 @@ PASSWORD_RESETS_FILE = DATA_DIR / "password_resets.json"
 DEFAULT_ADMIN_EMAIL = os.getenv("DEFAULT_ADMIN_EMAIL", "admin@saasfactory.local").strip().lower()
 DEFAULT_ADMIN_PASSWORD = os.getenv("DEFAULT_ADMIN_PASSWORD", "Admin@123!")
 DEFAULT_ADMIN_NAME = os.getenv("DEFAULT_ADMIN_NAME", "SaaS Factory Admin")
+DEFAULT_USER_EMAIL = os.getenv("DEFAULT_USER_EMAIL", "user@saasfactory.local").strip().lower()
+DEFAULT_USER_PASSWORD = os.getenv("DEFAULT_USER_PASSWORD", "User@123!")
+DEFAULT_USER_NAME = os.getenv("DEFAULT_USER_NAME", "SaaS Factory User")
 
 _USERS_LOCK = Lock()
 _RESETS_LOCK = Lock()
@@ -72,18 +75,16 @@ def _verify_password(password: str, password_hash: str) -> bool:
         return False
 
 
-def _seed_default_users(users: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    if any(str(user.get("email", "")).lower() == DEFAULT_ADMIN_EMAIL for user in users):
-        return users
-
-    admin_id = str(uuid.uuid4())[:8]
+def _seed_user(users: list[dict[str, Any]], *, email: str, password: str, name: str, role: str) -> None:
+    if any(str(user.get("email", "")).lower() == email for user in users):
+        return
     users.append(
         {
-            "id": admin_id,
-            "name": DEFAULT_ADMIN_NAME,
-            "email": DEFAULT_ADMIN_EMAIL,
-            "password_hash": _hash_password(DEFAULT_ADMIN_PASSWORD),
-            "role": "admin",
+            "id": str(uuid.uuid4())[:8],
+            "name": name,
+            "email": email,
+            "password_hash": _hash_password(password),
+            "role": role,
             "active": True,
             "must_reset_password": False,
             "created_at": _now_iso(),
@@ -91,7 +92,6 @@ def _seed_default_users(users: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "last_login_at": None,
         }
     )
-    return users
 
 
 def load_users() -> list[dict[str, Any]]:
@@ -99,10 +99,11 @@ def load_users() -> list[dict[str, Any]]:
         users = _load_json(AUTH_USERS_FILE, [])
         if not isinstance(users, list):
             users = []
-        has_default_admin = any(str(user.get("email", "")).lower() == DEFAULT_ADMIN_EMAIL for user in users)
-        if not has_default_admin:
-            users = list(users)
-            _seed_default_users(users)
+        users = list(users)
+        before = len(users)
+        _seed_user(users, email=DEFAULT_ADMIN_EMAIL, password=DEFAULT_ADMIN_PASSWORD, name=DEFAULT_ADMIN_NAME, role="admin")
+        _seed_user(users, email=DEFAULT_USER_EMAIL, password=DEFAULT_USER_PASSWORD, name=DEFAULT_USER_NAME, role="user")
+        if len(users) != before:
             _save_json(AUTH_USERS_FILE, users)
         return users
 
@@ -139,7 +140,7 @@ def public_user(user: dict[str, Any]) -> dict[str, Any]:
         "id": user.get("id"),
         "name": user.get("name"),
         "email": user.get("email"),
-        "role": user.get("role", "member"),
+        "role": user.get("role", "user"),
         "active": bool(user.get("active", True)),
         "must_reset_password": bool(user.get("must_reset_password", False)),
         "last_login_at": user.get("last_login_at"),
@@ -182,7 +183,7 @@ def login_user(email: str, password: str, remember_device: bool = False, ip_addr
         "sub": str(user.get("id")),
         "email": user.get("email"),
         "name": user.get("name"),
-        "role": user.get("role", "member"),
+        "role": user.get("role", "user"),
         "remember_device": remember_device,
     }
     access_token = JWTManager.create_access_token(token_payload)
@@ -323,7 +324,7 @@ def get_auth_me(token_payload: dict[str, Any]) -> dict[str, Any]:
         "id": token_payload.get("sub"),
         "name": token_payload.get("name"),
         "email": token_payload.get("email"),
-        "role": token_payload.get("role", "member"),
+        "role": token_payload.get("role", "user"),
         "active": True,
         "must_reset_password": bool(token_payload.get("must_reset_password", False)),
         "last_login_at": token_payload.get("last_login_at"),

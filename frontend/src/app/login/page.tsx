@@ -224,9 +224,9 @@ export default function LoginPage() {
                   </div>
 
                   <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-300">
-                    <p className="font-semibold text-white">Local dev account</p>
+                    <p className="font-semibold text-white">Local dev accounts</p>
                     <p className="mt-1 text-slate-400">
-                      Use <span className="text-slate-200">admin@saasfactory.local</span> to access the panel during local testing.
+                      Use <span className="text-slate-200">admin@saasfactory.local</span> for admin access or <span className="text-slate-200">user@saasfactory.local</span> for user access during local testing.
                     </p>
                   </div>
 

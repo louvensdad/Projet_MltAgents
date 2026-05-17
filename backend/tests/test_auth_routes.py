@@ -59,3 +59,30 @@ def test_auth_login_forgot_and_reset_flow(tmp_path, monkeypatch):
 
     assert relogin_response.status_code == 200
     assert relogin_response.json()["success"] is True
+
+
+def test_auth_roles_exist_for_admin_and_user(tmp_path, monkeypatch):
+    monkeypatch.setattr(auth_service, "AUTH_USERS_FILE", tmp_path / "auth_users.json")
+    monkeypatch.setattr(auth_service, "PASSWORD_RESETS_FILE", tmp_path / "password_resets.json")
+
+    client = TestClient(app)
+
+    admin_login = client.post(
+        "/api/auth/login",
+        json={
+            "email": "admin@saasfactory.local",
+            "password": "Admin@123!",
+        },
+    )
+    assert admin_login.status_code == 200
+    assert admin_login.json()["user"]["role"] == "admin"
+
+    user_login = client.post(
+        "/api/auth/login",
+        json={
+            "email": "user@saasfactory.local",
+            "password": "User@123!",
+        },
+    )
+    assert user_login.status_code == 200
+    assert user_login.json()["user"]["role"] == "user"
