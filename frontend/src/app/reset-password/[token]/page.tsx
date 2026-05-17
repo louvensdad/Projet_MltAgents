@@ -5,7 +5,6 @@ import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { ArrowRight, CheckCircle2, KeyRound, Lock } from "lucide-react";
 import { motion } from "framer-motion";
-import PremiumShell from "@/components/premium/PremiumShell";
 import HolographicCard from "@/components/premium/HolographicCard";
 import AnimatedBadge from "@/components/premium/AnimatedBadge";
 import SectionHeader from "@/components/premium/SectionHeader";
@@ -47,18 +46,17 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <PremiumShell>
-      <div className="fixed inset-0 z-[300] overflow-hidden bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.14),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(139,92,246,0.16),transparent_28%),linear-gradient(180deg,#04060b_0%,#05070d_45%,#02040a_100%)]">
-        <div className="pointer-events-none absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(148,163,184,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.12)_1px,transparent_1px)] [background-size:72px_72px]" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(2,6,23,0.42)_78%)]" />
+    <div className="fixed inset-0 z-[300] overflow-hidden bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.14),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(139,92,246,0.16),transparent_28%),linear-gradient(180deg,#04060b_0%,#05070d_45%,#02040a_100%)]">
+      <div className="pointer-events-none absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(148,163,184,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.12)_1px,transparent_1px)] [background-size:72px_72px]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(2,6,23,0.42)_78%)]" />
 
-        <div className="relative flex min-h-screen items-center justify-center px-4 py-8">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, ease: "easeOut" }}
-            className="w-full max-w-3xl"
-          >
+      <div className="relative flex min-h-screen items-center justify-center px-4 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, ease: "easeOut" }}
+          className="w-full max-w-3xl"
+        >
             <HolographicCard className="p-6 md:p-8">
               <div className="flex items-center gap-3">
                 <AnimatedBadge tone="violet">Reset</AnimatedBadge>
@@ -186,9 +184,8 @@ export default function ResetPasswordPage() {
                 </div>
               </div>
             </HolographicCard>
-          </motion.div>
-        </div>
+        </motion.div>
       </div>
-    </PremiumShell>
+    </div>
   );
 }

@@ -5,7 +5,6 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Fingerprint, Globe, KeyRound, Lock, Mail, ShieldCheck, Sparkles, TerminalSquare } from "lucide-react";
 import { motion } from "framer-motion";
-import PremiumShell from "@/components/premium/PremiumShell";
 import HolographicCard from "@/components/premium/HolographicCard";
 import MetricOrb from "@/components/premium/MetricOrb";
 import AnimatedBadge from "@/components/premium/AnimatedBadge";
@@ -47,7 +46,7 @@ export default function LoginPage() {
       storeAuthSession(response, remember);
       setMessage(response.message || "Access granted. Redirecting to the orchestration center.");
       window.setTimeout(() => {
-        router.push(response.redirect_url || "/dashboard");
+        router.push(response.redirect_url || "/");
       }, 400);
     } catch (err) {
       const messageText = err instanceof Error ? err.message : "Falha ao autenticar.";
@@ -58,19 +57,18 @@ export default function LoginPage() {
   };
 
   return (
-    <PremiumShell>
-      <div className="fixed inset-0 z-[300] overflow-hidden bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.14),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(139,92,246,0.16),transparent_28%),linear-gradient(180deg,#04060b_0%,#05070d_45%,#02040a_100%)]">
-        <div className="pointer-events-none absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(148,163,184,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.12)_1px,transparent_1px)] [background-size:72px_72px]" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(2,6,23,0.42)_78%)]" />
+    <div className="fixed inset-0 z-[300] overflow-hidden bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.14),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(139,92,246,0.16),transparent_28%),linear-gradient(180deg,#04060b_0%,#05070d_45%,#02040a_100%)]">
+      <div className="pointer-events-none absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(148,163,184,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.12)_1px,transparent_1px)] [background-size:72px_72px]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(2,6,23,0.42)_78%)]" />
 
-        <div className="relative flex min-h-screen items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
-          <div className="grid w-full max-w-7xl gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-            <motion.section
-              initial={{ opacity: 0, y: 28 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, ease: "easeOut" }}
-              className="space-y-6"
-            >
+      <div className="relative flex min-h-screen items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
+        <div className="grid w-full max-w-7xl gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+          <motion.section
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: "easeOut" }}
+            className="space-y-6"
+          >
               <div className="flex items-center gap-3">
                 <AnimatedBadge tone="cyan">Secure Access</AnimatedBadge>
                 <span className="text-xs uppercase tracking-[0.35em] text-slate-500">Enterprise console</span>
@@ -133,14 +131,14 @@ export default function LoginPage() {
                   </div>
                 </HolographicCard>
               </div>
-            </motion.section>
+          </motion.section>
 
-            <motion.section
-              initial={{ opacity: 0, y: 28, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.6, ease: "easeOut", delay: 0.08 }}
-              className="relative"
-            >
+          <motion.section
+            initial={{ opacity: 0, y: 28, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.08 }}
+            className="relative"
+          >
               <div className="absolute -inset-6 rounded-[2rem] bg-cyan-500/10 blur-3xl" />
               <HolographicCard className="relative z-10 p-5 md:p-6">
                 <div className="flex items-center justify-between gap-3">
@@ -245,7 +243,7 @@ export default function LoginPage() {
 
                 <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-5">
                   <Link href="/" className="text-sm text-slate-400 transition-colors hover:text-white">
-                    Return to dashboard
+                    Enter the panel
                   </Link>
                   <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.35em] text-slate-500">
                     <TerminalSquare size={14} />
@@ -253,10 +251,9 @@ export default function LoginPage() {
                   </div>
                 </div>
               </HolographicCard>
-            </motion.section>
-          </div>
+          </motion.section>
         </div>
       </div>
-    </PremiumShell>
+    </div>
   );
 }

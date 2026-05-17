@@ -88,6 +88,15 @@ export function clearAuthSession() {
   sessionStorage.removeItem("ldcn_auth_user");
 }
 
+export function getAuthToken(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("ldcn_auth_token") || sessionStorage.getItem("ldcn_auth_token");
+}
+
+export function hasAuthSession(): boolean {
+  return Boolean(getAuthToken());
+}
+
 export async function loginWithPassword(payload: {
   email: string;
   password: string;
