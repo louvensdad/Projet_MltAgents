@@ -1,56 +1,38 @@
 "use client";
 
 interface Props {
-  siteName: string;
-  slogan: string;
-  companyDescription: string;
-  mainTexts: string;
-  ctas: string;
+  projectName: string;
   targetAudience: string;
-  onChange: (field: string, value: string) => void;
-  t: (k: string) => string;
+  businessGoal: string;
+  onChange: (field: "project_name" | "target_audience" | "business_goal", value: string) => void;
 }
 
-export default function ContentStep({ siteName, slogan, companyDescription, mainTexts, ctas, targetAudience, onChange, t }: Props) {
-  const inputClass = "w-full bg-black/20 border-2 border-white/10 rounded-xl px-5 py-4 text-white focus:outline-none focus:border-primary transition-all shadow-inner placeholder:text-gray-700";
-  const labelClass = "block text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] ml-1";
-
+function Field({ label, value, onChange, placeholder, multiline = false }: { label: string; value: string; onChange: (value: string) => void; placeholder: string; multiline?: boolean }) {
+  const className = "w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-gray-600 outline-none transition focus:border-cyan-400/40 focus:bg-white/[0.05]";
   return (
-    <div className="space-y-5 animate-in slide-in-from-right-4">
-      <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4">
-        <p className="text-sm font-semibold text-cyan-100">
-          Descreva qualquer negócio, oferta ou objetivo. O Prompt Master converte isso em landing pages independentes com SEO, acessibilidade, formulário e analytics.
-        </p>
-      </div>
+    <label className="space-y-2">
+      <span className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">{label}</span>
+      {multiline ? (
+        <textarea className={`${className} min-h-28`} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />
+      ) : (
+        <input className={className} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />
+      )}
+    </label>
+  );
+}
 
-      <div className="space-y-6">
-        <div>
-          <label className={labelClass}>{t("wizard.static.site_name")}</label>
-          <input type="text" className={inputClass} value={siteName} onChange={e => onChange("site_name", e.target.value)} />
-        </div>
-        <div>
-          <label className={labelClass}>{t("wizard.static.slogan")}</label>
-          <input type="text" className={inputClass} value={slogan} onChange={e => onChange("slogan", e.target.value)} />
-        </div>
-        <div>
-          <label className={labelClass}>{t("wizard.static.company_description")}</label>
-          <textarea rows={4} className={inputClass} value={companyDescription} onChange={e => onChange("company_description", e.target.value)} />
-        </div>
-        <div>
-          <label className={labelClass}>{t("wizard.static.main_texts")}</label>
-          <textarea rows={4} className={inputClass} value={mainTexts} onChange={e => onChange("main_texts", e.target.value)} />
-        </div>
-        <div className="grid gap-4 md:grid-cols-2">
-          <div>
-            <label className={labelClass}>{t("wizard.static.ctas")}</label>
-            <input type="text" className={inputClass} value={ctas} onChange={e => onChange("ctas", e.target.value)} />
-          </div>
-          <div>
-            <label className={labelClass}>{t("wizard.static.target_audience")}</label>
-            <input type="text" className={inputClass} value={targetAudience} onChange={e => onChange("target_audience", e.target.value)} />
-          </div>
-        </div>
+export default function ContentStep({ projectName, targetAudience, businessGoal, onChange }: Props) {
+  return (
+    <div className="space-y-5">
+      <div>
+        <p className="text-sm font-semibold text-gray-200">Project context</p>
+        <p className="text-xs text-gray-500">These fields feed the Prompt Master and the generator contract.</p>
       </div>
+      <div className="grid gap-4 md:grid-cols-2">
+        <Field label="Project name" value={projectName} onChange={(value) => onChange("project_name", value)} placeholder="Acme Studio" />
+        <Field label="Target audience" value={targetAudience} onChange={(value) => onChange("target_audience", value)} placeholder="Small businesses, startups, agencies" />
+      </div>
+      <Field label="Business goal" value={businessGoal} onChange={(value) => onChange("business_goal", value)} placeholder="Generate leads and present the offer clearly" multiline />
     </div>
   );
 }

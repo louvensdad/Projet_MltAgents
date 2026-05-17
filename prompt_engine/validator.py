@@ -12,9 +12,11 @@ class PromptValidator:
         self.stack_registry = stack_registry
 
     def validate(self, user_input: str, stack_id: str, form_data: dict):
-        self._check_stack_exists(stack_id)
+        normalized_stack_id = self.stack_registry.normalize_stack_id(stack_id)
+        self._check_stack_exists(normalized_stack_id)
         self._check_generic_prompt(user_input)
-        self._check_incompatible_architecture(stack_id, form_data)
+        self._check_required_fields(normalized_stack_id, form_data)
+        self._check_incompatible_architecture(normalized_stack_id, form_data)
 
     def _check_stack_exists(self, stack_id: str):
         try:
@@ -30,9 +32,31 @@ class PromptValidator:
         if len(words) < 4:
             raise PromptValidationException("Prompt is too generic. Must contain at least 4 words describing the app.")
 
+    def _check_required_fields(self, stack_id: str, form_data: dict):
+        try:
+            stack = self.stack_registry.get_stack(stack_id)
+        except ValueError:
+            return
+
+        required_fields = stack.get("required_fields", []) or []
+        missing = []
+        for field in required_fields:
+            value = form_data.get(field)
+            if isinstance(value, bool):
+                continue
+            if isinstance(value, list):
+                if not value:
+                    missing.append(field)
+                continue
+            if value is None or not str(value).strip():
+                missing.append(field)
+
+        if missing:
+            raise PromptValidationException(f"Missing required fields: {', '.join(missing)}")
+
     def _check_incompatible_architecture(self, stack_id: str, form_data: dict):
         # E.g., static-site shouldn't have microservices
-        if stack_id == "static-site" and form_data.get("architecture") == "microservices":
+        if stack_id == "static_site" and form_data.get("architecture") == "microservices":
             raise PromptValidationException("Incompatible Architecture: Static Sites cannot be microservices.")
         
         # E.g., Spring Boot microservices requires API Gateway

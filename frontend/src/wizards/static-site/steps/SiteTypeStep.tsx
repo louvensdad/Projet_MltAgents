@@ -1,30 +1,38 @@
 "use client";
 
+import type { OptionItem } from "../staticSiteConfig";
+
 interface Props {
   value: string;
-  onSelect: (v: string) => void;
-  t: (k: string) => string;
-  options: string[];
+  onSelect: (value: string) => void;
+  options: OptionItem[];
 }
 
-export default function SiteTypeStep({ value, onSelect, t, options }: Props) {
+export default function SiteTypeStep({ value, onSelect, options }: Props) {
   return (
-    <div className="space-y-3">
-      <p className="text-sm font-semibold text-gray-200">{t("wizard.static.site_type_title")}</p>
+    <div className="space-y-4">
+      <div>
+        <p className="text-sm font-semibold text-gray-200">Select the site type</p>
+        <p className="text-xs text-gray-500">This determines the prompt, sections and SEO focus.</p>
+      </div>
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-        {options.map((key) => (
-          <button
-            key={key}
-            onClick={() => onSelect(key)}
-            className={`rounded-xl border p-4 text-left transition-all ${
-              value === key
-                ? "border-primary bg-primary/10 text-primary shadow-[0_0_20px_rgba(59,130,246,0.1)]"
-                : "border-white/10 text-gray-300 hover:border-white/30"
-            }`}
-          >
-            <span className="text-sm font-medium">{t(key)}</span>
-          </button>
-        ))}
+        {options.map((option) => {
+          const selected = value === option.value;
+          return (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => onSelect(option.value)}
+              className={`rounded-2xl border p-4 text-left transition-all ${
+                selected
+                  ? "border-cyan-400/40 bg-cyan-500/10 text-cyan-100"
+                  : "border-white/10 bg-white/[0.03] text-gray-300 hover:border-white/20 hover:bg-white/[0.05]"
+              }`}
+            >
+              <span className="text-sm font-semibold">{option.label}</span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

@@ -26,9 +26,9 @@ class PromptMasterContract:
 
 class PromptGeneratorEngine:
     def __init__(self, stack_id: str):
-        self.stack_id = stack_id
         self.stack_registry = StackRegistry()
-        self.stack_definition = self.stack_registry.get_stack(stack_id)
+        self.stack_id = self.stack_registry.normalize_stack_id(stack_id)
+        self.stack_definition = self.stack_registry.get_stack(self.stack_id)
         self.prompt_validator = PromptValidator(self.stack_registry)
         self.prompt_master_builder = PromptMaster(self.stack_registry)
         self.answers: dict[str, Any] = {}
@@ -64,7 +64,12 @@ class PromptGeneratorEngine:
         self.errors = []
         self.warnings = []
         try:
-            user_input = str(self.answers.get("project_description") or self.answers.get("project_name") or "").strip()
+            user_input = str(
+                self.answers.get("project_description")
+                or self.answers.get("business_goal")
+                or self.answers.get("project_name")
+                or ""
+            ).strip()
             self.prompt_validator.validate(user_input, self.stack_id, self.answers)
             self._validated = True
             return True
@@ -81,7 +86,12 @@ class PromptGeneratorEngine:
         if not self._validated and not self.validate():
             raise ValueError("Prompt validation failed")
 
-        user_input = str(self.answers.get("project_description") or self.answers.get("project_name") or "")
+        user_input = str(
+            self.answers.get("project_description")
+            or self.answers.get("business_goal")
+            or self.answers.get("project_name")
+            or ""
+        )
         prompt_data = self.prompt_master_builder.build_master_prompt(user_input, self.stack_id, self.answers)
         prompt_text = "\n".join(
             [
@@ -99,8 +109,21 @@ class PromptGeneratorEngine:
         )
 
     def missing_required(self) -> list[str]:
-        required = ["project_name", "project_description"]
-        return [field for field in required if not str(self.answers.get(field, "")).strip()]
+        required = self.stack_definition.get("required_fields", []) or []
+        missing: list[str] = []
+        for field in required:
+            value = self.answers.get(field)
+            if isinstance(value, bool):
+                continue
+            if isinstance(value, list):
+                if not value:
+                    missing.append(field)
+                continue
+            if value is None or not str(value).strip():
+                missing.append(field)
+        if not str(self.answers.get("project_description") or self.answers.get("business_goal") or "").strip():
+            missing.append("project_description")
+        return sorted(set(missing))
 
 
 PromptGenerator = PromptGeneratorEngine

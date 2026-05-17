@@ -38,7 +38,7 @@ const FRONTEND_NODES: NodeDef[] = [
 ];
 
 export default function ArchitectureMiniMap({ projectType, modules, activeFeatures }: Props) {
-  const nodes = projectType === "static" ? STATIC_NODES
+  const nodes = projectType === "static" || projectType === "static_site" ? STATIC_NODES
     : projectType === "api" ? API_NODES
     : projectType === "frontend" ? FRONTEND_NODES
     : [];

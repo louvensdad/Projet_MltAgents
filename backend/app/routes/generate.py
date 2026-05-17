@@ -48,11 +48,20 @@ def health_check():
 
 
 def _normalize_stack_id(payload: dict[str, Any]) -> str:
-    stack = str(payload.get("stack_profile_id") or payload.get("wizard_type") or payload.get("backend_stack") or "static_site")
+    stack = str(
+        payload.get("stack_id")
+        or payload.get("stack_profile_id")
+        or payload.get("project_type")
+        or payload.get("wizard_type")
+        or payload.get("backend_stack")
+        or "static_site"
+    )
     normalized = stack.strip().lower().replace(" ", "_").replace("+", "_").replace("-", "_")
     aliases = {
         "static_site": "static_site",
         "static": "static_site",
+        "static-site": "static_site",
+        "static_site_wizard": "static_site",
         "springboot": "springboot",
         "java_springboot": "springboot",
         "fastapi": "fastapi",
@@ -90,7 +99,7 @@ def _map_architecture(value: str, stack_id: str) -> str:
 
 
 def _build_prompt_answers(payload: dict[str, Any], stack_id: str) -> dict[str, Any]:
-    locale = str(payload.get("project_language") or payload.get("locale") or "pt").split("-")[0]
+    locale = str(payload.get("project_language") or payload.get("locale") or "pt").strip()
     project_name = payload.get("project_name") or payload.get("site_name") or "projeto"
     base: dict[str, Any] = {
         "project_name": project_name,
@@ -102,33 +111,70 @@ def _build_prompt_answers(payload: dict[str, Any], stack_id: str) -> dict[str, A
 
     if stack_id == "static_site":
         sections = _to_list(payload.get("sections"))
-        form_options = _to_list(payload.get("forms", {}).get("options"))
-        ux_options = _to_list(payload.get("ux", {}).get("options"))
-        normalized_form_features = [
-            "contact_capture" if "contact" in item.lower() else item.lower().replace("_", "-")
-            for item in form_options
-        ]
+        brand_colors = _to_list(payload.get("brand_colors")) or _to_list(payload.get("design", {}).get("brand_colors"))
+        seo_keywords = _to_list(payload.get("seo_keywords")) or _to_list(payload.get("seo", {}).get("keywords"))
+        animations = str(payload.get("animations") or payload.get("design", {}).get("animations") or "subtle")
+        contact_method = str(payload.get("contact_method") or payload.get("forms", {}).get("contact_method") or "form")
+        accessibility_level = str(payload.get("accessibility_level") or "strong")
+        analytics = bool(payload.get("analytics", payload.get("seo", {}).get("analytics", True)))
+        seo_title = payload.get("seo_title") or payload.get("seo", {}).get("meta_title") or project_name
+        seo_description = payload.get("seo_description") or payload.get("seo", {}).get("meta_description") or payload.get("business_goal") or payload.get("project_description") or project_name
+        project_description = payload.get("project_description") or payload.get("business_goal") or f"Static Site for {project_name}"
         base.update({
             "site_type": payload.get("site_type", "landing_page"),
+            "business_goal": payload.get("business_goal") or project_description,
+            "target_audience": payload.get("target_audience") or "general_users",
             "sections": sections,
-            "visual_style": payload.get("design", {}).get("visual_style", "glassmorphism"),
-            "color_palette": payload.get("design", {}).get("color_palette", "dark_cyber"),
-            "brand_tone": payload.get("design", {}).get("brand_tone", "tech_startup"),
-            "dark_mode": payload.get("design", {}).get("dark_mode", True),
-            "lazy_loading": payload.get("seo", {}).get("lazy_loading", True),
-            "meta_title": payload.get("seo", {}).get("meta_title") or project_name,
-            "meta_description": payload.get("seo", {}).get("meta_description") or payload.get("content", {}).get("company_description") or project_name,
-            "open_graph": payload.get("seo", {}).get("open_graph", True),
-            "sitemap": payload.get("seo", {}).get("sitemap", True),
-            "robots_txt": payload.get("seo", {}).get("robots_txt", True),
-            "csp_enabled": payload.get("security_frontend", {}).get("csp_enabled", True),
-            "js_sanitization": payload.get("security_frontend", {}).get("js_sanitization", True),
-            "unsafe_link_protection": payload.get("security_frontend", {}).get("unsafe_link_protection", True),
-            "form_validation": payload.get("security_frontend", {}).get("form_validation", True),
-            "auth_strategy": "none",
-            "containerization": "none",
-            "confirmed_entities": ["LandingPage", "MarketingSection"] if sections else ["LandingPage", "SiteContent"],
-            "confirmed_features": sections + normalized_form_features + ux_options or ["hero", "contact", "seo", "responsive-layout"],
+            "visual_style": payload.get("visual_style") or payload.get("design", {}).get("visual_style", "premium"),
+            "brand_colors": brand_colors,
+            "seo_keywords": seo_keywords,
+            "color_palette": ", ".join(brand_colors),
+            "brand_tone": payload.get("visual_style") or "premium",
+            "dark_mode": str(payload.get("visual_style") or "").lower() == "dark_tech",
+            "contact_method": contact_method,
+            "analytics": analytics,
+            "animations": animations,
+            "accessibility_level": accessibility_level,
+            "language": payload.get("language") or payload.get("project_language") or locale,
+            "seo_title": seo_title,
+            "seo_description": seo_description,
+            "meta_title": seo_title,
+            "meta_description": seo_description,
+            "open_graph": payload.get("open_graph", payload.get("seo", {}).get("open_graph", True)),
+            "lazy_loading": payload.get("lazy_loading", payload.get("seo", {}).get("lazy_loading", True)),
+            "seo": {
+                "meta_title": seo_title,
+                "meta_description": seo_description,
+                "keywords": seo_keywords,
+                "open_graph": payload.get("open_graph", payload.get("seo", {}).get("open_graph", True)),
+                "sitemap": payload.get("sitemap", payload.get("seo", {}).get("sitemap", True)),
+                "robots_txt": payload.get("robots_txt", payload.get("seo", {}).get("robots_txt", True)),
+                "lazy_loading": payload.get("lazy_loading", payload.get("seo", {}).get("lazy_loading", True)),
+            },
+            "forms": {
+                "contact_method": contact_method,
+                "options": [] if contact_method == "none" else [contact_method],
+            },
+            "ux": {
+                "options": [animations, accessibility_level],
+            },
+            "project_description": project_description,
+            "gatekeeper_active": True,
+            "confirmed_business_rules": [
+                "Semantic HTML required",
+                "No backend or database",
+                "SEO, accessibility and responsiveness are mandatory",
+            ],
+            "confirmed_entities": ["LandingPage", "MarketingSection", "ContactForm"] if sections else ["LandingPage"],
+            "confirmed_features": sections + brand_colors + seo_keywords + [contact_method, animations, accessibility_level],
+            "required_files": [
+                "index.html",
+                "assets/css/style.css",
+                "assets/js/main.js",
+                "README.md",
+                "docs/SEO.md",
+                "docs/ACCESSIBILITY.md",
+            ],
         })
         return base
 
@@ -214,7 +260,7 @@ def generate_project(payload: dict[str, Any]):
 
     stack_id = _normalize_stack_id(payload)
     project_name = payload.get("project_name") or payload.get("site_name") or "projeto"
-    project_type = payload.get("project_type", "static_site" if stack_id == "static_site" else "api")
+    project_type = payload.get("project_type") or ("static_site" if stack_id == "static_site" else "api")
     prompt_answers = _build_prompt_answers(payload, stack_id)
 
     logger.info("Official generate requested: project=%s stack=%s", project_name, stack_id)
@@ -258,9 +304,12 @@ def generate_project(payload: dict[str, Any]):
     payload["_prompt_master"] = prompt_master.model_dump()
     payload["_prompt_text"] = prompt_master.prompt_text
     payload["prompt_master"] = prompt_master.model_dump()
+    payload["stack_id"] = stack_id
     payload["stack_profile_id"] = stack_id
     payload["project_name"] = project_name
     payload["project_type"] = project_type
+    payload["project_brief"] = prompt_answers
+    payload["brief"] = prompt_answers
     payload["user_idea"] = payload.get("user_idea") or prompt_answers.get("project_description", "")
     payload["backend_stack"] = _backend_stack_name(stack_id)
     payload["project_language"] = prompt_answers.get("project_language", "pt")

@@ -1,4 +1,4 @@
-export type BuilderProjectType = "static" | "api" | "frontend" | "saas" | "automation" | "agents";
+export type BuilderProjectType = "static_site" | "static" | "api" | "frontend" | "saas" | "automation" | "agents";
 
 export interface FileTreeEntry {
   path: string;

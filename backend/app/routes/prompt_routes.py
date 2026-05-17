@@ -22,12 +22,21 @@ router = APIRouter(prefix="/api/prompt", tags=["prompt"])
 
 class PromptAnswersRequest(BaseModel):
     stack_id: str
+    project_type: Optional[str] = None
     answers: dict[str, Any] = {}
+    locale: Optional[str] = None
 
 class PromptValidateRequest(BaseModel):
     stack_id: str
+    project_type: Optional[str] = None
     project_name: str
     answers: dict[str, Any] = {}
+    locale: Optional[str] = None
+
+
+def _normalize_stack_id(stack_id: str) -> str:
+    from stack_registry.registry import StackRegistry
+    return StackRegistry.normalize_stack_id(stack_id)
 
 
 # ── Endpoints ────────────────────────────────────────────────────────────────
@@ -91,24 +100,33 @@ def build_prompt_master(req: PromptAnswersRequest):
         raise HTTPException(503, "Prompt Engine not available")
 
     try:
-        engine = PromptGeneratorEngine(req.stack_id)
+        stack_id = _normalize_stack_id(req.stack_id or req.project_type or "")
+        engine = PromptGeneratorEngine(stack_id)
         engine.answer_bulk(req.answers)
 
         if not engine.validate():
+            missing = engine.missing_required()
             return {
+                "success": False,
                 "status": "rejected",
+                "stack_id": stack_id,
                 "errors": engine.errors,
                 "warnings": engine.warnings,
-                "missing_required": engine.missing_required(),
+                "missing_fields": missing,
+                "validation": {"passed": False},
             }
 
         master = engine.finalize()
         return {
+            "success": True,
             "status": master.status,
+            "stack_id": stack_id,
             "prompt_master": master.model_dump(),
             "warnings": engine.warnings,
+            "missing_fields": [],
+            "validation": {"passed": True},
         }
-    except KeyError:
+    except (KeyError, ValueError):
         raise HTTPException(404, f"Stack profile not found: {req.stack_id}")
     except Exception as e:
         logger.exception("Prompt build failed")
@@ -124,7 +142,8 @@ def validate_prompt(req: PromptValidateRequest):
         raise HTTPException(503, "Prompt Engine not available")
 
     try:
-        engine = PromptGeneratorEngine(req.stack_id)
+        stack_id = _normalize_stack_id(req.stack_id or req.project_type or "")
+        engine = PromptGeneratorEngine(stack_id)
 
         # Always set project_name explicitly
         engine.answer("project_name", req.project_name)
@@ -133,21 +152,23 @@ def validate_prompt(req: PromptValidateRequest):
         if not engine.validate():
             return {
                 "valid": False,
+                "stack_id": stack_id,
                 "errors": engine.errors,
                 "warnings": engine.warnings,
-                "missing_required": engine.missing_required(),
+                "missing_fields": engine.missing_required(),
                 "answered_count": engine.answered_count,
                 "total_questions": engine.total_questions,
             }
 
         return {
             "valid": True,
+            "stack_id": stack_id,
             "warnings": engine.warnings,
             "answered_count": engine.answered_count,
             "total_questions": engine.total_questions,
             "stack_name": engine.stack_name,
         }
-    except KeyError:
+    except (KeyError, ValueError):
         raise HTTPException(404, f"Stack profile not found: {req.stack_id}")
     except Exception as e:
         logger.exception("Prompt validation failed")
@@ -157,20 +178,23 @@ def validate_prompt(req: PromptValidateRequest):
 @router.get("/template/{stack_id}")
 def get_prompt_template(stack_id: str):
     """Retorna o template de prompt markdown para uma stack."""
-    template_dir = os.path.join(ROOT_DIR, "prompt_engine", "prompt_templates")
-    template_path = os.path.join(template_dir, f"{stack_id}_prompt.md")
+    template_dirs = [
+        os.path.join(ROOT_DIR, "prompt_engine", "templates"),
+        os.path.join(ROOT_DIR, "prompt_engine", "prompt_templates"),
+    ]
+    normalized_stack_id = _normalize_stack_id(stack_id)
+    template_path = None
 
-    if not os.path.exists(template_path):
-        # Try aliases
-        aliases = {"java_springboot": "springboot", "python_fastapi": "fastapi",
-                    "node_nestjs": "nestjs", "static": "static_site"}
-        resolved = aliases.get(stack_id, stack_id)
-        template_path = os.path.join(template_dir, f"{resolved}_prompt.md")
+    for template_dir in template_dirs:
+        candidate = os.path.join(template_dir, f"{normalized_stack_id}_prompt.md")
+        if os.path.exists(candidate):
+            template_path = candidate
+            break
 
-    if not os.path.exists(template_path):
-        raise HTTPException(404, f"No prompt template for stack: {stack_id}")
+    if not template_path:
+        raise HTTPException(404, f"No prompt template for stack: {normalized_stack_id}")
 
     with open(template_path, "r", encoding="utf-8") as f:
         content = f.read()
 
-    return {"stack_id": stack_id, "template": content}
+    return {"stack_id": normalized_stack_id, "template": content}

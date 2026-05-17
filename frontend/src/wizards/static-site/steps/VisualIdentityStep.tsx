@@ -1,77 +1,72 @@
 "use client";
 
+import type { OptionItem } from "../staticSiteConfig";
+
 interface Props {
   visualStyle: string;
-  colorPalette: string;
-  brandTone: string;
-  hasLogo: boolean;
-  darkMode: boolean;
-  onVisualStyle: (v: string) => void;
-  onColorPalette: (v: string) => void;
-  onBrandTone: (v: string) => void;
-  onHasLogo: (v: boolean) => void;
-  onDarkMode: (v: boolean) => void;
-  t: (k: string) => string;
-  visualStyles: string[];
-  colorPalettes: string[];
-  brandTones: string[];
+  brandColors: string[];
+  onVisualStyle: (value: string) => void;
+  onToggleColor: (value: string) => void;
+  visualStyles: OptionItem[];
+  brandColorsOptions: OptionItem[];
 }
 
-function Toggle({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
+export default function VisualIdentityStep({
+  visualStyle,
+  brandColors,
+  onVisualStyle,
+  onToggleColor,
+  visualStyles,
+  brandColorsOptions,
+}: Props) {
   return (
-    <div
-      onClick={onClick}
-      className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition-all ${
-        active ? "border-primary bg-primary/10 text-primary" : "border-white/10 text-gray-400 hover:border-white/30"
-      }`}
-    >
-      <div className={`h-5 w-10 rounded-full transition-colors ${active ? "bg-primary" : "bg-white/20"}`}>
-        <div className={`h-5 w-5 rounded-full bg-white transition-transform ${active ? "translate-x-5" : ""}`} />
+    <div className="space-y-6">
+      <div>
+        <p className="text-sm font-semibold text-gray-200">Visual identity</p>
+        <p className="text-xs text-gray-500">Choose a style and optional brand colors.</p>
       </div>
-      <span className="text-sm font-medium">{label}</span>
-    </div>
-  );
-}
 
-function OptionGrid({ value, onChange, options, t }: { value: string; onChange: (v: string) => void; options: string[]; t: (k: string) => string }) {
-  return (
-    <div className="grid gap-2 md:grid-cols-3">
-      {options.map((key) => (
-        <button
-          key={key}
-          onClick={() => onChange(key)}
-          className={`rounded-lg border px-3 py-2 text-left text-sm transition-all ${
-            value === key
-              ? "border-primary bg-primary/10 text-primary"
-              : "border-white/10 text-gray-400 hover:border-white/30"
-          }`}
-        >
-          {t(key)}
-        </button>
-      ))}
-    </div>
-  );
-}
+      <div className="grid gap-3 md:grid-cols-3">
+        {visualStyles.map((option) => {
+          const selected = visualStyle === option.value;
+          return (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => onVisualStyle(option.value)}
+              className={`rounded-2xl border p-4 text-left transition-all ${
+                selected
+                  ? "border-violet-400/40 bg-violet-500/10 text-violet-100"
+                  : "border-white/10 bg-white/[0.03] text-gray-300 hover:border-white/20 hover:bg-white/[0.05]"
+              }`}
+            >
+              <span className="text-sm font-semibold">{option.label}</span>
+            </button>
+          );
+        })}
+      </div>
 
-export default function VisualIdentityStep(props: Props) {
-  const { t, visualStyles, colorPalettes, brandTones } = props;
-  return (
-    <div className="space-y-6 animate-in slide-in-from-right-4">
       <div>
-        <p className="mb-2 text-sm font-semibold text-gray-200">{t("wizard.static.visual_style")}</p>
-        <OptionGrid value={props.visualStyle} onChange={props.onVisualStyle} options={visualStyles} t={t} />
-      </div>
-      <div>
-        <p className="mb-2 text-sm font-semibold text-gray-200">{t("wizard.static.color_palette")}</p>
-        <OptionGrid value={props.colorPalette} onChange={props.onColorPalette} options={colorPalettes} t={t} />
-      </div>
-      <div>
-        <p className="mb-2 text-sm font-semibold text-gray-200">{t("wizard.static.brand_tone")}</p>
-        <OptionGrid value={props.brandTone} onChange={props.onBrandTone} options={brandTones} t={t} />
-      </div>
-      <div className="grid gap-4 md:grid-cols-2">
-        <Toggle active={props.hasLogo} onClick={() => props.onHasLogo(!props.hasLogo)} label={t("wizard.static.has_logo")} />
-        <Toggle active={props.darkMode} onClick={() => props.onDarkMode(!props.darkMode)} label={t("wizard.static.dark_mode")} />
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">Brand colors</p>
+        <div className="flex flex-wrap gap-2">
+          {brandColorsOptions.map((option) => {
+            const selected = brandColors.includes(option.value);
+            return (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => onToggleColor(option.value)}
+                className={`rounded-full border px-4 py-2 text-sm transition-all ${
+                  selected
+                    ? "border-cyan-400/40 bg-cyan-500/15 text-cyan-100"
+                    : "border-white/10 bg-white/[0.03] text-gray-300 hover:border-white/20"
+                }`}
+              >
+                {option.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

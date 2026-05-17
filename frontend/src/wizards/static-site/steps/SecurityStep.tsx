@@ -1,42 +1,78 @@
 "use client";
 
+import type { ToggleItem } from "../staticSiteConfig";
+
 interface Props {
-  cspEnabled: boolean;
-  jsSanitization: boolean;
-  unsafeLinkProtection: boolean;
-  noCredentialsFrontend: boolean;
-  formValidation: boolean;
-  onChange: (field: string, value: boolean) => void;
-  t: (k: string) => string;
+  lazyLoading: boolean;
+  semanticHtml: boolean;
+  altText: boolean;
+  responsive: boolean;
+  reducedMotion: boolean;
+  accessibilityLevel: string;
+  onToggle: (field: "lazy_loading" | "semantic_html" | "alt_text" | "responsive" | "reduced_motion", value: boolean) => void;
+  onAccessibilityChange: (value: string) => void;
+  options: ToggleItem[];
+  accessibilityOptions: { value: string; label: string }[];
 }
 
-function Toggle({ active, onClick, label, desc }: { active: boolean; onClick: () => void; label: string; desc?: string }) {
-  return (
-    <div onClick={onClick} className={`flex cursor-pointer items-center gap-4 rounded-xl border p-5 transition-all ${
-      active ? "border-emerald-500/40 bg-emerald-500/5" : "border-white/10 text-gray-400 hover:border-white/30"
-    }`}>
-      <div className={`h-6 w-12 rounded-full transition-colors ${active ? "bg-emerald-500" : "bg-white/20"}`}>
-        <div className={`h-6 w-6 rounded-full bg-white transition-transform shadow ${active ? "translate-x-6" : ""}`} />
-      </div>
-      <div className="flex-1">
-        <p className={`text-sm font-semibold ${active ? "text-emerald-300" : "text-gray-300"}`}>{label}</p>
-        {desc && <p className="text-xs text-gray-500 mt-0.5">{desc}</p>}
-      </div>
-    </div>
-  );
-}
+export default function SecurityStep({ lazyLoading, semanticHtml, altText, responsive, reducedMotion, accessibilityLevel, onToggle, onAccessibilityChange, options, accessibilityOptions }: Props) {
+  const values = {
+    lazy_loading: lazyLoading,
+    semantic_html: semanticHtml,
+    alt_text: altText,
+    responsive: responsive,
+    reduced_motion: reducedMotion,
+  };
 
-export default function SecurityStep(props: Props) {
-  const { t, onChange } = props;
   return (
-    <div className="space-y-3">
-      <p className="text-sm font-semibold text-gray-200">{t("wizard.static.security_title")}</p>
+    <div className="space-y-4">
+      <div>
+        <p className="text-sm font-semibold text-gray-200">Performance and accessibility</p>
+        <p className="text-xs text-gray-500">These switches are validated before generation.</p>
+      </div>
       <div className="space-y-3">
-        <Toggle active={props.cspEnabled} onClick={() => onChange("csp_enabled", !props.cspEnabled)} label={t("wizard.static.csp_enabled")} desc={t("wizard.static.csp_enabled_desc")} />
-        <Toggle active={props.jsSanitization} onClick={() => onChange("js_sanitization", !props.jsSanitization)} label={t("wizard.static.js_sanitization")} desc={t("wizard.static.js_sanitization_desc")} />
-        <Toggle active={props.unsafeLinkProtection} onClick={() => onChange("unsafe_link_protection", !props.unsafeLinkProtection)} label={t("wizard.static.unsafe_link_protection")} desc={t("wizard.static.unsafe_link_protection_desc")} />
-        <Toggle active={props.noCredentialsFrontend} onClick={() => onChange("no_credentials_frontend", !props.noCredentialsFrontend)} label={t("wizard.static.no_credentials_frontend")} desc={t("wizard.static.no_credentials_frontend_desc")} />
-        <Toggle active={props.formValidation} onClick={() => onChange("form_validation", !props.formValidation)} label={t("wizard.static.form_validation")} desc={t("wizard.static.form_validation_desc")} />
+        {options.map((option) => {
+          const active = values[option.key as keyof typeof values];
+          return (
+            <button
+              key={option.key}
+              type="button"
+              onClick={() => onToggle(option.key as any, !active)}
+              className={`flex w-full items-center justify-between rounded-2xl border px-4 py-3 text-left transition-all ${
+                active ? "border-cyan-400/40 bg-cyan-500/10 text-cyan-100" : "border-white/10 bg-white/[0.03] text-gray-300 hover:border-white/20"
+              }`}
+            >
+              <div>
+                <p className="text-sm font-semibold">{option.label}</p>
+                <p className="text-xs text-gray-500">{option.description}</p>
+              </div>
+              <span className={`ml-4 h-5 w-10 rounded-full transition-all ${active ? "bg-cyan-400" : "bg-white/15"}`}>
+                <span className={`block h-5 w-5 rounded-full bg-white transition-transform ${active ? "translate-x-5" : ""}`} />
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="space-y-2 pt-2">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">Accessibility level</p>
+        <div className="grid gap-3 md:grid-cols-2">
+          {accessibilityOptions.map((option) => {
+            const active = accessibilityLevel === option.value;
+            return (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => onAccessibilityChange(option.value)}
+                className={`rounded-2xl border px-4 py-3 text-left transition-all ${
+                  active ? "border-cyan-400/40 bg-cyan-500/10 text-cyan-100" : "border-white/10 bg-white/[0.03] text-gray-300 hover:border-white/20"
+                }`}
+              >
+                <span className="text-sm font-semibold">{option.label}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

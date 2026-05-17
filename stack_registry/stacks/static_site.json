@@ -1,78 +1,138 @@
 {
-    "id": "static-site",
-    "name": "Static Site",
-    "description": "HTML/CSS/JS with SEO-first architecture",
-    "form_schema": [
-        {
-            "id": "site_type",
-            "label": "Site Type",
-            "type": "select",
-            "options": [
-                "landing_page",
-                "portfolio",
-                "blog"
-            ],
-            "default": "landing_page"
-        },
-        {
-            "id": "seo",
-            "label": "Enable Advanced SEO",
-            "type": "boolean",
-            "default": true
-        },
-        {
-            "id": "cms",
-            "label": "CMS Integration",
-            "type": "select",
-            "options": [
-                "none",
-                "netlify_cms",
-                "sanity"
-            ],
-            "default": "none"
-        },
-        {
-            "id": "analytics",
-            "label": "Analytics",
-            "type": "select",
-            "options": [
-                "none",
-                "google_analytics",
-                "plausible"
-            ],
-            "default": "none"
-        },
-        {
-            "id": "animations",
-            "label": "Animations Library",
-            "type": "select",
-            "options": [
-                "none",
-                "framer_motion",
-                "gsap"
-            ],
-            "default": "none"
-        },
-        {
-            "id": "forms",
-            "label": "Forms & Newsletter",
-            "type": "boolean",
-            "default": false
-        }
-    ],
-    "validation_rules": [],
-    "best_practices": {
-        "examples": [
-            "Clean Architecture snippet",
-            "DTO usage example"
-        ],
-        "rules": [
-            "Always validate DTOs",
-            "Use structured logging"
-        ],
-        "patterns": [
-            "Repository Pattern",
-            "Service Layer"
-        ]
+  "id": "static_site",
+  "aliases": ["static-site", "static", "Static Site", "static_site_wizard"],
+  "display_name": "Static Site",
+  "name": "Static Site",
+  "category": "site",
+  "status": "stable",
+  "description": "SEO-first static websites built with semantic HTML, organized CSS and modular JavaScript.",
+  "generator": "StaticSiteGenerator",
+  "gatekeeper": "StaticSiteGatekeeper",
+  "prompt_template": "static_site_prompt.md",
+  "supported_output": ["html", "css", "js"],
+  "required_fields": [
+    "project_name",
+    "site_type",
+    "target_audience",
+    "business_goal",
+    "sections",
+    "seo_keywords",
+    "visual_style",
+    "contact_method",
+    "language"
+  ],
+  "forbidden": [
+    "backend",
+    "database",
+    "jwt",
+    "kafka",
+    "redis",
+    "spring",
+    "fastapi",
+    "docker_required"
+  ],
+  "form_schema": [
+    {
+      "id": "project_name",
+      "label": "Project Name",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "site_type",
+      "label": "Site Type",
+      "type": "select",
+      "options": ["landing_page", "institutional", "portfolio", "sales_page", "service_site", "catalog_site", "blog"],
+      "default": "landing_page"
+    },
+    {
+      "id": "target_audience",
+      "label": "Target Audience",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "business_goal",
+      "label": "Business Goal",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "sections",
+      "label": "Sections",
+      "type": "multiselect",
+      "options": ["hero", "about", "services", "products", "portfolio", "testimonials", "faq", "contact", "newsletter", "blog"],
+      "default": ["hero", "about", "services", "contact"]
+    },
+    {
+      "id": "seo_keywords",
+      "label": "SEO Keywords",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "visual_style",
+      "label": "Visual Style",
+      "type": "select",
+      "options": ["modern", "premium", "corporate", "minimalist", "dark_tech", "colorful"],
+      "default": "premium"
+    },
+    {
+      "id": "brand_colors",
+      "label": "Brand Colors",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "contact_method",
+      "label": "Contact Method",
+      "type": "select",
+      "options": ["whatsapp", "email", "form", "none"],
+      "default": "form"
+    },
+    {
+      "id": "analytics",
+      "label": "Analytics",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "id": "animations",
+      "label": "Animations",
+      "type": "select",
+      "options": ["none", "subtle", "premium"],
+      "default": "subtle"
+    },
+    {
+      "id": "accessibility_level",
+      "label": "Accessibility Level",
+      "type": "select",
+      "options": ["basic", "strong"],
+      "default": "strong"
+    },
+    {
+      "id": "language",
+      "label": "Language",
+      "type": "select",
+      "options": ["pt-BR", "en-US", "es-ES", "fr-FR"],
+      "default": "pt-BR"
     }
+  ],
+  "best_practices": {
+    "examples": [
+      "Semantic HTML structure",
+      "SEO meta tags and Open Graph",
+      "Accessible form patterns"
+    ],
+    "rules": [
+      "Use semantic landmarks and headings",
+      "Keep CSS organized and modular",
+      "Ship JS only for progressive enhancement"
+    ],
+    "patterns": [
+      "Content-first landing page",
+      "Conversion-focused sections",
+      "Progressive enhancement"
+    ]
+  }
 }

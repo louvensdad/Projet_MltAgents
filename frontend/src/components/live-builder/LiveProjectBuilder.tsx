@@ -48,6 +48,7 @@ export default function LiveProjectBuilder() {
   const renderVisualPreview = () => {
     switch (projectType) {
       case "static":
+      case "static_site":
         return <StaticSitePreview components={snapshot.visualComponents} />;
       case "api":
         return <ApiArchitecturePreview components={snapshot.visualComponents} />;

@@ -9,17 +9,29 @@ import { WizardShell } from "../core";
 import { apiPost, API_URL } from "@/lib/api";
 import type { StaticSiteData } from "./staticSitePayload";
 import { DEFAULT_STATIC_SITE_DATA, buildStaticSitePayload, buildStaticSitePromptAnswers } from "./staticSitePayload";
-import { STATIC_SITE_CONFIG, SITE_TYPES, VISUAL_STYLES, COLOR_PALETTES, BRAND_TONES, SECTIONS, UX_OPTIONS, FORM_OPTIONS } from "./staticSiteConfig";
+import { STATIC_SITE_CONFIG, SITE_TYPES, VISUAL_STYLES, BRAND_COLORS, SECTIONS, CONTACT_METHODS, ANIMATION_LEVELS, ACCESSIBILITY_LEVELS, PERFORMANCE_OPTIONS } from "./staticSiteConfig";
 import SiteTypeStep from "./steps/SiteTypeStep";
 import VisualIdentityStep from "./steps/VisualIdentityStep";
 import SectionsStep from "./steps/SectionsStep";
 import ContentStep from "./steps/ContentStep";
-import UxStep from "./steps/UxStep";
 import SeoStep from "./steps/SeoStep";
 import FormStep from "./steps/FormStep";
 import SecurityStep from "./steps/SecurityStep";
 import PreviewStep from "./steps/PreviewStep";
 import GenerateStep from "./steps/GenerateStep";
+import UxStep from "./steps/UxStep";
+
+const REQUIRED_FIELDS: Array<{ key: keyof StaticSiteData; label: string }> = [
+  { key: "project_name", label: "Project name" },
+  { key: "site_type", label: "Site type" },
+  { key: "target_audience", label: "Target audience" },
+  { key: "business_goal", label: "Business goal" },
+  { key: "sections", label: "Sections" },
+  { key: "visual_style", label: "Visual style" },
+  { key: "seo_keywords", label: "SEO keywords" },
+  { key: "contact_method", label: "Contact method" },
+  { key: "language", label: "Language" },
+];
 
 export default function StaticSiteWizard() {
   const { t, lang: locale } = usePreferences();
@@ -32,29 +44,35 @@ export default function StaticSiteWizard() {
   const [generateSuccess, setGenerateSuccess] = useState(false);
 
   const aiMode = liveBuilder.state.aiMode;
-  const promptReady = data.site_name.trim().length > 0 && !!data.site_type && !!data.visual_style && !!data.color_palette && !!data.brand_tone;
 
   useEffect(() => {
-    liveBuilder.initProject("static");
+    liveBuilder.initProject("static_site");
     liveBuilder.setAiMode("local_build_90");
   }, [liveBuilder]);
 
   useEffect(() => {
-    const snapshot = computeStaticSiteSnapshot(data.sections, data.form_options, data.ux_options);
+    const liveOptions: string[] = [];
+    if (data.contact_method !== "none") liveOptions.push("contact");
+    if (data.analytics) liveOptions.push("analytics");
+    const snapshot = computeStaticSiteSnapshot(
+      data.sections,
+      liveOptions,
+      [data.animations, data.accessibility_level]
+    );
     liveBuilder.updateSnapshot(snapshot);
-    if (data.site_name) {
-      liveBuilder.setProjectName(data.site_name);
+    if (data.project_name) {
+      liveBuilder.setProjectName(data.project_name);
     }
-  }, [data.sections, data.form_options, data.ux_options, data.site_name, liveBuilder]);
+  }, [data.sections, data.contact_method, data.analytics, data.animations, data.accessibility_level, data.project_name, liveBuilder]);
 
   const updateField = useCallback(<K extends keyof StaticSiteData>(field: K, value: StaticSiteData[K]) => {
     setData((prev) => ({ ...prev, [field]: value }));
   }, []);
 
-  const toggleArrayItem = useCallback((field: "sections" | "ux_options" | "form_options", key: string) => {
+  const toggleArrayItem = useCallback((field: "sections" | "brand_colors", key: string) => {
     setData((prev) => {
       const arr = prev[field];
-      const next = arr.includes(key) ? arr.filter((x) => x !== key) : [...arr, key];
+      const next = arr.includes(key) ? arr.filter((item) => item !== key) : [...arr, key];
       return { ...prev, [field]: next };
     });
   }, []);
@@ -64,24 +82,31 @@ export default function StaticSiteWizard() {
       case 1:
         return !!data.site_type;
       case 2:
-        return !!(data.visual_style && data.color_palette && data.brand_tone);
+        return !!data.project_name && !!data.target_audience && !!data.business_goal;
+      case 3:
+        return data.sections.length > 0;
       case 4:
-        return !!data.site_name;
+        return !!data.visual_style;
+      case 5:
+        return !!data.seo_keywords.trim();
+      case 6:
+        return !!data.contact_method;
+      case 7:
+        return true;
+      case 8:
+        return !!data.animations;
       default:
         return true;
     }
   }, [currentStep, data]);
 
   const missingFields = useMemo(() => {
-    const fields: { key: keyof StaticSiteData; label: string }[] = [
-      { key: "site_type", label: t("wizard.static.site_type") },
-      { key: "visual_style", label: t("wizard.static.visual_style") },
-      { key: "color_palette", label: t("wizard.static.color_palette") },
-      { key: "brand_tone", label: t("wizard.static.brand_tone") },
-      { key: "site_name", label: t("wizard.static.site_name") },
-    ];
-    return fields.filter((f) => !data[f.key]).map((f) => f.label);
-  }, [data, t]);
+    return REQUIRED_FIELDS.filter((item) => {
+      const value = data[item.key];
+      if (Array.isArray(value)) return value.length === 0;
+      return typeof value === "string" ? !value.trim() : !value;
+    }).map((item) => item.label);
+  }, [data]);
 
   const buildPromptAnswers = useCallback(() => ({
     ...buildStaticSitePromptAnswers(data, locale),
@@ -99,57 +124,54 @@ export default function StaticSiteWizard() {
       const healthRes = await fetch(healthUrl).catch(() => null);
       if (!healthRes?.ok) {
         setGenerateError(
-          "O serviço de API não está disponível neste ambiente.\n\n" +
-          "Inicie a API local e tente novamente:\nuvicorn backend.app.main:app --reload --port 8001"
+          "API service unavailable in this environment.\n\n" +
+          "Start the API locally and try again:\nuvicorn backend.app.main:app --reload --port 8001"
         );
         return;
       }
 
-      const promptRes = await apiPost<{ status?: string; prompt_master?: Record<string, unknown>; errors?: string[] }>(
+      const promptRes = await apiPost<{ success?: boolean; status?: string; prompt_master?: Record<string, unknown>; errors?: string[]; missing_fields?: string[]; validation?: { passed?: boolean } }>(
         "/api/prompt/build",
-        { stack_id: "static_site", answers: buildPromptAnswers() }
+        { stack_id: "static_site", project_type: "static_site", answers: buildPromptAnswers(), locale }
       );
-      if (!promptRes.ok || !promptRes.data?.prompt_master || promptRes.data.status === "rejected") {
-        const detail = (promptRes.data?.errors || [promptRes.backendError?.message || promptRes.networkError || "Prompt Master inválido"]).join("\n");
-        throw new Error(`Prompt Master bloqueado.\nEndpoint: POST ${API_URL}/api/prompt/build\n${detail}`);
+
+      const promptOk = promptRes.ok && (promptRes.data?.success ?? true) && promptRes.data?.validation?.passed !== false;
+      if (!promptOk || !promptRes.data?.prompt_master) {
+        const detail = (promptRes.data?.errors || promptRes.data?.missing_fields || [promptRes.backendError?.message || promptRes.networkError || "Prompt Master invalid"]).join("\n");
+        throw new Error(`Prompt Master blocked.\nEndpoint: POST ${API_URL}/api/prompt/build\n${detail}`);
       }
 
-      const payload = buildStaticSitePayload(data, locale) as Record<string, unknown>;
-      payload.ai_generation_mode = aiMode;
-      payload.generation_quality_mode = aiMode === "agent_boost_100" ? "agent_boost_100" : "local_90";
+      const payload = buildStaticSitePayload(data, locale, aiMode) as Record<string, unknown>;
       payload.prompt_master = promptRes.data.prompt_master;
-      const trace = liveBuilder.getTrace();
-      if (trace) {
-        payload.generation_trace = trace;
-      }
+      payload.generation_trace = liveBuilder.getTrace();
 
       const res = await apiPost<{ id: string; redirect_url?: string }>("/api/generate", payload);
       if (res.ok && res.data) {
         setGenerateSuccess(true);
         setTimeout(() => {
-          router.push(res.data?.redirect_url || `/projects/${res.data?.id}/checkout`);
+          router.push(res.data?.redirect_url || `/downloads/${res.data?.id}`);
         }, 1200);
         return;
       }
 
       const minimalPayload = {
+        stack_id: payload.stack_id,
         project_type: payload.project_type,
-        stack: payload.stack,
         project_name: payload.project_name,
         generation_quality_mode: payload.generation_quality_mode,
         locale: payload.locale,
       };
       const errorMsg = [
-        "Falha ao gerar projeto.",
+        "Failed to generate project.",
         `Endpoint: POST ${generateUrl}`,
-        `Status: ${res.status || "sem resposta"}`,
-        `Backend: ${res.backendError?.message || res.networkError || "sem detalhe"}`,
+        `Status: ${res.status || "no response"}`,
+        `Backend: ${res.backendError?.message || res.networkError || "no details"}`,
         `Payload: ${JSON.stringify(minimalPayload)}`,
       ].join("\n");
       console.error("[StaticSiteWizard] generate failed", { generateUrl, status: res.status, errorMsg });
       setGenerateError(errorMsg);
     } catch (err: any) {
-      const message = err?.message || "Erro inesperado";
+      const message = err?.message || "Unexpected error";
       console.error("[StaticSiteWizard] unexpected generate error", message);
       setGenerateError(message);
     } finally {
@@ -159,84 +181,72 @@ export default function StaticSiteWizard() {
 
   const errors = useMemo(() => {
     const items: string[] = [];
-    if (currentStep === 4 && !data.site_name) {
-      items.push(t("wizard.static.error_site_name"));
-    }
+    if (currentStep === 2 && !data.project_name.trim()) items.push("Project name is required");
+    if (currentStep === 5 && !data.seo_keywords.trim()) items.push("SEO keywords are required");
     return items;
-  }, [currentStep, data.site_name, t]);
+  }, [currentStep, data.project_name, data.seo_keywords]);
 
   const config = STATIC_SITE_CONFIG;
 
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return <SiteTypeStep value={data.site_type} onSelect={(v) => updateField("site_type", v)} t={t} options={SITE_TYPES} />;
+        return <SiteTypeStep value={data.site_type} onSelect={(v) => updateField("site_type", v)} options={SITE_TYPES} />;
       case 2:
         return (
-          <VisualIdentityStep
-            visualStyle={data.visual_style}
-            colorPalette={data.color_palette}
-            brandTone={data.brand_tone}
-            hasLogo={data.has_logo}
-            darkMode={data.dark_mode}
-            onVisualStyle={(v) => updateField("visual_style", v)}
-            onColorPalette={(v) => updateField("color_palette", v)}
-            onBrandTone={(v) => updateField("brand_tone", v)}
-            onHasLogo={(v) => updateField("has_logo", v)}
-            onDarkMode={(v) => updateField("dark_mode", v)}
-            t={t}
-            visualStyles={VISUAL_STYLES}
-            colorPalettes={COLOR_PALETTES}
-            brandTones={BRAND_TONES}
+          <ContentStep
+            projectName={data.project_name}
+            targetAudience={data.target_audience}
+            businessGoal={data.business_goal}
+            onChange={(field, value) => updateField(field, value)}
           />
         );
       case 3:
-        return <SectionsStep sections={data.sections} onToggle={(k) => toggleArrayItem("sections", k)} t={t} options={SECTIONS} />;
+        return <SectionsStep sections={data.sections} onToggle={(k) => toggleArrayItem("sections", k)} options={SECTIONS} />;
       case 4:
         return (
-          <ContentStep
-            siteName={data.site_name}
-            slogan={data.slogan}
-            companyDescription={data.company_description}
-            mainTexts={data.main_texts}
-            ctas={data.ctas}
-            targetAudience={data.target_audience}
-            onChange={(f, v) => updateField(f as keyof StaticSiteData, v)}
-            t={t}
+          <VisualIdentityStep
+            visualStyle={data.visual_style}
+            brandColors={data.brand_colors}
+            onVisualStyle={(v) => updateField("visual_style", v)}
+            onToggleColor={(v) => toggleArrayItem("brand_colors", v)}
+            visualStyles={VISUAL_STYLES}
+            brandColorsOptions={BRAND_COLORS}
           />
         );
       case 5:
-        return <UxStep uxOptions={data.ux_options} onToggle={(k) => toggleArrayItem("ux_options", k)} t={t} options={UX_OPTIONS} />;
-      case 6:
         return (
           <SeoStep
-            metaTitle={data.meta_title}
-            metaDescription={data.meta_description}
-            keywords={data.keywords}
-            openGraph={data.open_graph}
-            sitemap={data.sitemap}
-            robotsTxt={data.robots_txt}
-            lazyLoading={data.lazy_loading}
-            onChange={(f, v) => updateField(f as keyof StaticSiteData, v as any)}
-            t={t}
+            seoTitle={data.seo_title}
+            seoDescription={data.seo_description}
+            seoKeywords={data.seo_keywords}
+            openGraphTitle={data.open_graph_title}
+            openGraphDescription={data.open_graph_description}
+            analytics={data.analytics}
+            onChange={(field, value) => updateField(field as keyof StaticSiteData, value as any)}
           />
         );
+      case 6:
+        return <FormStep contactMethod={data.contact_method} onSelect={(v) => updateField("contact_method", v)} options={CONTACT_METHODS} />;
       case 7:
-        return <FormStep formOptions={data.form_options} onToggle={(k) => toggleArrayItem("form_options", k)} t={t} options={FORM_OPTIONS} />;
-      case 8:
         return (
           <SecurityStep
-            cspEnabled={data.csp_enabled}
-            jsSanitization={data.js_sanitization}
-            unsafeLinkProtection={data.unsafe_link_protection}
-            noCredentialsFrontend={data.no_credentials_frontend}
-            formValidation={data.form_validation}
-            onChange={(f, v) => updateField(f as keyof StaticSiteData, v as any)}
-            t={t}
+            lazyLoading={data.lazy_loading}
+            semanticHtml={data.semantic_html}
+            altText={data.alt_text}
+            responsive={data.responsive}
+            reducedMotion={data.reduced_motion}
+            accessibilityLevel={data.accessibility_level}
+            onToggle={(field, value) => updateField(field as keyof StaticSiteData, value as any)}
+            onAccessibilityChange={(value) => updateField("accessibility_level", value)}
+            options={PERFORMANCE_OPTIONS}
+            accessibilityOptions={ACCESSIBILITY_LEVELS}
           />
         );
+      case 8:
+        return <UxStep animation={data.animations} onSelect={(v) => updateField("animations", v)} options={ANIMATION_LEVELS} />;
       case 9:
-        return <PreviewStep data={data} t={t} />;
+        return <PreviewStep data={data} />;
       case 10:
         return (
           <GenerateStep
@@ -244,12 +254,12 @@ export default function StaticSiteWizard() {
             generateError={generateError}
             generateSuccess={generateSuccess}
             onGenerate={handleGenerate}
-            onPrev={() => setCurrentStep((s) => Math.max(1, s - 1))}
+            onPrev={() => setCurrentStep((step) => Math.max(1, step - 1))}
             isValid={missingFields.length === 0}
             missingFields={missingFields}
             aiMode={aiMode}
             onAiModeChange={(mode) => liveBuilder.setAiMode(mode)}
-            promptReady={promptReady}
+            promptReady={missingFields.length === 0}
             t={t}
           />
         );
@@ -269,9 +279,9 @@ export default function StaticSiteWizard() {
       canProceed={canProceed}
       errors={errors}
       warnings={[]}
-      onStepClick={(s) => setCurrentStep(s)}
-      onPrev={() => (currentStep === 1 ? router.push("/wizard") : setCurrentStep((s) => Math.max(1, s - 1)))}
-      onNext={() => setCurrentStep((s) => Math.min(s + 1, config.totalSteps))}
+      onStepClick={(step) => setCurrentStep(step)}
+      onPrev={() => (currentStep === 1 ? router.push("/wizard") : setCurrentStep((step) => Math.max(1, step - 1)))}
+      onNext={() => setCurrentStep((step) => Math.min(step + 1, config.totalSteps))}
       onGenerate={handleGenerate}
       t={t}
     >
