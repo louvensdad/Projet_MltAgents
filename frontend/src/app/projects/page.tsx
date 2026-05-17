@@ -168,10 +168,10 @@ export default function ProjectsPage() {
   };
 
   const pipelineNodes = [
-    { name: "Projects", status: `${projects.length} total`, hint: "Portfolio overview" },
-    { name: "Paid", status: `${paidProjects.length} ready`, hint: "Artifact vault unlocked" },
-    { name: "Downloads", status: `${downloadReady.length} ready`, hint: "Security gate + ZIP" },
-    { name: "Upgrade", status: "live", hint: "AI boost and checkout available" },
+    { name: "Projects", status: `${projects.length} total`, hint: "Visão do portfólio" },
+    { name: "Paid", status: `${paidProjects.length} ready`, hint: "Cofre de artefatos desbloqueado" },
+    { name: "Downloads", status: `${downloadReady.length} ready`, hint: "Portão de segurança + ZIP" },
+    { name: "Upgrade", status: "live", hint: "AI boost e checkout disponíveis" },
   ];
 
   return (
@@ -215,7 +215,7 @@ export default function ProjectsPage() {
             <SectionHeader
               eyebrow="pipeline"
               title="Project delivery mesh"
-              subtitle="Projects move from generation to payment and download through a single operational surface."
+              subtitle="Projetos passam da geração ao pagamento e download por uma única superfície operacional."
             />
             <div className="mt-5">
               <EngineNodeGraph nodes={pipelineNodes} />
@@ -223,10 +223,10 @@ export default function ProjectsPage() {
           </HolographicCard>
 
           <HolographicCard className="p-6">
-            <p className="text-[10px] uppercase tracking-[0.35em] text-slate-500">Quick actions</p>
+            <p className="text-[10px] uppercase tracking-[0.35em] text-slate-500">Ações rápidas</p>
             <div className="mt-4 grid gap-3">
-              <FloatingActionCard href="/wizard" title="Create new project" description="Launch the stack wizard with premium guidance." icon={<FolderOpen size={18} />} />
-              <FloatingActionCard href="/templates" title="Use a template" description="Start from a real blueprint and generator contract." icon={<LayoutGrid size={18} />} />
+              <FloatingActionCard href="/wizard" title="Criar projeto" description="Abrir o wizard de stack com orientação premium." icon={<FolderOpen size={18} />} />
+              <FloatingActionCard href="/templates" title="Usar template" description="Começar de um blueprint real e contrato de geração." icon={<LayoutGrid size={18} />} />
             </div>
           </HolographicCard>
         </div>
@@ -238,17 +238,17 @@ export default function ProjectsPage() {
         </div>
       ) : projects.length === 0 ? (
         <EmptyState3D
-          title="No projects yet"
-          description="Create the first generated project to populate the delivery vault and download pipeline."
+          title="Nenhum projeto ainda"
+          description="Crie o primeiro projeto gerado para popular o cofre de entrega e o pipeline de download."
           actionHref="/wizard"
           actionLabel={t("projects.create_first")}
         />
       ) : (
         <section className="space-y-5">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-sm font-semibold uppercase tracking-[0.35em] text-slate-500">Project catalogue</h2>
+            <h2 className="text-sm font-semibold uppercase tracking-[0.35em] text-slate-500">Catálogo de projetos</h2>
             <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-slate-400">
-              {projects.length} items
+              {projects.length} itens
             </span>
           </div>
 
@@ -282,7 +282,7 @@ export default function ProjectsPage() {
                       <p className="mt-2 text-sm text-white">{project.download_status || "ready"}</p>
                     </div>
                     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
-                      <p className="text-[10px] uppercase tracking-[0.3em] text-slate-500">Created</p>
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-slate-500">Criado</p>
                       <p className="mt-2 text-sm text-white">{new Date(project.created_at).toLocaleString(lang === "pt" ? "pt-BR" : "en-US")}</p>
                     </div>
                   </div>

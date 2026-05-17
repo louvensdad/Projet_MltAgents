@@ -47,11 +47,11 @@ export default function Dashboard() {
   const kpiGeneratorsStatus = stableCount === totalGenerators ? "stable" : stableCount > 0 ? "active" : "offline";
 
   const engineNodes = [
-    { name: "Validation Engine", status: "online", hint: "Prompt validator + stack checks" },
-    { name: "Security Gate", status: "online", hint: "Secrets, auth and rate limit" },
-    { name: "Documentation Engine", status: "online", hint: "Blueprint and docs sync" },
-    { name: "AI Engine", status: aiStatus?.agent_boost_available ? "boosted" : "fallback", hint: aiMode },
-    { name: "Download Service", status: "online", hint: "ZIP and artifact pipeline" },
+    { name: "Motor de validação", status: "online", hint: "Prompt validator + stack checks" },
+    { name: "Portão de segurança", status: "online", hint: "Secrets, auth and rate limit" },
+    { name: "Motor de documentação", status: "online", hint: "Blueprint and docs sync" },
+    { name: "Motor de IA", status: aiStatus?.agent_boost_available ? "boosted" : "fallback", hint: aiMode },
+    { name: "Serviço de download", status: "online", hint: "ZIP and artifact pipeline" },
   ];
 
   return (
@@ -65,7 +65,7 @@ export default function Dashboard() {
         />
         <div className="relative z-10 grid gap-6 xl:grid-cols-[1.15fr_0.85fr] xl:items-center">
           <div className="space-y-5">
-            <AnimatedBadge tone="cyan">Enterprise cockpit</AnimatedBadge>
+            <AnimatedBadge tone="cyan">Cockpit enterprise</AnimatedBadge>
             <div className="space-y-3">
               <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-white md:text-5xl">
                 {t("dashboard.enterprise_title")}
@@ -97,16 +97,16 @@ export default function Dashboard() {
           <HolographicCard className="p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[10px] uppercase tracking-[0.35em] text-slate-500">Live architecture</p>
+                <p className="text-[10px] uppercase tracking-[0.35em] text-slate-500">Arquitetura ao vivo</p>
                 <p className="mt-1 text-sm text-slate-300">User → Gateway → API → Redis → Queue → Workers → DB</p>
               </div>
               <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-[11px] uppercase tracking-[0.2em] text-emerald-200">
-                live
+                ao vivo
               </div>
             </div>
             <div className="mt-5 grid grid-cols-2 gap-3">
               {[
-                { label: "User", icon: <Sparkles size={16} /> },
+                { label: "Usu?rio", icon: <Sparkles size={16} /> },
                 { label: "Gateway", icon: <Server size={16} /> },
                 { label: "API", icon: <LayoutGrid size={16} /> },
                 { label: "Redis", icon: <Cpu size={16} /> },
@@ -193,7 +193,7 @@ export default function Dashboard() {
               {projects.length === 0 ? (
                 <EmptyState3D
                   title="Nenhum projeto gerado ainda"
-                  description="Crie o primeiro projeto no wizard para ativar o histórico, downloads e o painel de live generation."
+                  description="Crie o primeiro projeto no wizard para ativar o histórico, downloads e o painel de gera??o ao vivo."
                   actionHref="/wizard"
                   actionLabel={t("dashboard.create_button")}
                 />
@@ -246,18 +246,18 @@ export default function Dashboard() {
           </HolographicCard>
 
           <HolographicCard className="p-5">
-            <SectionHeader eyebrow="system" title="Engine snapshot" subtitle="Visão consolidada do estado operacional." />
+            <SectionHeader eyebrow="system" title="Snapshot dos motores" subtitle="Visão consolidada do estado operacional." />
             <div className="mt-5 space-y-3 text-sm text-slate-300">
               <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
-                <span>Security score</span>
+                <span>Score de segurança</span>
                 <span className="font-semibold text-white">{securityScore}%</span>
               </div>
               <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
-                <span>AI mode</span>
+                <span>Modo de IA</span>
                 <span className="font-semibold text-white">{aiMode}</span>
               </div>
               <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
-                <span>Generators</span>
+                <span>Geradores</span>
                 <span className="font-semibold text-white">{stableCount}/{totalGenerators}</span>
               </div>
             </div>
