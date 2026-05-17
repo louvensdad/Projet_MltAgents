@@ -1,0 +1,22 @@
+# Dependencies and build outputs
+**/node_modules/
+**/.next/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/*.tsbuildinfo
+
+# Local environment and editor state
+.env
+.env.*
+.vscode/
+.cache/
+_temp/
+backups/
+generated_projects/
+output/
+
+# Logs and runtime artifacts
+**/logs/
+*.log
