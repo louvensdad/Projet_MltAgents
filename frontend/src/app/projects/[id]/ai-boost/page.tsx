@@ -2,10 +2,13 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, Bot, Cpu, Play, Sparkles, Zap, Activity, CheckCircle, XCircle, Loader2, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Cpu, Sparkles, Zap, Activity, CheckCircle, Loader2, AlertTriangle } from "lucide-react";
 import { usePreferences } from "@/context/PreferencesContext";
 import { getApiBaseUrl } from "@/lib/config";
+import AnimatedBadge from "@/components/premium/AnimatedBadge";
+import HolographicCard from "@/components/premium/HolographicCard";
+import MetricOrb from "@/components/premium/MetricOrb";
+import SectionHeader from "@/components/premium/SectionHeader";
 
 interface Plan {
   name: string;
@@ -26,7 +29,7 @@ export default function AIBoostPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.id as string;
-  const { t, lang } = usePreferences();
+  const { t } = usePreferences();
 
   const [activeTab, setActiveTab] = useState<'plans' | 'use' | 'usage'>('plans');
   const [plans, setPlans] = useState<Record<string, Plan>>({});
@@ -161,28 +164,39 @@ export default function AIBoostPage() {
   const usagePercent = status ? Math.round((status.requests_used / status.max_requests) * 100) : 0;
 
   return (
-    <div className="min-h-screen bg-background text-foreground animate-in fade-in duration-500">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 border-b border-white/5 p-8">
-        <div className="max-w-6xl mx-auto">
-          <button onClick={() => router.push(`/projects/${projectId}`)} className="flex items-center gap-2 text-gray-400 hover:text-white mb-6 font-medium transition-colors">
-            <ArrowLeft size={16} /> {t('common.back')}
-          </button>
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-purple-500/20 rounded-xl border border-purple-500/30">
-              <Cpu size={32} className="text-purple-400" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-white">{t('ai_boost.title')}</h1>
-              <p className="text-gray-400 mt-1">{t('ai_boost.subtitle')}</p>
+    <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 lg:py-10 text-foreground animate-in fade-in duration-500">
+      <HolographicCard className="p-6 md:p-8">
+        <div className="flex flex-wrap items-center gap-2">
+          <AnimatedBadge tone="cyan">ai boost</AnimatedBadge>
+          <AnimatedBadge tone="violet">project assistant</AnimatedBadge>
+        </div>
+        <div className="mt-5 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <button onClick={() => router.push(`/projects/${projectId}`)} className="mb-6 flex items-center gap-2 font-medium text-gray-400 transition-colors hover:text-white">
+              <ArrowLeft size={16} /> {t('common.back')}
+            </button>
+            <div className="flex items-center gap-4">
+              <div className="rounded-xl border border-purple-500/30 bg-purple-500/20 p-3">
+                <Cpu size={32} className="text-purple-400" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-white">{t('ai_boost.title')}</h1>
+                <p className="mt-1 text-gray-400">{t('ai_boost.subtitle')}</p>
+              </div>
             </div>
           </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <MetricOrb label="Requests left" value={status?.requests_remaining || 0} icon={<Activity size={16} />} accent="emerald" />
+            <MetricOrb label="Plan" value={status?.plan || "local"} icon={<Sparkles size={16} />} accent="violet" />
+            <MetricOrb label="Mode" value={status?.ai_boost_active ? "Active" : "Inactive"} icon={<Zap size={16} />} accent="cyan" />
+          </div>
         </div>
-      </div>
+      </HolographicCard>
 
-      <div className="max-w-6xl mx-auto p-8">
+      <div className="space-y-8">
         {/* Status Card */}
-        <div className="bg-surface border border-border rounded-2xl p-6 mb-8 shadow-xl relative overflow-hidden group">
+        <HolographicCard className="p-6">
+          <SectionHeader eyebrow="runtime" title="Boost status" subtitle="Track active plan, usage, and live execution state." />
           <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity">
             <Cpu size={120} />
           </div>
@@ -212,7 +226,7 @@ export default function AIBoostPage() {
             />
           </div>
           <p className="text-[10px] font-bold text-gray-600 mt-2 uppercase tracking-widest">{status?.requests_used || 0} / {status?.max_requests || 0} {t('ai_boost.usage')}</p>
-        </div>
+        </HolographicCard>
 
         {/* Tabs */}
         <div className="flex p-1 bg-surface border border-border rounded-xl mb-8 w-fit">
@@ -271,7 +285,7 @@ export default function AIBoostPage() {
 
         {/* Tab: Use */}
         {activeTab === 'use' && (
-          <div className="bg-surface border border-border rounded-2xl p-8 shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-500">
+          <HolographicCard className="p-8">
             {!status?.ai_boost_active ? (
               <div className="text-center py-12 space-y-6">
                 <div className="p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl text-yellow-500 inline-block">
@@ -363,12 +377,12 @@ export default function AIBoostPage() {
                 )}
               </div>
             )}
-          </div>
+          </HolographicCard>
         )}
 
         {/* Tab: Usage */}
         {activeTab === 'usage' && (
-          <div className="bg-surface border border-border rounded-2xl p-8 shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-500">
+          <HolographicCard className="p-8">
             <h2 className="text-xl font-bold mb-8">{t('ai_boost.usage')}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
@@ -383,7 +397,7 @@ export default function AIBoostPage() {
                 </div>
               ))}
             </div>
-          </div>
+          </HolographicCard>
         )}
       </div>
     </div>

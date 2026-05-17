@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import PageHeader from "@/components/common/PageHeader";
 import { apiGet, apiFallbacks } from "@/lib/api";
 import AiModelDetailsDrawer from "@/components/ai-models/AiModelDetailsDrawer";
 import { Cpu, Zap, Shield, Sparkles, Brain, AlertTriangle, Clock, Rocket, ChevronRight } from "lucide-react";
@@ -206,7 +205,8 @@ export default function AIModelsPage() {
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div className="space-y-3">
             <AnimatedBadge tone="violet">AI intelligence</AnimatedBadge>
-            <PageHeader title={T("ai_models.title")} subtitle={T("ai_models.subtitle")} />
+            <h1 className="text-4xl font-semibold tracking-tight text-white md:text-5xl">{T("ai_models.title")}</h1>
+            <p className="max-w-2xl text-sm leading-7 text-slate-300 md:text-base">{T("ai_models.subtitle")}</p>
           </div>
           <SectionHeader eyebrow="runtime" title="Model control plane" subtitle="Agent Boost, fallback local e status de execução em um único cockpit." />
         </div>

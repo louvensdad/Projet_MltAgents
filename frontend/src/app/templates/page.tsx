@@ -5,7 +5,6 @@ import type { ComponentType } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, BadgeInfo, Sparkles, Layers3, PlayCircle, GitBranch } from "lucide-react";
-import PageHeader from "@/components/common/PageHeader";
 import { apiGet, apiPost, apiFallbacks } from "@/lib/api";
 import { usePreferences } from "@/context/PreferencesContext";
 import TemplateInspectorModal from "@/components/templates/TemplateInspectorModal";
@@ -120,7 +119,8 @@ export default function TemplatesPage() {
               <Sparkles size={12} />
               Real Template Marketplace
             </div>
-            <PageHeader title={t("templates.title")} subtitle={t("templates.subtitle")} />
+            <h1 className="text-4xl font-semibold tracking-tight text-white md:text-5xl">{t("templates.title")}</h1>
+            <p className="max-w-2xl text-sm leading-7 text-slate-300 md:text-base">{t("templates.subtitle")}</p>
             <p className="max-w-2xl text-sm text-slate-300/80">
               Cada template agora carrega blueprint, Prompt Master seed, gatekeeper e caminho oficial de geração.
               Preview, arquitetura e build deixam de ser decoracao e passam a operar sobre o contrato real.

@@ -9,6 +9,9 @@ import {
 } from "lucide-react";
 import { usePreferences } from "@/context/PreferencesContext";
 import { apiGet, apiFallbacks } from "@/lib/api";
+import AnimatedBadge from "@/components/premium/AnimatedBadge";
+import HolographicCard from "@/components/premium/HolographicCard";
+import MetricOrb from "@/components/premium/MetricOrb";
 
 const languages = [
   { code: "pt" as const, name: "Português", native: "Português (Brasil)", flag: "🇧🇷" },
@@ -123,18 +126,20 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl space-y-8 pb-16">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="space-y-1"
-      >
-        <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-white via-blue-100 to-indigo-200 bg-clip-text text-transparent">
-          {t("settings.title")}
-        </h1>
-        <p className="text-gray-500">{t("settings.subtitle")}</p>
-      </motion.div>
+    <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 lg:py-10">
+      <HolographicCard className="p-6 md:p-8">
+        <div className="flex flex-wrap items-center gap-2">
+          <AnimatedBadge tone="cyan">preferences cockpit</AnimatedBadge>
+          <AnimatedBadge tone="violet">workspace policy</AnimatedBadge>
+        </div>
+        <h1 className="mt-5 text-4xl font-semibold tracking-tight text-white md:text-5xl">{t("settings.title")}</h1>
+        <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300 md:text-base">{t("settings.subtitle")}</p>
+        <div className="mt-8 grid gap-3 sm:grid-cols-3">
+          <MetricOrb label="Language" value={lang.toUpperCase()} accent="cyan" />
+          <MetricOrb label="Theme" value={theme} accent="violet" />
+          <MetricOrb label="AI Mode" value={defaultAiMode} accent="emerald" />
+        </div>
+      </HolographicCard>
 
       {error && (
         <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-200 flex items-center gap-3">

@@ -7,6 +7,10 @@ import { CheckCircle, CreditCard, Download, FileText, Folder, Loader2, Lock, Spa
 import { usePreferences } from "@/context/PreferencesContext";
 import { DownloadStatusCard } from "@/components/ui/DownloadStatusCard";
 import { API_BASE } from "@/lib/config";
+import AnimatedBadge from "@/components/premium/AnimatedBadge";
+import HolographicCard from "@/components/premium/HolographicCard";
+import MetricOrb from "@/components/premium/MetricOrb";
+import SectionHeader from "@/components/premium/SectionHeader";
 
 const PLANS = [
   { id: "basic", price: "R$ 29,90" },
@@ -106,9 +110,13 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
   };
 
   return (
-    <div className="max-w-3xl mx-auto py-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-      {/* Header */}
-      <div className="flex items-center gap-4">
+    <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 lg:py-10 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
+      <HolographicCard className="p-6 md:p-8">
+        <div className="flex flex-wrap items-center gap-2">
+          <AnimatedBadge tone="emerald">checkout</AnimatedBadge>
+          <AnimatedBadge tone="violet">payment gate</AnimatedBadge>
+        </div>
+        <div className="mt-5 flex items-center gap-4">
         <div className="p-3 bg-green-500/10 rounded-xl border border-green-500/20 shadow-lg shadow-green-500/10">
           <CheckCircle size={32} className="text-green-500" />
         </div>
@@ -116,7 +124,15 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
           <h1 className="text-2xl font-bold text-foreground">{t("checkout.success")}</h1>
           <p className="text-gray-500 font-medium">{t("checkout.subtitle")}</p>
         </div>
-      </div>
+        </div>
+        {project && (
+          <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            <MetricOrb label="Project" value={project.name || id} accent="cyan" />
+            <MetricOrb label="Stack" value={project.stack || "FastAPI"} accent="violet" />
+            <MetricOrb label="State" value={paymentStatus} accent="emerald" />
+          </div>
+        )}
+      </HolographicCard>
 
       {/* Project Info Cards */}
       {project && (
@@ -138,7 +154,8 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
       {paymentStatus !== "paid" ? (
         <>
           {/* Planos */}
-          <div className="space-y-4">
+          <HolographicCard className="p-6">
+            <SectionHeader eyebrow="plan" title="Choose your package" subtitle="Pick a payment plan to unlock the artifact vault." />
             <h2 className="text-lg font-bold text-foreground">{t("checkout.choose_plan")}</h2>
             <div className="space-y-3">
               {PLANS.map(plan => (
@@ -159,7 +176,7 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
                 </div>
               ))}
             </div>
-          </div>
+          </HolographicCard>
 
           {/* Aviso MOCK */}
           <div className="p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl text-yellow-500 text-[11px] font-bold uppercase tracking-wider flex items-start gap-3">
@@ -179,7 +196,7 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
         </>
       ) : (
         /* Estado: PAGO - Liberar download */
-        <div className="space-y-6 animate-in zoom-in-95 duration-500">
+          <div className="space-y-6 animate-in zoom-in-95 duration-500">
           <div className="p-8 bg-green-500/10 border border-green-500/20 rounded-3xl text-center space-y-4 shadow-xl shadow-green-500/5">
             <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-500/30">
               <CheckCircle size={48} className="text-green-500" />

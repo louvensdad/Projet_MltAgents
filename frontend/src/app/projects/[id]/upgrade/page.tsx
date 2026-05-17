@@ -6,6 +6,10 @@ import Link from "next/link";
 import { ArrowLeft, CreditCard, History, LayoutGrid, Loader2, Plus, Sparkles, Terminal, Zap, AlertTriangle, RefreshCw, Clock, CheckCircle, ChevronUp, ChevronDown } from "lucide-react";
 import { usePreferences } from "@/context/PreferencesContext";
 import { getApiBaseUrl } from "@/lib/config";
+import AnimatedBadge from "@/components/premium/AnimatedBadge";
+import HolographicCard from "@/components/premium/HolographicCard";
+import MetricOrb from "@/components/premium/MetricOrb";
+import SectionHeader from "@/components/premium/SectionHeader";
 
 const UPGRADE_CATALOG = [
   { id: "connect_frontend_backend", price: "R$ 19,90", tier: "simples" },
@@ -94,9 +98,13 @@ export default function UpgradePage({ params }: { params: { id: string } }) {
   const selectedCatalog = UPGRADE_CATALOG.find(u => u.id === selected);
 
   return (
-    <div className="max-w-4xl mx-auto py-8 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {/* Header */}
-      <div>
+    <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 lg:py-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <HolographicCard className="p-6 md:p-8">
+        <div className="flex flex-wrap items-center gap-2">
+          <AnimatedBadge tone="cyan">upgrade studio</AnimatedBadge>
+          <AnimatedBadge tone="violet">delivery backlog</AnimatedBadge>
+        </div>
+        <div className="mt-5 flex items-center gap-4">
         <button onClick={() => router.back()} className="flex items-center gap-2 text-gray-500 hover:text-gray-200 transition-colors mb-4 text-sm font-medium">
           <ArrowLeft size={16} /> {t("common.back")}
         </button>
@@ -108,11 +116,18 @@ export default function UpgradePage({ params }: { params: { id: string } }) {
             <h1 className="text-2xl font-bold text-foreground">{t("upgrade.title")}</h1>
             <p className="text-gray-400">{t("upgrade.subtitle")} {t("upgrade.project")}: <code className="text-primary font-mono">{id}</code></p>
           </div>
+          </div>
         </div>
-      </div>
+        <div className="mt-8 grid gap-3 sm:grid-cols-3">
+          <MetricOrb label="Upgrades" value={upgrades.length} accent="cyan" />
+          <MetricOrb label="Selected" value={selected || "-"} accent="violet" />
+          <MetricOrb label="State" value={selected ? "Draft" : "Idle"} accent="emerald" />
+        </div>
+      </HolographicCard>
 
       {/* Seletor de Upgrade */}
-      <div className="bg-surface border border-border rounded-2xl p-6 space-y-6 shadow-xl relative overflow-hidden">
+      <HolographicCard className="p-6 space-y-6">
+        <SectionHeader eyebrow="catalog" title="Upgrade catalog" subtitle="Request and apply enhancements with clear operational status." />
         <div className="absolute top-0 right-0 p-6 opacity-[0.03] pointer-events-none">
           <Zap size={150} />
         </div>
@@ -191,7 +206,7 @@ export default function UpgradePage({ params }: { params: { id: string } }) {
         ) : (
           <div className="space-y-4">
             {[...upgrades].reverse().map((u: any) => (
-              <div key={u.upgrade_id} className="bg-surface border border-border rounded-2xl p-6 space-y-4 hover:border-gray-700 transition-all">
+              <HolographicCard key={u.upgrade_id} className="p-6 space-y-4">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div className="space-y-1">
                     <p className="font-bold text-lg text-foreground">{t(`upgrade.catalog.${u.upgrade_type}`) || u.upgrade_label}</p>
@@ -260,7 +275,7 @@ export default function UpgradePage({ params }: { params: { id: string } }) {
                     )}
                   </div>
                 )}
-              </div>
+              </HolographicCard>
             ))}
           </div>
         )}

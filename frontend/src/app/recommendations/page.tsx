@@ -1,9 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Lightbulb, AlertTriangle, RefreshCw } from "lucide-react";
+import { Lightbulb, AlertTriangle, RefreshCw, Sparkles } from "lucide-react";
 import { API_BASE } from "@/lib/config";
 import { usePreferences } from "@/context/PreferencesContext";
+import AnimatedBadge from "@/components/premium/AnimatedBadge";
+import HolographicCard from "@/components/premium/HolographicCard";
+import MetricOrb from "@/components/premium/MetricOrb";
+import SectionHeader from "@/components/premium/SectionHeader";
 
 export default function RecommendationsPage() {
   const { t } = usePreferences();
@@ -22,19 +26,25 @@ export default function RecommendationsPage() {
   useEffect(() => { fetchData(); }, []);
 
   return (
-    <div className="mx-auto max-w-6xl animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t("recommendations.title")}</h1>
-          <p className="mt-2 text-gray-400">{t("recommendations.subtitle")}</p>
+    <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 lg:py-10">
+      <HolographicCard className="p-6 md:p-8">
+        <div className="flex flex-wrap items-center gap-2">
+          <AnimatedBadge tone="cyan">recommendation engine</AnimatedBadge>
+          <AnimatedBadge tone="violet">risk matrix</AnimatedBadge>
         </div>
-        <button
-          onClick={fetchData}
-          className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.05] px-4 py-2 text-sm text-gray-300 hover:bg-white/10 transition-all"
-        >
-          <RefreshCw size={14} /> {t("common.refresh")}
-        </button>
-      </div>
+        <h1 className="mt-5 text-4xl font-semibold tracking-tight text-white md:text-5xl">{t("recommendations.title")}</h1>
+        <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300 md:text-base">{t("recommendations.subtitle")}</p>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <button
+            onClick={fetchData}
+            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_16px_40px_rgba(34,211,238,0.18)] transition-all hover:translate-y-[-1px]"
+          >
+            <RefreshCw size={14} /> {t("common.refresh")}
+          </button>
+          <MetricOrb label="Suggestions" value={data.suggestions.length} icon={<Lightbulb size={16} />} accent="emerald" />
+          <MetricOrb label="Risks" value={data.risks.length} icon={<AlertTriangle size={16} />} accent="violet" />
+        </div>
+      </HolographicCard>
 
       {loading ? (
         <div className="grid gap-4 md:grid-cols-2">
@@ -44,7 +54,7 @@ export default function RecommendationsPage() {
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-xl border border-white/10 bg-surface p-5">
+          <HolographicCard className="p-5">
             <div className="mb-4 flex items-center gap-2 text-emerald-400">
               <Lightbulb size={18} />
               <h2 className="text-sm font-bold uppercase tracking-widest">{t("recommendations.title")}</h2>
@@ -60,8 +70,8 @@ export default function RecommendationsPage() {
                 ))}
               </div>
             )}
-          </div>
-          <div className="rounded-xl border border-white/10 bg-surface p-5">
+          </HolographicCard>
+          <HolographicCard className="p-5">
             <div className="mb-4 flex items-center gap-2 text-amber-400">
               <AlertTriangle size={18} />
               <h2 className="text-sm font-bold uppercase tracking-widest">{t("common.warning")}</h2>
@@ -77,7 +87,7 @@ export default function RecommendationsPage() {
                 ))}
               </div>
             )}
-          </div>
+          </HolographicCard>
         </div>
       )}
     </div>

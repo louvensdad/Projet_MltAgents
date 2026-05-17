@@ -1,11 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import PageHeader from "@/components/common/PageHeader";
 import StatusBadge from "@/components/common/StatusBadge";
 import EmptyState from "@/components/common/EmptyState";
 import { apiGet, apiFallbacks } from "@/lib/api";
 import { usePreferences } from "@/context/PreferencesContext";
+import AnimatedBadge from "@/components/premium/AnimatedBadge";
+import EngineNodeGraph from "@/components/premium/EngineNodeGraph";
+import HolographicCard from "@/components/premium/HolographicCard";
+import MetricOrb from "@/components/premium/MetricOrb";
+import SectionHeader from "@/components/premium/SectionHeader";
 
 function safeArray(arr: any): any[] {
   if (Array.isArray(arr)) return arr;
@@ -33,10 +37,27 @@ export default function DocumentationCenterPage() {
   const docs = safeArray(data?.docs || data || []);
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <PageHeader title={t("documentation.title")} subtitle={t("documentation.subtitle")} />
+    <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 lg:py-10">
+      <HolographicCard className="p-6 md:p-8">
+        <div className="flex flex-wrap items-center gap-2">
+          <AnimatedBadge tone="cyan">docs center</AnimatedBadge>
+          <AnimatedBadge tone="violet">knowledge graph</AnimatedBadge>
+        </div>
+        <h1 className="mt-5 text-4xl font-semibold tracking-tight text-white md:text-5xl">{t("documentation.title")}</h1>
+        <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300 md:text-base">{t("documentation.subtitle")}</p>
+        <div className="mt-8 flex flex-wrap items-center gap-3">
+          <button onClick={load} className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_16px_40px_rgba(34,211,238,0.18)] transition-all hover:translate-y-[-1px]">{t("documentation.refresh")}</button>
+          <MetricOrb label="Docs" value={safeArray(data?.docs || data || []).length} accent="cyan" />
+          <MetricOrb label="Summary" value={data?.summary ? "Live" : "Pending"} accent="violet" />
+        </div>
+      </HolographicCard>
+      <HolographicCard className="p-5">
+        <SectionHeader eyebrow="pipeline" title="Documentation mesh" subtitle="Contracted docs, stack awareness and status per technology." />
+        <div className="mt-5">
+          <EngineNodeGraph nodes={[{ name: "Source docs", status: "live", hint: data?.summary || "Summary unavailable" }, { name: "Catalog", status: "synced", hint: `${safeArray(data?.docs || data || []).length} docs` }]} />
+        </div>
+      </HolographicCard>
       <div className="mb-4 flex items-center gap-3">
-        <button onClick={load} className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white">{t("documentation.refresh")}</button>
         <span className="text-xs text-gray-500">{data?.summary || t("documentation.summary_unavailable")}</span>
       </div>
       {loading && <div className="h-32 animate-pulse rounded-xl bg-white/10" />}
@@ -46,7 +67,7 @@ export default function DocumentationCenterPage() {
       )}
       <div className="grid gap-3 md:grid-cols-2">
         {docs.map((d: any, idx: number) => (
-          <div key={`${d.technology}-${d.name}-${idx}`} className="rounded-xl border border-white/10 bg-surface p-4">
+          <HolographicCard key={`${d.technology}-${d.name}-${idx}`} className="p-4">
             <div className="flex items-center justify-between">
               <p className="text-sm font-bold text-gray-200">{d.name}</p>
               <StatusBadge status={d.status} />
@@ -54,7 +75,7 @@ export default function DocumentationCenterPage() {
             <p className="mt-2 text-xs text-gray-500">{t("documentation.stack")}: {d.technology}</p>
             <p className="text-xs text-gray-500">{t("documentation.summary")}: {d.summary}</p>
             <p className="text-xs text-gray-500">{t("documentation.last_update")}: {d.last_update || "-"}</p>
-          </div>
+          </HolographicCard>
         ))}
       </div>
     </div>

@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Download, Loader2, ShieldCheck, ArrowLeft } from "lucide-react";
 import { API_BASE } from "@/lib/config";
+import AnimatedBadge from "@/components/premium/AnimatedBadge";
+import HolographicCard from "@/components/premium/HolographicCard";
+import MetricOrb from "@/components/premium/MetricOrb";
 
 export default function DownloadDetailPage({ params }: { params: { id: string } }) {
   const [info, setInfo] = useState<any>(null);
@@ -51,23 +54,24 @@ export default function DownloadDetailPage({ params }: { params: { id: string } 
 
   if (error) {
     return (
-      <div className="mx-auto max-w-3xl py-10">
+      <div className="mx-auto max-w-5xl px-4 py-10">
         <Link href="/downloads" className="mb-6 inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white">
           <ArrowLeft size={16} /> Voltar
         </Link>
-        <div className="rounded-3xl border border-rose-500/20 bg-rose-500/10 p-8">
+        <HolographicCard className="p-8">
           <p className="text-sm text-rose-200">{error}</p>
-        </div>
+        </HolographicCard>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-4xl py-10 space-y-6">
+    <div className="mx-auto max-w-7xl space-y-6 px-4 py-10">
+      <AnimatedBadge tone="cyan">artifact detail</AnimatedBadge>
       <Link href="/downloads" className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white">
         <ArrowLeft size={16} /> Voltar para downloads
       </Link>
-      <div className="rounded-[28px] border border-white/10 bg-surface/80 p-8 shadow-2xl shadow-black/20">
+      <HolographicCard className="p-8">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-cyan-300">Download Pipeline</p>
@@ -95,7 +99,7 @@ export default function DownloadDetailPage({ params }: { params: { id: string } 
             <p className="mt-2 inline-flex items-center gap-2 text-lg font-semibold text-emerald-200"><ShieldCheck size={18} /> {info.security_status}</p>
           </div>
         </div>
-      </div>
+      </HolographicCard>
     </div>
   );
 }

@@ -3,6 +3,10 @@
 import { useEffect, useState } from "react";
 import { apiGet, apiFallbacks } from "@/lib/api";
 import { usePreferences } from "@/context/PreferencesContext";
+import AnimatedBadge from "@/components/premium/AnimatedBadge";
+import HolographicCard from "@/components/premium/HolographicCard";
+import MetricOrb from "@/components/premium/MetricOrb";
+import SectionHeader from "@/components/premium/SectionHeader";
 
 export default function SystemPage() {
   const { t } = usePreferences();
@@ -19,11 +23,22 @@ export default function SystemPage() {
   const perf = data?.performance;
 
   return (
-    <div className="mx-auto max-w-6xl animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">{t("system.title")}</h1>
-        <p className="mt-2 text-gray-400">{t("system.subtitle")}</p>
-      </div>
+    <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 lg:py-10">
+      <HolographicCard className="p-6 md:p-8">
+        <div className="flex flex-wrap items-center gap-2">
+          <AnimatedBadge tone="cyan">system console</AnimatedBadge>
+          <AnimatedBadge tone="violet">runtime metrics</AnimatedBadge>
+        </div>
+        <h1 className="mt-5 text-4xl font-semibold tracking-tight text-white md:text-5xl">{t("system.title")}</h1>
+        <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300 md:text-base">{t("system.subtitle")}</p>
+        {!loading && (
+          <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            <MetricOrb label="Memory" value={perf?.memory_mb ?? "-"} accent="cyan" />
+            <MetricOrb label="Generators" value={perf?.generators_loaded ?? "-"} accent="violet" />
+            <MetricOrb label="Uptime" value={perf?.uptime_seconds ?? "-"} accent="emerald" />
+          </div>
+        )}
+      </HolographicCard>
 
       {loading ? (
         <div className="grid gap-4 md:grid-cols-3">
@@ -47,9 +62,9 @@ export default function SystemPage() {
 
 function MetricCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-surface p-5">
+    <HolographicCard className="p-5">
       <p className="text-xs font-medium uppercase tracking-wider text-gray-500">{label}</p>
       <p className="mt-2 text-2xl font-bold text-gray-100">{value}</p>
-    </div>
+    </HolographicCard>
   );
 }
