@@ -19,6 +19,9 @@ class AuditLogger:
     ALLOWED_ACTIONS = {
         "login_success",
         "login_failed",
+        "password_reset_requested",
+        "password_reset_completed",
+        "password_reset_failed",
         "project_generated",
         "payment_confirmed",
         "download_requested",

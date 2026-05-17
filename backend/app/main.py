@@ -8,6 +8,7 @@ from knowledge_engine.educational_mode import EducationalMode
 from stack_registry.registry import StackRegistry
 from .streamer import streamer
 from .routes.ai_boost import router as ai_boost_router
+from .routes.auth import router as auth_router
 from .routes.create import router as create_router
 from .routes.downloads import router as downloads_router
 from .routes.generate import router as generate_router
@@ -42,6 +43,7 @@ educational_mode = EducationalMode()
 stack_registry = StackRegistry()
 
 app.include_router(create_router)
+app.include_router(auth_router)
 app.include_router(generate_router)
 app.include_router(downloads_router)
 app.include_router(payments_router)

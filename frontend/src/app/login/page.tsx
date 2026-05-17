@@ -1,15 +1,16 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { ArrowRight, Fingerprint, Github, Globe, Lock, Mail, ShieldCheck, Sparkles, TerminalSquare } from "lucide-react";
+import { ArrowRight, Fingerprint, Globe, KeyRound, Lock, Mail, ShieldCheck, Sparkles, TerminalSquare } from "lucide-react";
 import { motion } from "framer-motion";
 import PremiumShell from "@/components/premium/PremiumShell";
 import HolographicCard from "@/components/premium/HolographicCard";
 import MetricOrb from "@/components/premium/MetricOrb";
 import AnimatedBadge from "@/components/premium/AnimatedBadge";
 import SectionHeader from "@/components/premium/SectionHeader";
+import { loginWithPassword, storeAuthSession } from "@/lib/auth";
 
 const FEATURES = [
   { label: "Zero Trust", value: "Active" },
@@ -19,34 +20,48 @@ const FEATURES = [
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("admin@saasfactory.local");
+  const [password, setPassword] = useState("Admin@123!");
   const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const hint = useMemo(() => {
     if (email.includes("@")) return "Secure sign-in detected";
     return "Enter your workspace email";
   }, [email]);
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
+    setError("");
     setMessage("");
 
-    window.setTimeout(() => {
+    try {
+      const response = await loginWithPassword({
+        email,
+        password,
+        remember_device: remember,
+      });
+      storeAuthSession(response, remember);
+      setMessage(response.message || "Access granted. Redirecting to the orchestration center.");
+      window.setTimeout(() => {
+        router.push(response.redirect_url || "/dashboard");
+      }, 400);
+    } catch (err) {
+      const messageText = err instanceof Error ? err.message : "Falha ao autenticar.";
+      setError(messageText);
+    } finally {
       setLoading(false);
-      setMessage("Access granted. Redirecting to the orchestration center.");
-      router.push("/dashboard");
-    }, 900);
+    }
   };
 
   return (
     <PremiumShell>
       <div className="fixed inset-0 z-[300] overflow-hidden bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.14),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(139,92,246,0.16),transparent_28%),linear-gradient(180deg,#04060b_0%,#05070d_45%,#02040a_100%)]">
-        <div className="absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(148,163,184,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.12)_1px,transparent_1px)] [background-size:72px_72px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(2,6,23,0.42)_78%)]" />
+        <div className="pointer-events-none absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(148,163,184,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.12)_1px,transparent_1px)] [background-size:72px_72px]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(2,6,23,0.42)_78%)]" />
 
         <div className="relative flex min-h-screen items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
           <div className="grid w-full max-w-7xl gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
@@ -148,7 +163,7 @@ export default function LoginPage() {
                         onChange={(e) => setEmail(e.target.value)}
                         type="email"
                         required
-                        placeholder="louvens@company.com"
+                        placeholder="admin@saasfactory.local"
                         className="w-full bg-transparent text-sm text-white outline-none placeholder:text-slate-600"
                       />
                     </div>
@@ -163,7 +178,7 @@ export default function LoginPage() {
                         onChange={(e) => setPassword(e.target.value)}
                         type="password"
                         required
-                        placeholder="••••••••••••"
+                        placeholder="Enter your secure password"
                         className="w-full bg-transparent text-sm text-white outline-none placeholder:text-slate-600"
                       />
                     </div>
@@ -192,32 +207,38 @@ export default function LoginPage() {
                   </button>
 
                   <div className="grid gap-3 sm:grid-cols-2">
-                    <button
-                      type="button"
+                    <Link
+                      href="/forgot-password"
                       className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-slate-200 transition-all hover:bg-white/10"
                     >
                       <Globe size={16} />
                       Magic link
-                    </button>
-                    <button
-                      type="button"
+                    </Link>
+                    <Link
+                      href="/forgot-password"
                       className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-slate-200 transition-all hover:bg-white/10"
                     >
-                      <Github size={16} />
-                      Continue with GitHub
-                    </button>
+                      <KeyRound size={16} />
+                      Recover password
+                    </Link>
                   </div>
 
                   <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-300">
-                    <p className="font-semibold text-white">Need a workspace?</p>
+                    <p className="font-semibold text-white">Local dev account</p>
                     <p className="mt-1 text-slate-400">
-                      Create an account to unlock templates, live generation and secure project downloads.
+                      Use <span className="text-slate-200">admin@saasfactory.local</span> to access the panel during local testing.
                     </p>
                   </div>
 
                   {message && (
                     <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-sm text-emerald-200">
                       {message}
+                    </div>
+                  )}
+
+                  {error && (
+                    <div className="rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4 text-sm text-rose-200">
+                      {error}
                     </div>
                   )}
                 </form>
