@@ -129,15 +129,15 @@ export default function SettingsPage() {
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 lg:py-10">
       <HolographicCard className="p-6 md:p-8">
         <div className="flex flex-wrap items-center gap-2">
-          <AnimatedBadge tone="cyan">preferences cockpit</AnimatedBadge>
-          <AnimatedBadge tone="violet">workspace policy</AnimatedBadge>
+          <AnimatedBadge tone="cyan">painel de preferências</AnimatedBadge>
+          <AnimatedBadge tone="violet">política do workspace</AnimatedBadge>
         </div>
         <h1 className="mt-5 text-4xl font-semibold tracking-tight text-white md:text-5xl">{t("settings.title")}</h1>
         <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300 md:text-base">{t("settings.subtitle")}</p>
         <div className="mt-8 grid gap-3 sm:grid-cols-3">
-          <MetricOrb label="Language" value={lang.toUpperCase()} accent="cyan" />
-          <MetricOrb label="Theme" value={theme} accent="violet" />
-          <MetricOrb label="AI Mode" value={defaultAiMode} accent="emerald" />
+          <MetricOrb label="Idioma" value={lang.toUpperCase()} accent="cyan" />
+          <MetricOrb label="Tema" value={theme} accent="violet" />
+          <MetricOrb label="Modo IA" value={defaultAiMode} accent="emerald" />
         </div>
       </HolographicCard>
 
@@ -244,7 +244,7 @@ export default function SettingsPage() {
               </p>
             </div>
             <div className="rounded-xl bg-amber-500/20 px-4 py-2 border border-amber-500/30">
-              <p className="text-xs font-bold text-amber-300 uppercase tracking-wider">Enterprise</p>
+              <p className="text-xs font-bold text-amber-300 uppercase tracking-wider">Empresarial</p>
             </div>
           </div>
         </SectionCard>

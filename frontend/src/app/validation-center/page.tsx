@@ -35,8 +35,8 @@ export default function ValidationCenterPage() {
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 lg:py-10">
       <HolographicCard className="p-6 md:p-8">
         <div className="flex flex-wrap items-center gap-2">
-          <AnimatedBadge tone="cyan">validation center</AnimatedBadge>
-          <AnimatedBadge tone="emerald">quality gates</AnimatedBadge>
+          <AnimatedBadge tone="cyan">central de validação</AnimatedBadge>
+          <AnimatedBadge tone="emerald">portões de qualidade</AnimatedBadge>
         </div>
         <h1 className="mt-5 text-4xl font-semibold tracking-tight text-white md:text-5xl">{t("validation.title")}</h1>
         <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300 md:text-base">{t("validation.subtitle")}</p>
@@ -50,7 +50,7 @@ export default function ValidationCenterPage() {
       </HolographicCard>
 
       <HolographicCard className="p-5">
-        <SectionHeader eyebrow="pipeline" title="Validation flow" subtitle="A quality gate view for rules, warnings and errors." />
+        <SectionHeader eyebrow="pipeline" title="Fluxo de validação" subtitle="Uma visão dos gates de qualidade para regras, avisos e erros." />
         <div className="mt-5">
           <EngineNodeGraph
             nodes={items.map((item) => ({ name: item.rule, status: item.status, hint: item.detail }))}
@@ -60,9 +60,9 @@ export default function ValidationCenterPage() {
 
       <HolographicCard className="p-5">
         <div className="flex items-center justify-between">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Rule details</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Detalhes das regras</p>
           <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-slate-400">
-            {items.length} rules
+            {items.length} regras
           </span>
         </div>
         <div className="mt-4">

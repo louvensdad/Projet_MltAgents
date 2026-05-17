@@ -40,21 +40,21 @@ export default function DocumentationCenterPage() {
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 lg:py-10">
       <HolographicCard className="p-6 md:p-8">
         <div className="flex flex-wrap items-center gap-2">
-          <AnimatedBadge tone="cyan">docs center</AnimatedBadge>
-          <AnimatedBadge tone="violet">knowledge graph</AnimatedBadge>
+          <AnimatedBadge tone="cyan">central de docs</AnimatedBadge>
+          <AnimatedBadge tone="violet">grafo de conhecimento</AnimatedBadge>
         </div>
         <h1 className="mt-5 text-4xl font-semibold tracking-tight text-white md:text-5xl">{t("documentation.title")}</h1>
         <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300 md:text-base">{t("documentation.subtitle")}</p>
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <button onClick={load} className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_16px_40px_rgba(34,211,238,0.18)] transition-all hover:translate-y-[-1px]">{t("documentation.refresh")}</button>
           <MetricOrb label="Docs" value={safeArray(data?.docs || data || []).length} accent="cyan" />
-          <MetricOrb label="Summary" value={data?.summary ? "Live" : "Pending"} accent="violet" />
+          <MetricOrb label="Resumo" value={data?.summary ? "Ao vivo" : "Pendente"} accent="violet" />
         </div>
       </HolographicCard>
       <HolographicCard className="p-5">
-        <SectionHeader eyebrow="pipeline" title="Documentation mesh" subtitle="Contracted docs, stack awareness and status per technology." />
+        <SectionHeader eyebrow="pipeline" title="Malha de documentação" subtitle="Documentos contratados, consciência de stack e status por tecnologia." />
         <div className="mt-5">
-          <EngineNodeGraph nodes={[{ name: "Source docs", status: "live", hint: data?.summary || "Summary unavailable" }, { name: "Catalog", status: "synced", hint: `${safeArray(data?.docs || data || []).length} docs` }]} />
+          <EngineNodeGraph nodes={[{ name: "Docs de origem", status: "live", hint: data?.summary || "Resumo indisponível" }, { name: "Catálogo", status: "synced", hint: `${safeArray(data?.docs || data || []).length} docs` }]} />
         </div>
       </HolographicCard>
       <div className="mb-4 flex items-center gap-3">
