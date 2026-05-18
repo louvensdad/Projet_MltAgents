@@ -12,15 +12,9 @@ import SectionHeader from "@/components/premium/SectionHeader";
 import { usePreferences } from "@/context/PreferencesContext";
 import { loginWithPassword, storeAuthSession } from "@/lib/auth";
 
-const FEATURES = [
-  { label: "Zero Trust", value: "Active" },
-  { label: "Audit Trail", value: "Enabled" },
-  { label: "SSO", value: "Ready" },
-];
-
 export default function LoginPage() {
   const router = useRouter();
-  const { lang, setLang, localeNames } = usePreferences();
+  const { lang, setLang, localeNames, t } = usePreferences();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
@@ -30,9 +24,15 @@ export default function LoginPage() {
   const [languageOpen, setLanguageOpen] = useState(false);
 
   const hint = useMemo(() => {
-    if (email.includes("@")) return "Secure sign-in detected";
-    return "Enter your workspace email";
-  }, [email]);
+    if (email.includes("@")) return t("auth.sign_in_hint_secure");
+    return t("auth.sign_in_hint_enter_email");
+  }, [email, t]);
+
+  const features = [
+    { label: t("auth.passkeys"), value: t("auth.passkeys_available"), accent: "cyan" as const, icon: <ShieldCheck size={18} /> },
+    { label: t("auth.audit_logs"), value: t("auth.audit_logs_on"), accent: "violet" as const, icon: <Fingerprint size={18} /> },
+    { label: t("auth.mfa"), value: t("auth.mfa_recommended"), accent: "emerald" as const, icon: <Sparkles size={18} /> },
+  ];
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -47,12 +47,12 @@ export default function LoginPage() {
         remember_device: remember,
       });
       storeAuthSession(response, remember);
-      setMessage(response.message || "Access granted. Redirecting to the orchestration center.");
+      setMessage(t("auth.login_success"));
       window.setTimeout(() => {
         router.push(response.redirect_url || "/");
       }, 400);
     } catch (err) {
-      const messageText = err instanceof Error ? err.message : "Falha ao autenticar.";
+      const messageText = err instanceof Error ? t("auth.login_failed") : t("common.error");
       setError(messageText);
     } finally {
       setLoading(false);
@@ -73,40 +73,34 @@ export default function LoginPage() {
             className="order-2 space-y-6 lg:order-1"
           >
             <div className="flex flex-wrap items-center gap-3">
-              <AnimatedBadge tone="cyan">Secure Access</AnimatedBadge>
-              <span className="text-[10px] uppercase tracking-[0.35em] text-slate-500 sm:text-xs">Enterprise console</span>
+              <AnimatedBadge tone="cyan">{t("auth.secure_access")}</AnimatedBadge>
+              <span className="text-[10px] uppercase tracking-[0.35em] text-slate-500 sm:text-xs">{t("auth.enterprise_console")}</span>
             </div>
 
             <div className="space-y-4">
               <h1 className="max-w-2xl text-3xl font-semibold tracking-tight text-white sm:text-4xl md:text-6xl">
-                Futuristic login for the AI orchestration plane.
+                {t("auth.login_title")}
               </h1>
               <p className="max-w-2xl text-sm leading-6 text-slate-300 md:text-base md:leading-7">
-                Sign in to access live generation, template control, quality gates and the premium engineering workspace.
+                {t("auth.workspace_online")}
               </p>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-3 sm:gap-4">
-              {FEATURES.map((item, index) => (
-                <MetricOrb
-                  key={item.label}
-                  label={item.label}
-                  value={item.value}
-                  accent={index === 0 ? "cyan" : index === 1 ? "violet" : "emerald"}
-                  icon={index === 0 ? <ShieldCheck size={18} /> : index === 1 ? <Fingerprint size={18} /> : <Sparkles size={18} />}
-                />
+              {features.map((item) => (
+                <MetricOrb key={item.label} label={item.label} value={item.value} accent={item.accent} icon={item.icon} />
               ))}
             </div>
 
             <div className="grid gap-4 md:grid-cols-[1.15fr_0.85fr]">
               <HolographicCard className="p-5">
-                <SectionHeader eyebrow="control layer" title="Security cockpit" subtitle="Auditable access, passkeys and low-friction sign-in flows." />
+                <SectionHeader eyebrow={t("auth.security_cockpit")} title={t("auth.security_cockpit")} subtitle={t("auth.security_cockpit_subtitle")} />
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   {[
-                    { label: "Passkeys", value: "Available" },
-                    { label: "Audit logs", value: "On" },
-                    { label: "Session policy", value: "Strict" },
-                    { label: "MFA", value: "Recommended" },
+                    { label: t("auth.passkeys"), value: t("auth.passkeys_available") },
+                    { label: t("auth.audit_logs"), value: t("auth.audit_logs_on") },
+                    { label: t("auth.session_policy"), value: t("auth.session_strict") },
+                    { label: t("auth.mfa"), value: t("auth.mfa_recommended") },
                   ].map((item) => (
                     <div key={item.label} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                       <p className="text-[10px] uppercase tracking-[0.3em] text-slate-500">{item.label}</p>
@@ -117,19 +111,19 @@ export default function LoginPage() {
               </HolographicCard>
 
               <HolographicCard className="p-5">
-                <SectionHeader eyebrow="runtime" title="Live status" subtitle="The workspace is online and ready for secure access." />
+                <SectionHeader eyebrow={t("auth.runtime")} title={t("auth.live_status")} subtitle={t("auth.workspace_online")} />
                 <div className="mt-5 space-y-3 text-sm text-slate-300">
                   <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
-                    <span>Generation engine</span>
-                    <span className="text-emerald-300">Online</span>
+                    <span>{t("auth.generation_engine")}</span>
+                    <span className="text-emerald-300">{t("auth.online")}</span>
                   </div>
                   <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
-                    <span>Prompt Master</span>
-                    <span className="text-cyan-300">Synced</span>
+                    <span>{t("auth.prompt_master")}</span>
+                    <span className="text-cyan-300">{t("auth.synced")}</span>
                   </div>
                   <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
-                    <span>Gatekeepers</span>
-                    <span className="text-violet-300">Ready</span>
+                    <span>{t("auth.gatekeepers")}</span>
+                    <span className="text-violet-300">{t("auth.ready")}</span>
                   </div>
                 </div>
               </HolographicCard>
@@ -146,21 +140,21 @@ export default function LoginPage() {
             <HolographicCard className="relative z-10 p-4 sm:p-5 md:p-6">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.35em] text-slate-500">Login panel</p>
-                  <h2 className="mt-1 text-xl font-semibold text-white sm:text-2xl">Access the factory</h2>
+                  <p className="text-[10px] uppercase tracking-[0.35em] text-slate-500">{t("auth.login_eyebrow")}</p>
+                  <h2 className="mt-1 text-xl font-semibold text-white sm:text-2xl">{t("auth.login_title")}</h2>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setLanguageOpen((value) => !value)}
                     className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-200 transition-all hover:bg-white/10"
-                    aria-label="Change language"
+                    aria-label={t("auth.change_language")}
                   >
                     <Languages size={14} />
                     {lang.toUpperCase()}
                   </button>
                   <div className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-cyan-200">
-                    Live
+                    {t("auth.login_live")}
                   </div>
                 </div>
               </div>
@@ -189,28 +183,28 @@ export default function LoginPage() {
 
               <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                 <label className="block space-y-2">
-                  <span className="text-xs uppercase tracking-[0.28em] text-slate-500">Workspace email</span>
+                  <span className="text-xs uppercase tracking-[0.28em] text-slate-500">{t("auth.login_workspace_email")}</span>
                   <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3 transition-all focus-within:border-cyan-500/30">
                     <input
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       type="email"
                       required
-                      placeholder="your-workspace@email.com"
+                      placeholder={t("auth.login_email_placeholder")}
                       className="w-full bg-transparent text-sm text-white outline-none placeholder:text-slate-600"
                     />
                   </div>
                 </label>
 
                 <label className="block space-y-2">
-                  <span className="text-xs uppercase tracking-[0.28em] text-slate-500">Password</span>
+                  <span className="text-xs uppercase tracking-[0.28em] text-slate-500">{t("auth.login_password")}</span>
                   <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3 transition-all focus-within:border-violet-500/30">
                     <input
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       type="password"
                       required
-                      placeholder="Your secure password"
+                      placeholder={t("auth.login_password_placeholder")}
                       className="w-full bg-transparent text-sm text-white outline-none placeholder:text-slate-600"
                     />
                   </div>
@@ -224,7 +218,7 @@ export default function LoginPage() {
                       type="checkbox"
                       className="h-4 w-4 rounded border-white/20 bg-black/40 text-cyan-400 focus:ring-cyan-400/50"
                     />
-                    Remember this device
+                    {t("auth.remember_device")}
                   </label>
                   <span className="text-[10px] uppercase tracking-[0.28em] text-slate-500 sm:text-xs">{hint}</span>
                 </div>
@@ -234,7 +228,7 @@ export default function LoginPage() {
                   disabled={loading}
                   className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {loading ? "Accessing..." : "Enter orchestration center"}
+                  {loading ? t("common.loading") : t("auth.enter_center")}
                   <ArrowRight size={16} />
                 </button>
 
@@ -244,14 +238,14 @@ export default function LoginPage() {
                     className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-slate-200 transition-all hover:bg-white/10"
                   >
                     <Globe size={16} />
-                    Magic link
+                    {t("auth.magic_link")}
                   </Link>
                   <Link
                     href="/forgot-password"
                     className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-slate-200 transition-all hover:bg-white/10"
                   >
                     <KeyRound size={16} />
-                    Recover password
+                    {t("auth.recover_password")}
                   </Link>
                 </div>
 
@@ -270,11 +264,11 @@ export default function LoginPage() {
 
               <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-5">
                 <Link href="/" className="text-sm text-slate-400 transition-colors hover:text-white">
-                  Enter the panel
+                  {t("auth.enter_panel")}
                 </Link>
                 <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.35em] text-slate-500">
                   <TerminalSquare size={14} />
-                  Enterprise login panel
+                  {t("auth.enterprise_login_panel")}
                 </div>
               </div>
             </HolographicCard>

@@ -49,6 +49,13 @@ export default function LdcnAvatarBody({
           />
         </>
       )}
+      {mood === "waking" && (
+        <motion.div
+          className="absolute inset-[-12%] rounded-full border border-cyan-200/20"
+          animate={{ scale: [0.94, 1.06, 0.94], opacity: [0.2, 0.45, 0.2] }}
+          transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
+        />
+      )}
       <div className="absolute inset-0 rounded-full bg-cyan-400/10 blur-xl" />
       <div className={`absolute inset-1 rounded-[1.35rem] border ${badge} backdrop-blur-xl shadow-[0_0_28px_rgba(34,211,238,0.14)]`} />
       <div className="absolute inset-[0.35rem] rounded-[1.15rem] border border-white/10 bg-slate-950/65" />
@@ -56,7 +63,7 @@ export default function LdcnAvatarBody({
 
       <motion.div
         className="absolute bottom-[10%] left-[20%] right-[20%] h-1 rounded-full bg-cyan-200/20"
-        animate={mood === "walking" ? { scaleX: [0.8, 1, 0.8], opacity: [0.35, 0.7, 0.35] } : { opacity: 0.45 }}
+        animate={mood === "waking" ? { scaleX: [0.8, 1, 0.8], opacity: [0.35, 0.7, 0.35] } : { opacity: 0.45 }}
         transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
       />
 
@@ -84,7 +91,7 @@ export default function LdcnAvatarBody({
         </div>
       )}
 
-      {mood === "celebrating" && (
+      {mood === "success" && (
         <motion.div
           className="absolute -top-1 h-2 w-2 rounded-full bg-cyan-200 shadow-[0_0_10px_rgba(103,232,249,0.95)]"
           animate={{ y: [0, -4, 0], opacity: [0.4, 1, 0.4] }}

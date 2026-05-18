@@ -17,6 +17,8 @@ class QualityGate:
             return {"status": "failed", "errors": ["Caminho do projeto no encontrado."]}
 
         project_type = str(blueprint.get("project_type", "")).lower()
+        if not project_type and blueprint.get("api_endpoints"):
+            project_type = "api"
         is_static = project_type in {"static", "static_site", "site_estático", "site estatico"}
         if is_static:
             static_root = project_path
@@ -71,7 +73,7 @@ class QualityGate:
                 if any(f.endswith(".html") or f.endswith(".tsx") for f in files):
                     has_frontend = True
                     break
-            if not has_frontend and blueprint.get("project_type") != "api":
+            if not has_frontend and project_type != "api":
                 errors.append("UX falhou: Frontend ou templates esperados, mas no encontrados.")
 
         # 3. Testes existem (buscando no backend_check_path)
@@ -87,7 +89,7 @@ class QualityGate:
             errors.append("Qualidade falhou: README.md ausente.")
             
         # 4.1. Swagger/OpenAPI ou Docs de API
-        if blueprint.get("project_type") == "api" or backend_check_path != project_path:
+        if project_type == "api" or backend_check_path != project_path:
             # Em NestJS/FastAPI/Spring, procuramos menção a Swagger
             swagger_found = False
             for root, _, files in os.walk(backend_check_path):

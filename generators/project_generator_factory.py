@@ -35,6 +35,16 @@ class ProjectGeneratorFactory:
             if forbidden.lower() in str(payload).lower():
                 warnings.append(f"Forbidden term present in payload: {forbidden}")
 
+        try:
+            from backend.config.stack_profiles import STACK_PROFILES
+
+            profile = STACK_PROFILES.get(normalized) or {}
+            for forbidden in profile.get("forbidden_terms", []):
+                if forbidden.lower() in str(payload).lower():
+                    errors.append(f"Forbidden term present in payload: {forbidden}")
+        except Exception:
+            pass
+
         if not payload.get("project_name"):
             errors.append("project_name is required")
 
@@ -65,4 +75,3 @@ class ProjectGeneratorFactory:
             "gatekeeper": stack.get("gatekeeper"),
             "payload": payload,
         }
-

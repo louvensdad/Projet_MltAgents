@@ -40,6 +40,7 @@ export interface TranslationDict {
   upgrade: Record<string, any>;
   ai_mode: Record<string, string>;
   ai_boost: Record<string, string>;
+  auth: Record<string, string>;
   settings: Record<string, string>;
   documentation: Record<string, string>;
   templates: Record<string, string>;

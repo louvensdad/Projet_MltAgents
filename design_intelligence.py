@@ -33,8 +33,10 @@ def infer_ux_intelligence(
     description: str,
     project_type: str,
     brief: Dict[str, Any] | None = None,
+    design_brief: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
-    brief = brief or {}
+    brief = brief or design_brief or {}
+    ux_flow = brief.get("ux_flow") or ["landing", "onboarding", "dashboard", "settings"]
     return {
         "project": project_name,
         "pattern": brief.get("ux_pattern") or "guided-premium",
@@ -42,5 +44,7 @@ def infer_ux_intelligence(
         "motion": brief.get("motion") or "subtle",
         "description": description or project_name,
         "project_type": project_type,
+        "user_journey": brief.get("user_journey") or "discover -> configure -> generate -> download",
+        "ux_rules": brief.get("ux_rules") or ["responsive", "accessible", "clear_empty_states", "safe_loading_states"],
+        "ux_flow": ux_flow,
     }
-

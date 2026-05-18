@@ -167,7 +167,7 @@ def _get_gemini_client():
         return None
 
 
-def _generate_real(prompt: str) -> dict:
+def _generate_real(prompt: str, system_instruction: str | None = None, temperature: float | None = None) -> dict:
     client = _get_gemini_client()
     if not client:
         # NEVER silently mock -- report why Agent Boost is unavailable
@@ -183,9 +183,18 @@ def _generate_real(prompt: str) -> dict:
             "reason": reason,
         }
     try:
+        config = None
+        if system_instruction:
+            from google.genai import types
+
+            config_kwargs: dict[str, Any] = {"system_instruction": system_instruction}
+            if temperature is not None:
+                config_kwargs["temperature"] = temperature
+            config = types.GenerateContentConfig(**config_kwargs)
         response = client.models.generate_content(
             model=GEMINI_MODEL,
             contents=prompt,
+            config=config,
         )
         logger.info("[AI_ENGINE] mode=GEMINI_CONNECTED model=%s", GEMINI_MODEL)
         return {
@@ -240,7 +249,12 @@ def _mock_response(prompt: str) -> dict:
     }
 
 
-def generate_with_gemini(prompt: str, project_context: dict = None) -> dict:
+def generate_with_gemini(
+    prompt: str,
+    project_context: dict = None,
+    system_instruction: str | None = None,
+    temperature: float | None = None,
+) -> dict:
     context_prompt = ""
     if project_context:
         context_prompt = (
@@ -250,7 +264,7 @@ def generate_with_gemini(prompt: str, project_context: dict = None) -> dict:
             f"- Tipo: {project_context.get('type', 'N/A')}\n\n"
         )
     full_prompt = f"{context_prompt}{prompt}\n\nResponda de forma clara."
-    return _generate_real(full_prompt)
+    return _generate_real(full_prompt, system_instruction=system_instruction, temperature=temperature)
 
 
 def improve_code(code: str, language: str = "python") -> dict:
@@ -275,6 +289,19 @@ def generate_docs(code: str, project_context: dict = None) -> dict:
 
 def chat_with_project(prompt: str, project_context: dict = None) -> dict:
     return generate_with_gemini(prompt, project_context)
+
+
+def chat_with_ldcn(
+    prompt: str,
+    project_context: dict | None = None,
+    system_instruction: str | None = None,
+) -> dict:
+    return generate_with_gemini(
+        prompt,
+        project_context,
+        system_instruction=system_instruction,
+        temperature=0.25,
+    )
 
 
 # ── Usage tracking ────────────────────────────────────────────

@@ -1,4 +1,6 @@
 import os
+import sys
+from pathlib import Path
 
 from .agent_context import AgentContext
 
@@ -84,6 +86,11 @@ class Pipeline:
             return context
 
         try:
+            root_dir = Path(__file__).resolve().parents[2]
+            for candidate in (root_dir / "templates", root_dir / "prompt_engine"):
+                candidate_str = str(candidate)
+                if candidate_str not in sys.path:
+                    sys.path.insert(0, candidate_str)
             from blueprints.blueprint_builder import build_blueprint
             from blueprints.blueprint_exporter import export_to_json, export_to_markdown
             from generators.backend.backend_generator_factory import BackendGeneratorFactory

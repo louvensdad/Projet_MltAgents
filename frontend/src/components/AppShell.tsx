@@ -14,15 +14,20 @@ function isAuthRoute(pathname: string) {
   return pathname === "/login" || pathname === "/forgot-password" || pathname.startsWith("/reset-password/");
 }
 
+function isDebugRoute(pathname: string) {
+  return pathname.startsWith("/debug/");
+}
+
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const authRoute = useMemo(() => isAuthRoute(pathname), [pathname]);
+  const debugRoute = useMemo(() => isDebugRoute(pathname), [pathname]);
 
   return (
     <PremiumShell>
       <ClientProviders>
         <AuthGate>
-          {authRoute ? (
+          {authRoute || debugRoute ? (
             <main className="min-h-screen">{children}</main>
           ) : (
             <div className="flex min-h-screen">

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ComponentType } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, BadgeInfo, Sparkles, Layers3, PlayCircle, GitBranch } from "lucide-react";
@@ -52,6 +53,9 @@ function storeTemplateContext(template: any, prepared: any) {
   };
   window.sessionStorage.setItem("template_context", JSON.stringify(context));
   window.localStorage.setItem("template_context", JSON.stringify(context));
+  window.localStorage.setItem("ldcn_selected_template", template.id);
+  window.localStorage.setItem("ldcn_wizard_stack", template.stack_profile_id || "");
+  window.dispatchEvent(new Event("ldcn:context-update"));
 }
 
 export default function TemplatesPage() {
@@ -303,7 +307,7 @@ function TemplateCard({
       <div className="overflow-hidden rounded-2xl border border-white/10 bg-slate-950/80">
         <div className="relative aspect-[16/9] w-full overflow-hidden">
           {cover ? (
-            <img src={cover} alt={template.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
+            <Image src={cover} alt={template.name} fill sizes="(min-width: 1280px) 50vw, 100vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
           ) : (
             <div className="h-full w-full p-3">
               <Preview template={template} />

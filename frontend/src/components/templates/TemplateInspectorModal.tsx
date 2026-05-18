@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import type { ComponentType, ReactNode } from "react";
+import Image from "next/image";
 import { X, Sparkles, GitBranch, FileCode2, Layers3 } from "lucide-react";
 import StaticSiteMiniPreview from "./previews/StaticSiteMiniPreview";
 import BackendArchitectureMiniPreview from "./previews/BackendArchitectureMiniPreview";
@@ -75,7 +76,9 @@ export default function TemplateInspectorModal({
                 <div className="grid gap-3 sm:grid-cols-[1.2fr_0.8fr]">
                   <div className="overflow-hidden rounded-3xl border border-white/10 bg-slate-950/80">
                     {heroImage ? (
-                      <img src={heroImage} alt={template.name} className="h-full w-full object-cover" />
+                      <div className="relative aspect-[16/9] min-h-[220px] w-full overflow-hidden">
+                        <Image src={heroImage} alt={template.name} fill sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
+                      </div>
                     ) : (
                       <div className="p-3">
                         <Preview template={template} />
@@ -107,7 +110,9 @@ export default function TemplateInspectorModal({
                   <div className="grid gap-3 sm:grid-cols-2">
                     {images.slice(0, 3).map((src: string, index: number) => (
                       <div key={`${src}-${index}`} className="overflow-hidden rounded-2xl border border-white/10 bg-slate-950/70">
-                        <img src={src} alt={`${template.name} preview ${index + 1}`} className="h-full w-full object-cover" />
+                        <div className="relative aspect-[16/9] w-full overflow-hidden">
+                          <Image src={src} alt={`${template.name} preview ${index + 1}`} fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover" />
+                        </div>
                       </div>
                     ))}
                   </div>

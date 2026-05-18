@@ -21,7 +21,7 @@ export default function LdcnAvatarPath({
     "hero-corner": "M6 18 C36 8, 74 8, 126 18",
   }[position];
 
-  const glow = mood === "warning" || mood === "error" ? "rgba(248,113,113,0.7)" : mood === "celebrating" ? "rgba(103,232,249,0.85)" : "rgba(56,189,248,0.65)";
+  const glow = mood === "warning" || mood === "error" ? "rgba(248,113,113,0.7)" : mood === "success" ? "rgba(103,232,249,0.85)" : "rgba(56,189,248,0.65)";
 
   return (
     <svg
@@ -36,7 +36,7 @@ export default function LdcnAvatarPath({
         strokeLinecap="round"
         strokeWidth="1.4"
         strokeDasharray="4 8"
-        animate={mood === "walking" ? { strokeDashoffset: [0, 12] } : { strokeDashoffset: 0 }}
+        animate={mood === "waking" ? { strokeDashoffset: [0, 12] } : { strokeDashoffset: 0 }}
         transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
       />
       <motion.circle
@@ -44,10 +44,9 @@ export default function LdcnAvatarPath({
         cy={20}
         r="2.2"
         fill={glow}
-        animate={mood === "walking" ? { cx: position === "bottom-left" ? [18, 60, 102, 118] : [118, 86, 44, 18] } : { opacity: 0.85 }}
+        animate={mood === "waking" ? { cx: position === "bottom-left" ? [18, 60, 102, 118] : [118, 86, 44, 18] } : { opacity: 0.85 }}
         transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
       />
     </svg>
   );
 }
-

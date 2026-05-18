@@ -14,6 +14,13 @@ from agents.security_agent import SecurityAgent
 from agents.test_agent import TestAgent
 from agents.devops_agent import DevOpsAgent
 from agents.reviewer_agent import ReviewerAgent
+from agents.core.download_agent import DownloadAgent
+from agents.core.engineering_analyzer_agent import EngineeringAnalyzerAgent
+from agents.core.prompt_master_agent import PromptMasterAgent
+from agents.core.quality_agent import QualityAgent
+from agents.core.stack_registry_agent import StackRegistryAgent
+from agents.core.template_agent import TemplateAgent
+from agents.core.uiux_agent import UIUXAgent
 from generators.backend.backend_generator_factory import BackendGeneratorFactory
 from generators.config.config_generator import apply_config_to_project
 from generators.static.static_site_generator import StaticSiteGenerator
@@ -95,6 +102,7 @@ def run_project(payload: Dict[str, Any]) -> Dict[str, Any]:
     user_idea = payload.get("user_idea", "")
     project_language = payload.get("project_language", "Português")
     backend_stack = payload.get("backend_stack", "Python + FastAPI")
+    stack_id = payload.get("stack_id") or payload.get("stack_profile_id") or backend_stack
     use_ai = payload.get("use_ai", False)
 
     ai_router = AIRouter(payload)
@@ -320,6 +328,12 @@ def run_project(payload: Dict[str, Any]) -> Dict[str, Any]:
 
     if is_static:
         try:
+            from agents.stack.stack_agent_registry import run_stack_agent
+            payload = run_stack_agent("static_site", payload)
+            if payload.get("stack_agent_errors"):
+                output["status"] = "error"
+                output["errors"].extend(payload.get("stack_agent_errors", []))
+                return output
             # ── Gatekeeper: Pre-generation check ──────────────────────
             gk = GatekeeperRegistry.get_gatekeeper("static_site")
             gatekeeper_brief = _sanitize_static_gatekeeper_brief(brief if isinstance(brief, dict) else {})
@@ -408,6 +422,18 @@ def run_project(payload: Dict[str, Any]) -> Dict[str, Any]:
         return output
 
     # SaaS or API
+    try:
+        from agents.stack.stack_agent_registry import run_stack_agent
+        payload = run_stack_agent(stack_id, payload)
+        if payload.get("stack_agent_errors"):
+            output["status"] = "error"
+            output["errors"].extend(payload.get("stack_agent_errors", []))
+            return output
+    except Exception as exc:
+        output["status"] = "error"
+        output["errors"].append(f"Stack Agent bloqueou a geracao: {exc}")
+        return output
+
     # ── Gatekeeper: Pre-generation check ──────────────────────────────
     gk_backend = GatekeeperRegistry.get_backend_gatekeeper(backend_stack)
     gk_frontend = None
@@ -429,8 +455,23 @@ def run_project(payload: Dict[str, Any]) -> Dict[str, Any]:
         output.setdefault("gatekeeper_pre", pre_check)
 
     agents_list = [
-        ProductAgent(), DesignAgent(), UXAgent(), ArchitectAgent(), BackendAgent(), FrontendAgent(),
-        SecurityAgent(), TestAgent(), DevOpsAgent(), ReviewerAgent()
+        PromptMasterAgent(),
+        StackRegistryAgent(),
+        TemplateAgent(),
+        EngineeringAnalyzerAgent(),
+        ProductAgent(),
+        DesignAgent(),
+        UIUXAgent(),
+        UXAgent(),
+        ArchitectAgent(),
+        BackendAgent(),
+        FrontendAgent(),
+        SecurityAgent(),
+        QualityAgent(),
+        TestAgent(),
+        DevOpsAgent(),
+        DownloadAgent(),
+        ReviewerAgent(),
     ]
     pipeline = Pipeline(agents_list)
 

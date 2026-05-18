@@ -21,6 +21,18 @@ class PromptMasterContract:
             "answers": self.answers,
             "prompt_text": self.prompt_text,
             "status": self.status,
+            "confirmed_entities": self.answers.get("confirmed_entities") or self.answers.get("entities", []),
+            "confirmed_features": self.answers.get("confirmed_features") or self.answers.get("features", []),
+            "business_rules": self.answers.get("business_rules", []),
+            "architecture": self.answers.get("architecture"),
+            "security_modules": self.answers.get("security_modules", []),
+            "auth_strategy": self.answers.get("auth_strategy") or self.answers.get("auth"),
+            "database": self.answers.get("database"),
+            "messaging": self.answers.get("messaging"),
+            "python_version": self.answers.get("python_version"),
+            "java_version": self.answers.get("java_version"),
+            "spring_boot_version": self.answers.get("spring_boot_version"),
+            "project_language": self.answers.get("project_language") or self.answers.get("language"),
         }
 
 

@@ -163,7 +163,7 @@ FORBIDDEN_ROOT_FILES = {
 # These patterns are conservative to avoid false positives
 SECRET_PATTERNS = [
     # Actual Gemini/OpenAI API keys (not placeholders, min 32 chars)
-    re.compile(r'sk-[a-zA-Z0-9]{32,}'),  # Real sk- keys are 32+ chars
+    re.compile(r'sk-[a-zA-Z0-9]{24,}'),  # Real sk- keys are long high-entropy values
     re.compile(r'sk_live_[a-zA-Z0-9]{24,}'),  # Stripe live keys
     re.compile(r'pk_live_[a-zA-Z0-9]{24,}'),  # Stripe publishable keys
 
@@ -232,7 +232,7 @@ def _is_allowed_item(relative_path: Path) -> Tuple[bool, str]:
         return False, f"Forbidden root file: {first_part}"
 
     # Block files matching forbidden patterns (.env, .git, node_modules, etc.)
-    path_str = str(relative_path)
+    path_str = str(relative_path).replace("\\", "/")
     for pattern in FORBIDDEN_PATTERNS:
         if pattern.search(path_str):
             return False, f"Forbidden pattern: {pattern.pattern}"
@@ -391,6 +391,18 @@ def create_project_zip(project_id: str, projects_data_path: Path) -> Tuple[io.By
         })
         raise ValueError(f"Project path is not a directory: {project_path}")
 
+    has_secrets, secret_details = scan_project_for_secrets(project_path)
+    if has_secrets:
+        logger.warning(f"Download blocked for project {project_id}: secrets detected")
+        error_msg = "Projeto contem segredo sensivel e foi bloqueado por seguranca. "
+        error_msg += "Remova credenciais antes de tentar baixar."
+        debug_mode = os.getenv("DOWNLOAD_DEBUG", "false").lower() == "true"
+        if debug_mode and secret_details:
+            error_msg += "\n\nArquivos com problemas:"
+            for detail in secret_details[:3]:
+                error_msg += f"\n- {detail}"
+        raise ValueError(error_msg)
+
     # 4.1. Run Quality Gate and Security Gate
     blueprint_data = {}
     blueprint_path = os.path.join(project_path, "blueprint.json")
@@ -404,13 +416,16 @@ def create_project_zip(project_id: str, projects_data_path: Path) -> Tuple[io.By
     q_gate = QualityGate()
     s_gate = SecurityGate()
     
-    q_result = q_gate.validate(str(project_path), blueprint_data)
-    if q_result["status"] == "failed":
-        raise ValueError(f"Quality Gate failed: {', '.join(q_result['errors'])}")
+    should_run_quality_gate = bool(blueprint_data) or (project_path / "generation_trace.json").exists()
+    if should_run_quality_gate:
+        q_result = q_gate.validate(str(project_path), blueprint_data)
+        if q_result["status"] == "failed":
+            raise ValueError(f"Quality Gate failed: {', '.join(q_result['errors'])}")
         
-    s_result = s_gate.validate(str(project_path), blueprint_data)
-    if s_result["status"] == "failed":
-        raise ValueError(f"Security Gate failed: {', '.join(s_result['errors'])}")
+    if should_run_quality_gate:
+        s_result = s_gate.validate(str(project_path), blueprint_data)
+        if s_result["status"] == "failed":
+            raise ValueError(f"Security Gate failed: {', '.join(s_result['errors'])}")
 
     # 5. ONLY NOW scan for secrets (path is validated and exists)
     has_secrets, secret_details = scan_project_for_secrets(project_path)

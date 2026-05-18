@@ -1,17 +1,7 @@
-from typing import Dict, Any
-from agents.base_agent import BaseAgent
-from shared.exceptions.exceptions import EnterpriseException
+from agents.stack.stack_fiscal_base import StackFiscalBase
 
-class KubernetesAgent(BaseAgent):
-    def validate(self, context: Dict[str, Any]) -> None:
-        pass
 
-    def fiscalize(self, context: Dict[str, Any]) -> None:
-        pass
-
-    def improve(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        context["kubernetesagent_executed"] = True
-        return context
-
-    def block_bad_practices(self, context: Dict[str, Any]) -> None:
-        pass
+class KubernetesAgent(StackFiscalBase):
+    stack_id = "automation"
+    required_terms = ("kubernetes",)
+    forbidden_terms = ("cluster_admin_token",)

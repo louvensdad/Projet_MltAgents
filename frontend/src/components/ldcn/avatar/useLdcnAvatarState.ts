@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { LdcnState } from "@/ldcn/state/LdcnStateMachine";
 import {
   dispatchLdcnAvatarEvent,
   dispatchLdcnVoiceCommandEvent,
@@ -8,18 +9,10 @@ import {
   type LdcnAvatarEventDetail,
   type LdcnAvatarEventType,
 } from "./ldcnAvatarEvents";
+import { useLdcnVoice } from "@/ldcn/voice/LdcnVoiceProvider";
+import { extractWakeWordCommand, wakeWordReply } from "@/ldcn/voice/wakeWords";
 
-export type LdcnAvatarMood =
-  | "idle"
-  | "walking"
-  | "listening"
-  | "thinking"
-  | "speaking"
-  | "celebrating"
-  | "warning"
-  | "error"
-  | "guiding";
-
+export type LdcnAvatarMood = LdcnState;
 export type LdcnAvatarPosition = "bottom-right" | "bottom-left" | "sidebar-edge" | "hero-corner";
 export type LdcnAvatarSize = "small" | "medium";
 export type LdcnAvatarStyle = "holographic" | "minimalist";
@@ -72,7 +65,7 @@ const TEMPORARY_MESSAGES: Record<LdcnAvatarEventType, string> = {
   project_generated: "Boa, projeto gerado.",
   generation_failed: "Parece que encontrei um problema.",
   download_failed: "Esse erro parece vir do download.",
-  agent_boost_active: "Seus agentes estão ativos.",
+  agent_boost_active: "Seus agentes estao ativos.",
   validation_failed: "Preciso validar essa stack.",
   template_selected: "Quer que eu valide essa stack?",
   wizard_step_changed: "Estou ajustando a rota.",
@@ -126,28 +119,11 @@ function choosePosition(current: LdcnAvatarPosition, eventType: LdcnAvatarEventT
   }
 }
 
-function extractWakeCommand(transcript: string) {
-  const normalized = transcript.toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
-  const wakeVariants = ["vens", "ldcn", "el de ce ene", "el de ce en"];
-  for (const wake of wakeVariants) {
-    if (normalized === wake) {
-      return { matched: true, command: "" };
-    }
-    if (normalized.startsWith(`${wake} `)) {
-      return { matched: true, command: normalized.slice(wake.length).trim() };
-    }
-  }
-  const compact = normalized.replace(/\s+/g, "");
-  if (compact.startsWith("ldcn")) {
-    return { matched: true, command: normalized.slice(normalized.indexOf("ldcn") + 4).trim() };
-  }
-  return { matched: false, command: transcript.trim() };
-}
-
 export function useLdcnAvatarState(route: string) {
+  const voice = useLdcnVoice();
   const [settings, setSettings] = useState<LdcnAvatarSettings>(DEFAULT_SETTINGS);
   const [pageVisible, setPageVisible] = useState(true);
-  const [mood, setMood] = useState<LdcnAvatarMood>("idle");
+  const [mood, setMood] = useState<LdcnAvatarMood>("sleeping");
   const [position, setPosition] = useState<LdcnAvatarPosition>(DEFAULT_SETTINGS.positionPreference);
   const [message, setMessage] = useState("");
   const [minimized, setMinimized] = useState(false);
@@ -156,8 +132,8 @@ export function useLdcnAvatarState(route: string) {
   const wakeRecognitionRef = useRef<any>(null);
   const wakeRestartTimerRef = useRef<number | null>(null);
   const wakeSuspendedRef = useRef(false);
-  const wakeStartListenerRef = useRef<null | (() => void)>(null);
-  const wakeScheduleListenerRef = useRef<null | ((delay: number) => void)>(null);
+  const startWakeListenerRef = useRef<(() => void) | null>(null);
+  const scheduleWakeListenerRef = useRef<((delay: number) => void) | null>(null);
 
   useEffect(() => {
     const loaded = readSettings();
@@ -166,7 +142,16 @@ export function useLdcnAvatarState(route: string) {
     if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setSettings((current) => ({ ...current, reducedMotion: true }));
     }
+    const wakeTimer = window.setTimeout(() => setMood("idle"), 1000);
+    return () => window.clearTimeout(wakeTimer);
   }, []);
+
+  useEffect(() => {
+    if (!route) return;
+    if (route.startsWith("/wizard") || route.startsWith("/templates") || route.startsWith("/downloads")) {
+      setPosition(settings.positionPreference);
+    }
+  }, [route, settings.positionPreference]);
 
   useEffect(() => {
     persistSettings(settings);
@@ -180,6 +165,20 @@ export function useLdcnAvatarState(route: string) {
   }, []);
 
   useEffect(() => {
+    if (voice.isSpeaking) {
+      setMood("speaking");
+      if (!message) {
+        setMessage("Falando.");
+      }
+      return;
+    }
+    if (voice.error) {
+      setMood("error");
+      setMessage(voice.error);
+    }
+  }, [message, voice.error, voice.isSpeaking]);
+
+  useEffect(() => {
     const handleEvent = (event: Event) => {
       const detail = (event as CustomEvent<LdcnAvatarEventDetail>).detail;
       if (!detail?.type) return;
@@ -187,14 +186,7 @@ export function useLdcnAvatarState(route: string) {
         if (!settings.voiceEnabled) return;
       }
 
-      if (detail.type === "voice_listening") {
-        wakeSuspendedRef.current = true;
-        if (wakeRecognitionRef.current) {
-          wakeRecognitionRef.current.abort?.();
-        }
-      }
-
-      if (detail.type === "voice_speaking") {
+      if (detail.type === "voice_listening" || detail.type === "voice_speaking") {
         wakeSuspendedRef.current = true;
         if (wakeRecognitionRef.current) {
           wakeRecognitionRef.current.abort?.();
@@ -204,24 +196,24 @@ export function useLdcnAvatarState(route: string) {
       if (detail.type === "voice_idle") {
         wakeSuspendedRef.current = false;
         if (settings.voiceEnabled && settings.enabled && !settings.hidden && !settings.paused && pageVisible) {
-          wakeScheduleListenerRef.current?.(400);
+          scheduleWakeListenerRef.current?.(400);
         }
       }
 
       const nextMood: LdcnAvatarMood =
-        detail.type === "project_generated" ? "celebrating" :
+        detail.type === "project_generated" ? "success" :
         detail.type === "generation_failed" ? "warning" :
         detail.type === "download_failed" ? "error" :
         detail.type === "validation_failed" ? "warning" :
         detail.type === "assistant_error" ? "error" :
         detail.type === "voice_listening" ? "listening" :
-        detail.type === "voice_wake_word" ? "speaking" :
+        detail.type === "voice_wake_word" ? "waking" :
         detail.type === "voice_speaking" ? "speaking" :
-        detail.type === "template_selected" ? "guiding" :
-        detail.type === "wizard_step_changed" ? "walking" :
+        detail.type === "template_selected" ? "waiting_confirmation" :
+        detail.type === "wizard_step_changed" ? "executing_action" :
         detail.type === "agent_boost_active" ? "thinking" :
-        detail.type === "page_loaded" ? "guiding" :
-        detail.type === "assistant_success" ? "idle" : "idle";
+        detail.type === "page_loaded" ? "waking" :
+        detail.type === "assistant_success" ? "success" : "idle";
 
       const nextMessage = detail.message || TEMPORARY_MESSAGES[detail.type];
 
@@ -252,6 +244,66 @@ export function useLdcnAvatarState(route: string) {
     };
   }, [pageVisible, settings.enabled, settings.hidden, settings.paused, settings.positionPreference, settings.voiceEnabled]);
 
+  const startWakeListener = useCallback(() => {
+    if (wakeSuspendedRef.current) return;
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!Recognition) return;
+    if (wakeRecognitionRef.current) return;
+
+    const recognition = new Recognition();
+    recognition.lang = "pt-BR";
+    recognition.interimResults = false;
+    recognition.continuous = true;
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[event.results.length - 1]?.[0]?.transcript?.trim();
+      if (!transcript) return;
+      const { matched, command, wakeWord } = extractWakeWordCommand(transcript);
+      if (!matched) return;
+
+      dispatchLdcnAvatarEvent({ type: "voice_wake_word", message: wakeWordReply(wakeWord), payload: { transcript, command, wakeWord } });
+      dispatchLdcnVoiceCommandEvent({
+        transcript,
+        command,
+        source: "wake_word",
+      });
+
+      if (wakeRecognitionRef.current) {
+        wakeRecognitionRef.current.abort?.();
+        wakeRecognitionRef.current = null;
+      }
+      wakeSuspendedRef.current = true;
+    };
+    recognition.onerror = () => {
+      wakeRecognitionRef.current = null;
+      if (!wakeSuspendedRef.current) {
+        scheduleWakeListenerRef.current?.(1000);
+      }
+    };
+    recognition.onend = () => {
+      wakeRecognitionRef.current = null;
+      if (!wakeSuspendedRef.current) {
+        scheduleWakeListenerRef.current?.(500);
+      }
+    };
+    wakeRecognitionRef.current = recognition;
+    dispatchLdcnAvatarEvent({ type: "voice_listening", message: "Em escuta por wake word." });
+    recognition.start();
+  }, []);
+
+  const scheduleWakeListener = useCallback((delay: number) => {
+    if (wakeSuspendedRef.current) return;
+    if (wakeRestartTimerRef.current) window.clearTimeout(wakeRestartTimerRef.current);
+    wakeRestartTimerRef.current = window.setTimeout(() => {
+      if (wakeSuspendedRef.current) return;
+      startWakeListenerRef.current?.();
+    }, delay);
+  }, []);
+
+  useEffect(() => {
+    startWakeListenerRef.current = startWakeListener;
+    scheduleWakeListenerRef.current = scheduleWakeListener;
+  }, [scheduleWakeListener, startWakeListener]);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (!settings.enabled || !settings.voiceEnabled || settings.hidden || settings.paused || !pageVisible) {
@@ -263,73 +315,14 @@ export function useLdcnAvatarState(route: string) {
 
     if (!window.SpeechRecognition && !window.webkitSpeechRecognition) return;
 
-    const scheduleWakeListener = (delay: number) => {
-      if (wakeSuspendedRef.current) return;
-      if (wakeRestartTimerRef.current) window.clearTimeout(wakeRestartTimerRef.current);
-      wakeRestartTimerRef.current = window.setTimeout(() => {
-        if (wakeSuspendedRef.current) return;
-        startWakeListener();
-      }, delay);
-    };
-
-    const startWakeListener = () => {
-      if (wakeSuspendedRef.current) return;
-      const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!Recognition) return;
-      if (wakeRecognitionRef.current) return;
-
-      const recognition = new Recognition();
-      recognition.lang = "pt-BR";
-      recognition.interimResults = false;
-      recognition.continuous = true;
-      recognition.onresult = (event: any) => {
-        const transcript = event.results[event.results.length - 1]?.[0]?.transcript?.trim();
-        if (!transcript) return;
-        const { matched, command } = extractWakeCommand(transcript);
-        if (!matched) return;
-
-        dispatchLdcnAvatarEvent({ type: "voice_wake_word", message: "Vens acionado." });
-        dispatchLdcnVoiceCommandEvent({
-          transcript,
-          command,
-          source: "wake_word",
-        });
-
-        if (wakeRecognitionRef.current) {
-          wakeRecognitionRef.current.abort?.();
-          wakeRecognitionRef.current = null;
-        }
-        wakeSuspendedRef.current = true;
-      };
-      recognition.onerror = () => {
-        wakeRecognitionRef.current = null;
-        if (!wakeSuspendedRef.current) {
-          scheduleWakeListener(1000);
-        }
-      };
-      recognition.onend = () => {
-        wakeRecognitionRef.current = null;
-        if (!wakeSuspendedRef.current) {
-          scheduleWakeListener(500);
-        }
-      };
-      wakeRecognitionRef.current = recognition;
-      dispatchLdcnAvatarEvent({ type: "voice_listening", message: "Em escuta por wake word." });
-      recognition.start();
-    };
-
-    wakeScheduleListenerRef.current = scheduleWakeListener;
-    wakeStartListenerRef.current = startWakeListener;
     scheduleWakeListener(0);
 
     return () => {
       if (wakeRestartTimerRef.current) window.clearTimeout(wakeRestartTimerRef.current);
       wakeRecognitionRef.current?.abort?.();
       wakeRecognitionRef.current = null;
-      wakeStartListenerRef.current = null;
-      wakeScheduleListenerRef.current = null;
     };
-  }, [pageVisible, settings.enabled, settings.hidden, settings.paused, settings.voiceEnabled]);
+  }, [pageVisible, scheduleWakeListener, settings.enabled, settings.hidden, settings.paused, settings.voiceEnabled]);
 
   const setSetting = useCallback(<K extends keyof LdcnAvatarSettings>(key: K, value: LdcnAvatarSettings[K]) => {
     setSettings((current) => ({ ...current, [key]: value }));

@@ -34,6 +34,10 @@ export default function WizardShell({
   t, accent, children
 }: WizardShellProps) {
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.sessionStorage.setItem("ldcn_wizard_step", String(step));
+      window.dispatchEvent(new Event("ldcn:context-update"));
+    }
     dispatchLdcnAvatarEvent({
       type: "wizard_step_changed",
       route: "/wizard",

@@ -2,7 +2,7 @@ from pathlib import Path
 from fastapi import HTTPException, status
 
 # Repo root = Projet_MltAgents/
-REPO_ROOT = Path(__file__).parent.parent.parent.resolve()
+REPO_ROOT = Path(__file__).resolve().parents[3]
 PROJECTS_ROOT = REPO_ROOT / "generated_projects"
 LEGACY_PROJECTS_ROOT = REPO_ROOT / "output" / "generated_projects"
 

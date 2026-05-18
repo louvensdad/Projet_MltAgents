@@ -72,6 +72,11 @@ export default function DownloadsPage() {
       const data = await response.json();
 
       if (!response.ok) {
+        if (typeof window !== "undefined") {
+          window.localStorage.setItem("ldcn_download_status", "failed");
+          window.localStorage.setItem("ldcn_last_error", data.detail || data.error || data.message || "Error fetching project info");
+          window.dispatchEvent(new Event("ldcn:context-update"));
+        }
         dispatchLdcnAvatarEvent({
           type: "download_failed",
           route: "/downloads",
@@ -88,9 +93,19 @@ export default function DownloadsPage() {
           message: data.detail || data.error || data.message || "Error fetching project info",
         });
       } else {
+        if (typeof window !== "undefined") {
+          window.localStorage.setItem("ldcn_download_status", "ready");
+          window.localStorage.removeItem("ldcn_last_error");
+          window.dispatchEvent(new Event("ldcn:context-update"));
+        }
         setDownloadInfo(data);
       }
     } catch {
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("ldcn_download_status", "failed");
+        window.localStorage.setItem("ldcn_last_error", "Connection error");
+        window.dispatchEvent(new Event("ldcn:context-update"));
+      }
       dispatchLdcnAvatarEvent({
         type: "download_failed",
         route: "/downloads",

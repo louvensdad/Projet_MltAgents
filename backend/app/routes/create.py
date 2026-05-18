@@ -7,7 +7,7 @@ import os
 import sys
 import logging
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field
 from typing import Dict, Any, List, Optional
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
@@ -20,30 +20,28 @@ router = APIRouter(prefix="/api", tags=["create"])
 
 
 class CreateProjectPayload(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
     project_type: str
     stack_profile_id: str
     project_name: str
     project_description: Optional[str] = ""
     backend_stack: Optional[str] = None
     frontend_stack: Optional[str] = None
-    selected_versions: Dict[str, Any] = {}
-    selected_stack_options: Dict[str, List[str]] = {}
-    confirmed_entities: List[str] = []
-    confirmed_features: List[str] = []
-    confirmed_business_rules: List[str] = []
-
-    class Config:
-        extra = "allow"
+    selected_versions: Dict[str, Any] = Field(default_factory=dict)
+    selected_stack_options: Dict[str, List[str]] = Field(default_factory=dict)
+    confirmed_entities: List[str] = Field(default_factory=list)
+    confirmed_features: List[str] = Field(default_factory=list)
+    confirmed_business_rules: List[str] = Field(default_factory=list)
 
 
 class ValidateStackPayload(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
     stack_profile_id: str
     project_name: str
-    selected_versions: Dict[str, Any] = {}
-    selected_stack_options: Dict[str, List[str]] = {}
-
-    class Config:
-        extra = "allow"
+    selected_versions: Dict[str, Any] = Field(default_factory=dict)
+    selected_stack_options: Dict[str, List[str]] = Field(default_factory=dict)
 
 
 def _resolve_stack_id(raw: str) -> str:
@@ -69,10 +67,12 @@ def _resolve_stack_id(raw: str) -> str:
         "aspnet": "dotnet",
         "next-js": "nextjs",
         "next.js": "nextjs",
+        "static-site": "static_site",
         "ai-agents": "ai_agents",
         "agentes-ia": "ai_agents",
         "automation": "automation",
-        "static_site": "static",
+        "static_site": "static_site",
+        "static": "static_site",
     }
     return mapping.get(raw, raw)
 

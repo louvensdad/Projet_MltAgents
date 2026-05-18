@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { ComponentType, ReactNode } from "react";
+import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, BadgeInfo, Boxes, GitBranch, Layers3, Rocket, Shield, Sparkles, FileCode2 } from "lucide-react";
@@ -224,7 +225,9 @@ export default function TemplateDetailPage() {
         <div className="rounded-3xl border border-white/10 bg-surface p-4">
           <div className="overflow-hidden rounded-2xl border border-white/10 bg-black p-2">
             {heroImage ? (
-              <img src={heroImage} alt={template.name} className="h-full w-full rounded-xl object-cover" />
+              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl">
+                <Image src={heroImage} alt={template.name} fill sizes="(min-width: 1280px) 50vw, 100vw" className="object-cover" />
+              </div>
             ) : (
               <StackPreview template={template} />
             )}

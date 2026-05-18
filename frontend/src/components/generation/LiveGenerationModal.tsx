@@ -109,12 +109,23 @@ export default function LiveGenerationModal({ jobId, onClose, onComplete }: Live
         if (data.status === "generated") {
           setCompleted(true);
           setFailed(false);
+          if (typeof window !== "undefined") {
+            window.localStorage.setItem("ldcn_backend_status", "generated");
+            window.localStorage.setItem("ldcn_last_project_generated", projectId);
+            window.localStorage.removeItem("ldcn_last_error");
+            window.dispatchEvent(new Event("ldcn:context-update"));
+          }
           dispatchLdcnAvatarEvent({ type: "project_generated", message: "Boa, projeto gerado.", source: "generation-modal" });
           if (interval) window.clearInterval(interval);
           setTimeout(() => onComplete(), 1000);
         } else if (data.status === "generation_failed") {
           setFailed(true);
           setErrorMessage("Project generation failed.");
+          if (typeof window !== "undefined") {
+            window.localStorage.setItem("ldcn_backend_status", "generation_failed");
+            window.localStorage.setItem("ldcn_last_error", "Project generation failed.");
+            window.dispatchEvent(new Event("ldcn:context-update"));
+          }
           dispatchLdcnAvatarEvent({ type: "generation_failed", message: "Parece que encontrei um problema.", source: "generation-modal" });
           if (interval) window.clearInterval(interval);
         }
@@ -122,6 +133,11 @@ export default function LiveGenerationModal({ jobId, onClose, onComplete }: Live
         if (mounted) {
           setFailed(true);
           setErrorMessage("Connection lost with generation server.");
+          if (typeof window !== "undefined") {
+            window.localStorage.setItem("ldcn_backend_status", "offline");
+            window.localStorage.setItem("ldcn_last_error", "Connection lost with generation server.");
+            window.dispatchEvent(new Event("ldcn:context-update"));
+          }
           if (interval) window.clearInterval(interval);
         }
       }

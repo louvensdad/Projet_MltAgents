@@ -18,3 +18,6 @@ backups/
 files.txt
 files_utf8.txt
 tree.txt
+
+# Large data files
+data/ldcn_memory.json

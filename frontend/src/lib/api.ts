@@ -1,5 +1,6 @@
 import { dashboardMockData } from "@/mock/dashboard-data";
 import { API_BASE } from "@/lib/config";
+import { getAuthToken } from "@/lib/auth";
 
 type ApiStatus = "success" | "partial" | "offline";
 export interface ApiEnvelope<T> {
@@ -55,7 +56,13 @@ export async function apiGet<T>(path: string, fallback: T): Promise<ApiEnvelope<
   let lastError: unknown;
   for (let attempt = 0; attempt <= RETRIES; attempt += 1) {
     try {
-      const res = await withTimeout(fetch(url), TIMEOUT_MS);
+      const token = typeof window === "undefined" ? null : getAuthToken();
+      const res = await withTimeout(
+        fetch(url, {
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        }),
+        TIMEOUT_MS
+      );
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
       return normalize<T>(json, fallback);
@@ -88,20 +95,29 @@ export interface PostResult<T> {
  */
 export async function apiPost<TRes = unknown>(
   path: string,
-  body: unknown
+  body: unknown,
+  options?: {
+    timeoutMs?: number;
+    signal?: AbortSignal;
+  }
 ): Promise<PostResult<TRes>> {
   const url = `${API_URL}${path}`;
   _devLog("POST →", url, body);
 
   let res: Response;
   try {
+    const token = typeof window === "undefined" ? null : getAuthToken();
     res = await withTimeout(
       fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify(body),
+        signal: options?.signal,
       }),
-      TIMEOUT_MS
+      options?.timeoutMs ?? TIMEOUT_MS
     );
   } catch (err) {
     // Erro de rede: CORS, backend offline, timeout

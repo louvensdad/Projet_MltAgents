@@ -12,5 +12,6 @@ IMPLEMENTED_STACKS = {
     "blazor": {"status": "stable"},
     "automation": {"status": "stable"},
     "ai_agents": {"status": "stable"},
+    "static_site": {"status": "stable"},
     "grpc": {"status": "planned"},
 }

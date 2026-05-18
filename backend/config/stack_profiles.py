@@ -238,3 +238,5 @@ STACK_PROFILES = {
         "default_versions": {"llm_provider": "openai", "memory": "vector_db", "tests": "pytest"},
     },
 }
+
+STACK_PROFILES["static_site"] = dict(STACK_PROFILES["static"], id="static_site")

@@ -8,7 +8,7 @@ from .log_service import log_event
 DATA_FILE = Path(__file__).parent.parent.parent / "data" / "projects.json"
 
 # Repo root for path resolution
-REPO_ROOT = DATA_FILE.parent.parent.parent.parent.resolve()
+REPO_ROOT = DATA_FILE.parent.parent.parent.resolve()
 PROJECTS_ROOT = REPO_ROOT / "generated_projects"
 
 

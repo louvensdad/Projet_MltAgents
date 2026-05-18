@@ -18,7 +18,7 @@ class PromptMaster:
         # 1. Stack
         stack_info = {
             "id": stack_def["id"],
-            "name": stack_def["name"],
+            "name": stack_def.get("name") or stack_def.get("display_name") or stack_def["id"],
             "core_technologies": stack_def.get("architecture", [])
         }
         

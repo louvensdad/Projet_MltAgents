@@ -4,27 +4,33 @@ import { motion } from "framer-motion";
 import type { LdcnAvatarMood } from "./useLdcnAvatarState";
 
 const eyeVariants = {
+  sleeping: { scaleY: 0.7, opacity: 0.6 },
   idle: { scaleY: 1, opacity: 0.92 },
-  walking: { scaleY: 0.96, opacity: 0.96 },
+  waking: { scaleY: 1.08, opacity: 1 },
   listening: { scaleY: 1.12, opacity: 1 },
+  transcribing: { scaleY: 0.98, opacity: 0.88 },
   thinking: { scaleY: 0.92, opacity: 0.86 },
   speaking: { scaleY: 1.02, opacity: 1 },
-  celebrating: { scaleY: 1.08, opacity: 1 },
+  waiting_confirmation: { scaleY: 0.95, opacity: 0.9 },
+  executing_action: { scaleY: 1.0, opacity: 0.98 },
+  success: { scaleY: 1.08, opacity: 1 },
   warning: { scaleY: 0.86, opacity: 0.88 },
   error: { scaleY: 0.8, opacity: 0.82 },
-  guiding: { scaleY: 1.03, opacity: 1 },
 } satisfies Record<LdcnAvatarMood, { scaleY: number; opacity: number }>;
 
 const mouthVariants = {
+  sleeping: "M16 20 C20 22, 28 22, 32 20",
   idle: "M16 20 C20 22, 28 22, 32 20",
-  walking: "M16 20 C20 21, 28 21, 32 20",
+  waking: "M16 20 C20 21, 28 21, 32 20",
   listening: "M16 21 C21 18, 27 18, 32 21",
+  transcribing: "M17 21 C21 20, 27 20, 31 21",
   thinking: "M17 21 C21 20, 27 20, 31 21",
   speaking: "M16 20 C19 17, 29 17, 32 20",
-  celebrating: "M15 19 C19 24, 29 24, 33 19",
+  waiting_confirmation: "M16 20 C20 19, 28 19, 32 20",
+  executing_action: "M16 20 C20 19, 28 19, 32 20",
+  success: "M15 19 C19 24, 29 24, 33 19",
   warning: "M17 22 C21 20, 27 20, 31 22",
   error: "M17 23 C21 19, 27 19, 31 23",
-  guiding: "M16 20 C20 19, 28 19, 32 20",
 } satisfies Record<LdcnAvatarMood, string>;
 
 export default function LdcnAvatarFace({ mood }: { mood: LdcnAvatarMood }) {
@@ -57,4 +63,3 @@ export default function LdcnAvatarFace({ mood }: { mood: LdcnAvatarMood }) {
     </div>
   );
 }
-

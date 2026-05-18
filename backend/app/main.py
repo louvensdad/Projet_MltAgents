@@ -1,5 +1,11 @@
 import os
 import ast
+from pathlib import Path
+from dotenv import load_dotenv
+
+ROOT_DIR = Path(__file__).resolve().parents[2]
+load_dotenv(ROOT_DIR / ".env", override=False)
+
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from shared.observability.logger import get_logger
@@ -17,6 +23,7 @@ from .routes.prompt_routes import router as prompt_router
 from .routes.templates import router as templates_router
 from .routes.system import router as system_router
 from .routes.upgrades import router as projects_router
+from .ldcn.ldcn_router import router as ldcn_router
 
 logger = get_logger("backend.main")
 
@@ -52,6 +59,7 @@ app.include_router(templates_router)
 app.include_router(system_router)
 app.include_router(projects_router)
 app.include_router(prompt_router)
+app.include_router(ldcn_router)
 
 @app.websocket("/ws/live/{project_id}")
 async def websocket_endpoint(websocket: WebSocket, project_id: str):

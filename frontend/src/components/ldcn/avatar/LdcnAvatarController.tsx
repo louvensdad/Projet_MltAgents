@@ -10,7 +10,10 @@ import { dispatchLdcnAvatarEvent } from "./ldcnAvatarEvents";
 export default function LdcnAvatarController() {
   const pathname = usePathname();
   const runtime = useLdcnAvatarState(pathname);
-  const visibleOnRoute = pathname === "/";
+  const visibleOnRoute =
+    pathname !== "/login" &&
+    pathname !== "/forgot-password" &&
+    !pathname.startsWith("/reset-password/");
 
   useEffect(() => {
     if (pathname === "/") {
