@@ -20,12 +20,16 @@ interface SpeechRecognition extends EventTarget {
   stop: () => void;
   abort: () => void;
   onresult: ((event: SpeechRecognitionEvent) => void) | null;
-  onerror: (() => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
   onend: (() => void) | null;
 }
 
 interface SpeechRecognitionEvent {
   results: ArrayLike<ArrayLike<{ transcript: string }>>;
+}
+
+interface SpeechRecognitionErrorEvent extends Event {
+  error?: string;
 }
 
 declare global {
@@ -56,9 +60,11 @@ export default function LdcnVoicePanel({
     locale: "pt-BR",
   });
   const recognitionRef = useRef<SpeechRecognition | null>(null);
-  const passiveWakeActiveRef = useRef(false);
-  const manualStopRef = useRef(false);
+  const listeningSessionRef = useRef(0);
+  const listeningStoppedRef = useRef(false);
+  const capturedTranscriptRef = useRef(false);
   const restartTimerRef = useRef<number | null>(null);
+  const listenTimeoutRef = useRef<number | null>(null);
 
   const supported = useMemo(() => {
     if (typeof window === "undefined") return false;
@@ -85,39 +91,32 @@ export default function LdcnVoicePanel({
     }
   }, [settings]);
 
-  function scheduleWakeRestart(delay = 250) {
-    if (typeof window === "undefined") return;
-    if (restartTimerRef.current) window.clearTimeout(restartTimerRef.current);
-    restartTimerRef.current = window.setTimeout(() => {
-      if (passiveWakeActiveRef.current && !manualStopRef.current) {
-        startPassiveWakeListening();
-      }
-    }, delay);
+  useEffect(() => {
+    return () => {
+      clearListenTimers();
+      recognitionRef.current?.abort();
+      recognitionRef.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function clearListenTimers() {
+    if (restartTimerRef.current) {
+      window.clearTimeout(restartTimerRef.current);
+      restartTimerRef.current = null;
+    }
+    if (listenTimeoutRef.current) {
+      window.clearTimeout(listenTimeoutRef.current);
+      listenTimeoutRef.current = null;
+    }
   }
 
-  function extractWakeCommand(transcript: string) {
-    const normalized = transcript.toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
-    const wakeVariants = ["ldcn", "el de ce ene", "el de ce en", "el de ce ene"];
-    for (const wake of wakeVariants) {
-      if (normalized === wake) {
-        return { matched: true, command: "" };
-      }
-      if (normalized.startsWith(`${wake} `)) {
-        return { matched: true, command: normalized.slice(wake.length).trim() };
-      }
-    }
-    const compact = normalized.replace(/\s+/g, "");
-    if (compact.startsWith("ldcn")) {
-      return { matched: true, command: normalized.slice(normalized.indexOf("ldcn") + 4).trim() };
-    }
-    return { matched: false, command: transcript.trim() };
-  }
-
-  function speak(text: string, resumePassive = false) {
+  function speak(text: string) {
     setLastReply(text);
     if (!settings.enabled || typeof window === "undefined" || !window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
     recognitionRef.current?.abort();
+    recognitionRef.current = null;
+    window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = settings.locale;
     utterance.rate = settings.rate;
@@ -129,96 +128,29 @@ export default function LdcnVoicePanel({
     utterance.onend = () => {
       setState("idle");
       dispatchLdcnAvatarEvent({ type: "voice_idle", message: "Modo discreto reativado." });
-      if (resumePassive) {
-        scheduleWakeRestart();
-      }
     };
     utterance.onerror = () => setState("error");
     window.speechSynthesis.speak(utterance);
     onSpeak(text);
   }
 
-  function stopSpeech() {
-    window.speechSynthesis?.cancel();
-    recognitionRef.current?.abort();
-    manualStopRef.current = true;
-    passiveWakeActiveRef.current = false;
-    setState("idle");
-  }
-
-  function startPassiveWakeListening() {
-    if (!supported || !settings.enabled || !settings.wakeWordEnabled) return;
-    if (passiveWakeActiveRef.current || busy) return;
+  function createRecognition(sessionId: number) {
     const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!Recognition) return;
-    passiveWakeActiveRef.current = true;
-    manualStopRef.current = false;
-    dispatchLdcnAvatarEvent({ type: "voice_listening", message: "Em escuta por wake word." });
+    if (!Recognition) return null;
 
     const recognition = new Recognition();
     recognition.lang = settings.locale;
     recognition.interimResults = false;
     recognition.continuous = true;
+
     recognition.onresult = async (event) => {
+      if (sessionId !== listeningSessionRef.current || listeningStoppedRef.current) return;
       const transcript = event.results[event.results.length - 1]?.[0]?.transcript?.trim();
       if (!transcript) return;
-      const { matched, command } = extractWakeCommand(transcript);
-      if (!matched) return;
-
-      dispatchLdcnAvatarEvent({ type: "voice_wake_word", message: "LDCN acionado." });
-      setEntries((current) => [...current, { id: crypto.randomUUID(), speaker: "user", text: transcript }]);
-
-      if (!command) {
-        recognition.abort();
-        speak("Sim, estou ouvindo.", true);
-        return;
-      }
-
-      setState("thinking");
-      const reply = await onTranscript(command);
-      if (reply) {
-        setEntries((current) => [...current, { id: crypto.randomUUID(), speaker: "ldcn", text: reply }]);
-        speak(reply, true);
-      } else {
-        setState("idle");
-        scheduleWakeRestart();
-      }
-    };
-    recognition.onerror = () => {
-      setError("Nao consegui captar a fala. Tente novamente ou use texto.");
-      setState("error");
-      passiveWakeActiveRef.current = false;
-    };
-    recognition.onend = () => {
-      if (manualStopRef.current) return;
-      passiveWakeActiveRef.current = false;
-      scheduleWakeRestart(350);
-    };
-    recognitionRef.current = recognition;
-    setState("listening");
-    recognition.start();
-  }
-
-  function startListening() {
-    if (!supported) {
-      setError("Seu navegador nao suporta reconhecimento de voz. Use entrada por texto.");
-      setState("error");
-      return;
-    }
-    setError("");
-    manualStopRef.current = false;
-    passiveWakeActiveRef.current = false;
-    if (restartTimerRef.current) window.clearTimeout(restartTimerRef.current);
-    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!Recognition) return;
-    dispatchLdcnAvatarEvent({ type: "voice_listening", message: "Estou ouvindo o comando." });
-    const recognition = new Recognition();
-    recognition.lang = settings.locale;
-    recognition.interimResults = false;
-    recognition.continuous = false;
-    recognition.onresult = async (event) => {
-      const transcript = event.results[0]?.[0]?.transcript?.trim();
-      if (!transcript) return;
+      capturedTranscriptRef.current = true;
+      clearListenTimers();
+      recognitionRef.current?.abort();
+      recognitionRef.current = null;
       setState("thinking");
       setEntries((current) => [...current, { id: crypto.randomUUID(), speaker: "user", text: transcript }]);
       const reply = await onTranscript(transcript);
@@ -229,59 +161,124 @@ export default function LdcnVoicePanel({
         setState("idle");
       }
     };
-    recognition.onerror = () => {
+
+    recognition.onerror = (event) => {
+      if (sessionId !== listeningSessionRef.current || listeningStoppedRef.current) return;
+      if (event.error === "aborted") return;
+      if (event.error === "no-speech") {
+        setError("Nao ouvi fala suficiente. Tente novamente com o microfone mais perto.");
+        if (restartTimerRef.current) {
+          window.clearTimeout(restartTimerRef.current);
+          restartTimerRef.current = null;
+        }
+        restartTimerRef.current = window.setTimeout(() => restartRecognition(sessionId), 250);
+        return;
+      }
+      if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+        setError("Permissao de microfone bloqueada. Libere o acesso no navegador.");
+        setState("error");
+        listeningStoppedRef.current = true;
+        clearListenTimers();
+        return;
+      }
+      if (event.error === "network") {
+        setError("Falha de rede no reconhecimento de voz. Tente novamente.");
+        setState("error");
+        return;
+      }
       setError("Nao consegui captar a fala. Tente novamente ou use texto.");
       setState("error");
     };
+
     recognition.onend = () => {
-      setState((current) => (current === "listening" || current === "transcribing" ? "idle" : current));
-      dispatchLdcnAvatarEvent({ type: "voice_idle", message: "Conversa por voz concluída." });
+      if (sessionId !== listeningSessionRef.current || listeningStoppedRef.current) return;
+      if (capturedTranscriptRef.current) {
+        dispatchLdcnAvatarEvent({ type: "voice_idle", message: "Conversa por voz concluída." });
+        return;
+      }
+      if (restartTimerRef.current) {
+        window.clearTimeout(restartTimerRef.current);
+        restartTimerRef.current = null;
+      }
+      restartTimerRef.current = window.setTimeout(() => restartRecognition(sessionId), 200);
     };
+
+    return recognition;
+  }
+
+  function restartRecognition(sessionId: number) {
+    if (listeningStoppedRef.current || sessionId !== listeningSessionRef.current || capturedTranscriptRef.current) return;
+    const recognition = createRecognition(sessionId);
+    if (!recognition) return;
+    recognitionRef.current = recognition;
+    try {
+      recognition.start();
+    } catch {
+      setError("Nao consegui manter a escuta ativa. Tente novamente.");
+      setState("error");
+      listeningStoppedRef.current = true;
+      clearListenTimers();
+      recognitionRef.current = null;
+    }
+  }
+
+  function stopSpeech() {
+    window.speechSynthesis?.cancel();
+    listeningStoppedRef.current = true;
+    capturedTranscriptRef.current = false;
+    clearListenTimers();
+    recognitionRef.current?.abort();
+    recognitionRef.current = null;
+    setState("idle");
+  }
+
+  function startListening() {
+    if (!supported) {
+      setError("Seu navegador nao suporta reconhecimento de voz. Use entrada por texto.");
+      setState("error");
+      return;
+    }
+    setError("");
+    listeningStoppedRef.current = false;
+    capturedTranscriptRef.current = false;
+    listeningSessionRef.current += 1;
+    clearListenTimers();
+    const sessionId = listeningSessionRef.current;
+    const recognition = createRecognition(sessionId);
+    if (!recognition) return;
+
+    dispatchLdcnAvatarEvent({ type: "voice_listening", message: "Estou ouvindo o comando." });
     recognitionRef.current = recognition;
     setState("listening");
-    recognition.start();
+    listenTimeoutRef.current = window.setTimeout(() => {
+      if (sessionId !== listeningSessionRef.current || listeningStoppedRef.current || capturedTranscriptRef.current) return;
+      setError("Nao consegui captar a fala. Tente novamente ou use texto.");
+      listeningStoppedRef.current = true;
+      recognitionRef.current?.abort();
+      recognitionRef.current = null;
+      setState("idle");
+    }, 15000);
+
+    try {
+      recognition.start();
+    } catch {
+      setError("Nao consegui iniciar o microfone. Tente novamente.");
+      setState("error");
+      listeningStoppedRef.current = true;
+      clearListenTimers();
+      recognitionRef.current = null;
+    }
   }
 
   function stopListening() {
-    setState("transcribing");
-    manualStopRef.current = true;
-    passiveWakeActiveRef.current = false;
-    if (restartTimerRef.current) window.clearTimeout(restartTimerRef.current);
-    recognitionRef.current?.stop();
+    listeningStoppedRef.current = true;
+    capturedTranscriptRef.current = false;
+    clearListenTimers();
+    recognitionRef.current?.abort();
+    recognitionRef.current = null;
+    setState("idle");
     dispatchLdcnAvatarEvent({ type: "voice_idle", message: "Fala interrompida." });
   }
-
-  useEffect(() => {
-    if (!supported || busy || !settings.enabled || !settings.wakeWordEnabled) {
-      passiveWakeActiveRef.current = false;
-      if (restartTimerRef.current) window.clearTimeout(restartTimerRef.current);
-      recognitionRef.current?.abort();
-      return;
-    }
-
-    if (!document.hidden) {
-      startPassiveWakeListening();
-    }
-
-    const handleVisibility = () => {
-      if (document.hidden) {
-        recognitionRef.current?.abort();
-        passiveWakeActiveRef.current = false;
-      } else if (!manualStopRef.current) {
-        startPassiveWakeListening();
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibility);
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibility);
-      passiveWakeActiveRef.current = false;
-      if (restartTimerRef.current) window.clearTimeout(restartTimerRef.current);
-      recognitionRef.current?.abort();
-    };
-  // Mantemos o listener passivo por refs para evitar reinicialização excessiva.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [busy, settings.enabled, settings.locale, settings.wakeWordEnabled, supported]);
 
   return (
     <div className="flex-1 space-y-4 overflow-y-auto p-4">

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { BellRing, EyeOff, Minimize2, PauseCircle, Volume2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { BellRing, EyeOff, Minimize2, PauseCircle, Sparkles, Volume2 } from "lucide-react";
 import LdcnAvatarBody from "./LdcnAvatarBody";
 import LdcnAvatarPath from "./LdcnAvatarPath";
 import LdcnAvatarSettings from "./LdcnAvatarSettings";
@@ -14,8 +15,27 @@ export default function LdcnAvatar() {
   const { mood, position, message, visible, minimized, settings, pageVisible, toggleMinimized, setSetting } = runtime;
   const motionState = useLdcnAvatarMotion(mood, position, settings.paused || !pageVisible, settings.reducedMotion);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
-  if (!visible) return null;
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const saved = localStorage.getItem("ldcn_avatar_drag_offset");
+      if (!saved) return;
+      const parsed = JSON.parse(saved) as { x?: number; y?: number };
+      setDragOffset({
+        x: Number(parsed.x) || 0,
+        y: Number(parsed.y) || 0,
+      });
+    } catch {
+      localStorage.removeItem("ldcn_avatar_drag_offset");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    localStorage.setItem("ldcn_avatar_drag_offset", JSON.stringify(dragOffset));
+  }, [dragOffset]);
 
   const anchorClass = {
     "bottom-right": "bottom-5 right-5",
@@ -24,8 +44,36 @@ export default function LdcnAvatar() {
     "hero-corner": "top-5 right-5",
   }[position];
 
+  if (!visible) {
+    return (
+      <div className={`pointer-events-none fixed ${anchorClass} z-40`}>
+        <button
+          type="button"
+          onClick={() => setSetting("hidden", false)}
+          aria-label="Mostrar avatar"
+          className="pointer-events-auto flex h-11 items-center gap-2 rounded-full border border-cyan-300/20 bg-slate-950/90 px-3 text-sm text-cyan-50 shadow-[0_12px_30px_rgba(0,0,0,0.35)] backdrop-blur-xl transition hover:bg-cyan-300/10 hover:text-white"
+        >
+          <Sparkles className="h-4 w-4" />
+          <span>Mostrar LDCN</span>
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div className={`pointer-events-none fixed ${anchorClass} z-40`}>
+    <motion.div
+      className={`pointer-events-auto fixed select-none ${anchorClass} z-40`}
+      style={{ x: dragOffset.x, y: dragOffset.y, touchAction: "none" }}
+      drag
+      dragMomentum={false}
+      dragElastic={0.08}
+      onDragEnd={(_, info) => {
+        setDragOffset((current) => ({
+          x: current.x + info.offset.x,
+          y: current.y + info.offset.y,
+        }));
+      }}
+    >
       <LdcnAvatarPath mood={mood} position={position} active={!settings.reducedMotion} />
 
       <div className="pointer-events-auto relative">
@@ -82,6 +130,6 @@ export default function LdcnAvatar() {
           />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
