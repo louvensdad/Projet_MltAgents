@@ -340,13 +340,13 @@ export default function SettingsPage() {
           </div>
         </SectionCard>
 
-        <SectionCard icon={Sparkles} title="LDCN Companion" desc="Presença visual, voz e movimento do mini avatar no dashboard." accent="from-cyan-500 to-blue-500">
+        <SectionCard icon={Sparkles} title="Vens Companion" desc="Presença visual, voz e movimento do mini avatar no dashboard." accent="from-cyan-500 to-blue-500">
           <div className="space-y-2">
             <Toggle
               checked={avatarEnabled}
               onChange={setAvatarEnabled}
               label="Ativar avatar"
-              desc="Mostra ou oculta o mini corpo do LDCN no dashboard."
+              desc="Mostra ou oculta o mini corpo do Vens no dashboard."
             />
             <Toggle
               checked={avatarVoiceEnabled}

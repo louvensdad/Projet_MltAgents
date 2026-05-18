@@ -54,7 +54,7 @@ export default function LdcnAvatarSettings({
           >
             <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-2">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">LDCN Companion</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Vens Companion</p>
                 <p className="mt-0.5 text-[11px] text-slate-500">Controle rápido de presença visual</p>
               </div>
               <button

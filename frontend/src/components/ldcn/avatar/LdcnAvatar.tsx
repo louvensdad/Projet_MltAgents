@@ -54,7 +54,7 @@ export default function LdcnAvatar() {
           className="pointer-events-auto flex h-11 items-center gap-2 rounded-full border border-cyan-300/20 bg-slate-950/90 px-3 text-sm text-cyan-50 shadow-[0_12px_30px_rgba(0,0,0,0.35)] backdrop-blur-xl transition hover:bg-cyan-300/10 hover:text-white"
         >
           <Sparkles className="h-4 w-4" />
-          <span>Mostrar LDCN</span>
+          <span>Mostrar Vens</span>
         </button>
       </div>
     );

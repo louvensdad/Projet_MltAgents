@@ -1,7 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { dispatchLdcnAvatarEvent, LDCN_AVATAR_EVENT, type LdcnAvatarEventDetail, type LdcnAvatarEventType } from "./ldcnAvatarEvents";
+import {
+  dispatchLdcnAvatarEvent,
+  dispatchLdcnVoiceCommandEvent,
+  LDCN_AVATAR_EVENT,
+  type LdcnAvatarEventDetail,
+  type LdcnAvatarEventType,
+} from "./ldcnAvatarEvents";
 
 export type LdcnAvatarMood =
   | "idle"
@@ -71,7 +77,7 @@ const TEMPORARY_MESSAGES: Record<LdcnAvatarEventType, string> = {
   template_selected: "Quer que eu valide essa stack?",
   wizard_step_changed: "Estou ajustando a rota.",
   voice_listening: "Estou ouvindo o comando.",
-  voice_wake_word: "LDCN acionado.",
+  voice_wake_word: "Vens acionado.",
   voice_speaking: "Processando a resposta.",
   voice_idle: "Voltando ao modo discreto.",
   assistant_success: "Tudo certo por aqui.",
@@ -120,6 +126,24 @@ function choosePosition(current: LdcnAvatarPosition, eventType: LdcnAvatarEventT
   }
 }
 
+function extractWakeCommand(transcript: string) {
+  const normalized = transcript.toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
+  const wakeVariants = ["vens", "ldcn", "el de ce ene", "el de ce en"];
+  for (const wake of wakeVariants) {
+    if (normalized === wake) {
+      return { matched: true, command: "" };
+    }
+    if (normalized.startsWith(`${wake} `)) {
+      return { matched: true, command: normalized.slice(wake.length).trim() };
+    }
+  }
+  const compact = normalized.replace(/\s+/g, "");
+  if (compact.startsWith("ldcn")) {
+    return { matched: true, command: normalized.slice(normalized.indexOf("ldcn") + 4).trim() };
+  }
+  return { matched: false, command: transcript.trim() };
+}
+
 export function useLdcnAvatarState(route: string) {
   const [settings, setSettings] = useState<LdcnAvatarSettings>(DEFAULT_SETTINGS);
   const [pageVisible, setPageVisible] = useState(true);
@@ -129,6 +153,11 @@ export function useLdcnAvatarState(route: string) {
   const [minimized, setMinimized] = useState(false);
   const clearTimer = useRef<number | null>(null);
   const idleTimer = useRef<number | null>(null);
+  const wakeRecognitionRef = useRef<any>(null);
+  const wakeRestartTimerRef = useRef<number | null>(null);
+  const wakeSuspendedRef = useRef(false);
+  const wakeStartListenerRef = useRef<null | (() => void)>(null);
+  const wakeScheduleListenerRef = useRef<null | ((delay: number) => void)>(null);
 
   useEffect(() => {
     const loaded = readSettings();
@@ -156,6 +185,27 @@ export function useLdcnAvatarState(route: string) {
       if (!detail?.type) return;
       if (detail.type === "voice_listening" || detail.type === "voice_speaking" || detail.type === "voice_idle") {
         if (!settings.voiceEnabled) return;
+      }
+
+      if (detail.type === "voice_listening") {
+        wakeSuspendedRef.current = true;
+        if (wakeRecognitionRef.current) {
+          wakeRecognitionRef.current.abort?.();
+        }
+      }
+
+      if (detail.type === "voice_speaking") {
+        wakeSuspendedRef.current = true;
+        if (wakeRecognitionRef.current) {
+          wakeRecognitionRef.current.abort?.();
+        }
+      }
+
+      if (detail.type === "voice_idle") {
+        wakeSuspendedRef.current = false;
+        if (settings.voiceEnabled && settings.enabled && !settings.hidden && !settings.paused && pageVisible) {
+          wakeScheduleListenerRef.current?.(400);
+        }
       }
 
       const nextMood: LdcnAvatarMood =
@@ -200,7 +250,86 @@ export function useLdcnAvatarState(route: string) {
       if (clearTimer.current) window.clearTimeout(clearTimer.current);
       if (idleTimer.current) window.clearTimeout(idleTimer.current);
     };
-  }, [settings.positionPreference, settings.voiceEnabled]);
+  }, [pageVisible, settings.enabled, settings.hidden, settings.paused, settings.positionPreference, settings.voiceEnabled]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!settings.enabled || !settings.voiceEnabled || settings.hidden || settings.paused || !pageVisible) {
+      if (wakeRestartTimerRef.current) window.clearTimeout(wakeRestartTimerRef.current);
+      wakeRecognitionRef.current?.abort?.();
+      wakeRecognitionRef.current = null;
+      return;
+    }
+
+    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) return;
+
+    const scheduleWakeListener = (delay: number) => {
+      if (wakeSuspendedRef.current) return;
+      if (wakeRestartTimerRef.current) window.clearTimeout(wakeRestartTimerRef.current);
+      wakeRestartTimerRef.current = window.setTimeout(() => {
+        if (wakeSuspendedRef.current) return;
+        startWakeListener();
+      }, delay);
+    };
+
+    const startWakeListener = () => {
+      if (wakeSuspendedRef.current) return;
+      const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!Recognition) return;
+      if (wakeRecognitionRef.current) return;
+
+      const recognition = new Recognition();
+      recognition.lang = "pt-BR";
+      recognition.interimResults = false;
+      recognition.continuous = true;
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[event.results.length - 1]?.[0]?.transcript?.trim();
+        if (!transcript) return;
+        const { matched, command } = extractWakeCommand(transcript);
+        if (!matched) return;
+
+        dispatchLdcnAvatarEvent({ type: "voice_wake_word", message: "Vens acionado." });
+        dispatchLdcnVoiceCommandEvent({
+          transcript,
+          command,
+          source: "wake_word",
+        });
+
+        if (wakeRecognitionRef.current) {
+          wakeRecognitionRef.current.abort?.();
+          wakeRecognitionRef.current = null;
+        }
+        wakeSuspendedRef.current = true;
+      };
+      recognition.onerror = () => {
+        wakeRecognitionRef.current = null;
+        if (!wakeSuspendedRef.current) {
+          scheduleWakeListener(1000);
+        }
+      };
+      recognition.onend = () => {
+        wakeRecognitionRef.current = null;
+        if (!wakeSuspendedRef.current) {
+          scheduleWakeListener(500);
+        }
+      };
+      wakeRecognitionRef.current = recognition;
+      dispatchLdcnAvatarEvent({ type: "voice_listening", message: "Em escuta por wake word." });
+      recognition.start();
+    };
+
+    wakeScheduleListenerRef.current = scheduleWakeListener;
+    wakeStartListenerRef.current = startWakeListener;
+    scheduleWakeListener(0);
+
+    return () => {
+      if (wakeRestartTimerRef.current) window.clearTimeout(wakeRestartTimerRef.current);
+      wakeRecognitionRef.current?.abort?.();
+      wakeRecognitionRef.current = null;
+      wakeStartListenerRef.current = null;
+      wakeScheduleListenerRef.current = null;
+    };
+  }, [pageVisible, settings.enabled, settings.hidden, settings.paused, settings.voiceEnabled]);
 
   const setSetting = useCallback(<K extends keyof LdcnAvatarSettings>(key: K, value: LdcnAvatarSettings[K]) => {
     setSettings((current) => ({ ...current, [key]: value }));

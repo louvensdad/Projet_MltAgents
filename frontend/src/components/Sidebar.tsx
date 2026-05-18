@@ -78,7 +78,7 @@ export default function Sidebar() {
             </div>
             <div className="min-w-0">
               <h1 className="truncate text-base font-semibold text-white">{t("dashboard.enterprise_title")}</h1>
-              <p className="text-[10px] uppercase tracking-[0.3em] text-slate-500">LDCN OS v1.0</p>
+              <p className="text-[10px] uppercase tracking-[0.3em] text-slate-500">Vens OS v1.0</p>
             </div>
           </div>
           <div className="mt-4 flex flex-wrap gap-2">

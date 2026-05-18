@@ -25,7 +25,8 @@ interface LdcnResponse {
 }
 
 const greeting =
-  "Ola, eu sou o LDCN. Posso te ajudar a criar, revisar ou melhorar seu projeto.";
+  "Ola, eu sou o Vens. Posso te ajudar a criar, revisar ou melhorar seu projeto.";
+const LDCN_SESSION_KEY = "ldcn_session_id";
 
 function normalizeStackFromPath(pathname: string): string | null {
   const wizardMatch = pathname.match(/^\/wizard\/([^/]+)/);
@@ -64,7 +65,9 @@ export default function LdcnAssistant() {
 
   const buildClientContext = useCallback(() => {
     if (typeof window === "undefined") return {};
+    const sessionId = getOrCreateSessionId();
     return {
+      session_id: sessionId,
       route: pathname,
       stack_id: pageContext.stackId,
       project_id: pageContext.projectId,
@@ -115,7 +118,7 @@ export default function LdcnAssistant() {
     setBusy(false);
 
     if (!result.ok || !result.data?.success) {
-      const errorText = result.backendError?.message || result.networkError || "Nao consegui acessar o orquestrador LDCN agora.";
+      const errorText = result.backendError?.message || result.networkError || "Nao consegui acessar o orquestrador Vens agora.";
       setState("error");
       dispatchLdcnAvatarEvent({ type: "assistant_error", message: errorText, route: pathname, source: source });
       setMessages((current) => [...current, { id: crypto.randomUUID(), role: "assistant", content: errorText }]);
@@ -189,19 +192,20 @@ export default function LdcnAssistant() {
     const handleVoiceCommand = (event: Event) => {
       const detail = (event as CustomEvent<LdcnVoiceCommandEventDetail>).detail;
       if (!detail?.transcript) return;
-      setOpen(true);
       dispatchLdcnAvatarEvent({
         type: "voice_listening",
-        message: "LDCN pronto para conversar. Aperte o microfone para continuar.",
+        message: "Vens pronto para conversar.",
         route: pathname,
         source: "wake_word",
       });
-      setState("idle");
+      setState("listening");
+      const command = detail.command?.trim();
+      void sendMessage(command || "oi", "voice", { speakReply: true });
     };
 
     window.addEventListener(LDCN_VOICE_COMMAND_EVENT, handleVoiceCommand);
     return () => window.removeEventListener(LDCN_VOICE_COMMAND_EVENT, handleVoiceCommand);
-  }, [pathname]);
+  }, [pathname, sendMessage]);
 
   return (
     <>
@@ -245,4 +249,13 @@ function readSessionJson(key: string) {
   } catch {
     return null;
   }
+}
+
+function getOrCreateSessionId() {
+  if (typeof window === "undefined") return "server";
+  const saved = window.localStorage.getItem(LDCN_SESSION_KEY);
+  if (saved) return saved;
+  const created = crypto.randomUUID();
+  window.localStorage.setItem(LDCN_SESSION_KEY, created);
+  return created;
 }
