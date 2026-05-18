@@ -1,11 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import LdcnActionButtons, { LdcnAction } from "@/components/ldcn/LdcnActionButtons";
 import LdcnChatPanel from "@/components/ldcn/LdcnChatPanel";
 import LdcnFloatingOrb, { LdcnAssistantState } from "@/components/ldcn/LdcnFloatingOrb";
-import { dispatchLdcnAvatarEvent } from "@/components/ldcn/avatar/ldcnAvatarEvents";
+import {
+  dispatchLdcnAvatarEvent,
+  LDCN_VOICE_COMMAND_EVENT,
+  type LdcnVoiceCommandEventDetail,
+} from "@/components/ldcn/avatar/ldcnAvatarEvents";
 import type { LdcnMessageItem } from "@/components/ldcn/LdcnMessage";
 import { apiPost } from "@/lib/api";
 import { usePreferences } from "@/context/PreferencesContext";
@@ -58,7 +62,25 @@ export default function LdcnAssistant() {
     return { stackId, projectId, mode };
   }, [pathname]);
 
-  async function sendMessage(message: string, source: "chat" | "voice" = "chat"): Promise<string | null> {
+  const buildClientContext = useCallback(() => {
+    if (typeof window === "undefined") return {};
+    return {
+      route: pathname,
+      stack_id: pageContext.stackId,
+      project_id: pageContext.projectId,
+      mode: pageContext.mode,
+      last_generation_payload: readSessionJson("ldcn_last_generation_payload"),
+      wizard_prefill: readSessionJson("ldcn_wizard_prefill"),
+      recent_errors: readSessionJson("ldcn_recent_errors") || [],
+      downloads_available: pathname.startsWith("/downloads"),
+    };
+  }, [pageContext.mode, pageContext.projectId, pageContext.stackId, pathname]);
+
+  const sendMessage = useCallback(async (
+    message: string,
+    source: "chat" | "voice" = "chat",
+    options: { speakReply?: boolean } = {}
+  ): Promise<string | null> => {
     const trimmed = message.trim();
     if (!trimmed) return null;
 
@@ -114,22 +136,25 @@ export default function LdcnAssistant() {
         agents: response.agents_used,
       },
     ]);
+    if (options.speakReply) {
+      if (typeof window !== "undefined" && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(response.reply);
+        utterance.lang = localeFull || "pt-BR";
+        utterance.onstart = () => {
+          setState("speaking");
+          dispatchLdcnAvatarEvent({ type: "voice_speaking", message: "Respondendo por voz.", route: pathname, source: "assistant_tts" });
+        };
+        utterance.onend = () => {
+          setState("idle");
+          dispatchLdcnAvatarEvent({ type: "voice_idle", message: "Conversa por voz finalizada.", route: pathname, source: "assistant_tts" });
+        };
+        utterance.onerror = () => setState("error");
+        window.speechSynthesis.speak(utterance);
+      }
+    }
     return response.reply;
-  }
-
-  function buildClientContext() {
-    if (typeof window === "undefined") return {};
-    return {
-      route: pathname,
-      stack_id: pageContext.stackId,
-      project_id: pageContext.projectId,
-      mode: pageContext.mode,
-      last_generation_payload: readSessionJson("ldcn_last_generation_payload"),
-      wizard_prefill: readSessionJson("ldcn_wizard_prefill"),
-      recent_errors: readSessionJson("ldcn_recent_errors") || [],
-      downloads_available: pathname.startsWith("/downloads"),
-    };
-  }
+  }, [buildClientContext, localeFull, pageContext.mode, pageContext.projectId, pageContext.stackId, pathname]);
 
   function handleAction(action: LdcnAction) {
     if (action.requires_confirmation && !window.confirm(`${action.label}?`)) return;
@@ -160,6 +185,24 @@ export default function LdcnAssistant() {
     }
   }
 
+  useEffect(() => {
+    const handleVoiceCommand = (event: Event) => {
+      const detail = (event as CustomEvent<LdcnVoiceCommandEventDetail>).detail;
+      if (!detail?.transcript) return;
+      setOpen(true);
+      dispatchLdcnAvatarEvent({
+        type: "voice_listening",
+        message: "LDCN pronto para conversar. Aperte o microfone para continuar.",
+        route: pathname,
+        source: "wake_word",
+      });
+      setState("idle");
+    };
+
+    window.addEventListener(LDCN_VOICE_COMMAND_EVENT, handleVoiceCommand);
+    return () => window.removeEventListener(LDCN_VOICE_COMMAND_EVENT, handleVoiceCommand);
+  }, [pathname]);
+
   return (
     <>
       <LdcnChatPanel
@@ -175,7 +218,15 @@ export default function LdcnAssistant() {
         onSend={(message) => sendMessage(message, "chat").then(() => undefined)}
         onAction={handleAction}
         onVoiceTranscript={(transcript) => sendMessage(transcript, "voice")}
-        onSpeak={() => setState("speaking")}
+        onSpeak={() => {
+          setState("speaking");
+          dispatchLdcnAvatarEvent({
+            type: "voice_speaking",
+            message: "Respondendo por voz.",
+            route: pathname,
+            source: "voice_panel",
+          });
+        }}
       />
       {!open && actions.length > 0 && (
         <div className="fixed bottom-24 right-5 z-40 w-[min(360px,calc(100vw-2rem))] rounded-lg border border-white/10 bg-slate-950/90 p-3 shadow-xl shadow-black/40 backdrop-blur-xl">
