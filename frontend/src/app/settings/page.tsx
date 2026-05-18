@@ -12,6 +12,7 @@ import { apiGet, apiFallbacks } from "@/lib/api";
 import AnimatedBadge from "@/components/premium/AnimatedBadge";
 import HolographicCard from "@/components/premium/HolographicCard";
 import MetricOrb from "@/components/premium/MetricOrb";
+import { LDCN_AVATAR_STORAGE_KEY } from "@/components/ldcn/avatar/useLdcnAvatarState";
 
 const languages = [
   { code: "pt" as const, name: "Português", native: "Português (Brasil)", flag: "🇧🇷" },
@@ -24,6 +25,23 @@ const themes = [
   { id: "dark" as const, labelKey: "settings.theme_dark", icon: Moon, preview: "from-slate-900 to-slate-800" },
   { id: "light" as const, labelKey: "settings.theme_light", icon: Sun, preview: "from-stone-100 to-stone-200" },
   { id: "system" as const, labelKey: "settings.theme_system", icon: Monitor, preview: "from-violet-900 to-violet-800" },
+];
+
+const avatarPositions = [
+  { id: "bottom-right", label: "Bottom-right" },
+  { id: "bottom-left", label: "Bottom-left" },
+  { id: "sidebar-edge", label: "Sidebar edge" },
+  { id: "hero-corner", label: "Hero corner" },
+];
+
+const avatarSizes = [
+  { id: "small", label: "Pequeno" },
+  { id: "medium", label: "Médio" },
+];
+
+const avatarStyles = [
+  { id: "holographic", label: "Holográfico" },
+  { id: "minimalist", label: "Minimalista" },
 ];
 
 function SectionCard({ icon: Icon, title, desc, children, accent = "from-blue-500 to-indigo-500" }: {
@@ -83,6 +101,15 @@ export default function SettingsPage() {
   const [allowMockFallback, setAllowMockFallback] = useState(true);
   const [maxAiCalls, setMaxAiCalls] = useState(10);
   const [maxCostPerGen, setMaxCostPerGen] = useState("medium");
+  const [avatarEnabled, setAvatarEnabled] = useState(true);
+  const [avatarVoiceEnabled, setAvatarVoiceEnabled] = useState(true);
+  const [avatarReducedMotion, setAvatarReducedMotion] = useState(false);
+  const [avatarMuted, setAvatarMuted] = useState(false);
+  const [avatarPaused, setAvatarPaused] = useState(false);
+  const [avatarHidden, setAvatarHidden] = useState(false);
+  const [avatarPosition, setAvatarPosition] = useState("bottom-right");
+  const [avatarSize, setAvatarSize] = useState("small");
+  const [avatarStyle, setAvatarStyle] = useState("holographic");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -94,6 +121,23 @@ export default function SettingsPage() {
       setAllowMockFallback(localStorage.getItem("ldcn_allow_mock_fallback") !== "false");
       setMaxAiCalls(Number(localStorage.getItem("ldcn_max_ai_calls")) || 10);
       setMaxCostPerGen(localStorage.getItem("ldcn_max_cost_per_gen") || "medium");
+      const savedAvatar = localStorage.getItem(LDCN_AVATAR_STORAGE_KEY);
+      if (savedAvatar) {
+        try {
+          const parsed = JSON.parse(savedAvatar);
+          setAvatarEnabled(parsed.enabled !== false);
+          setAvatarVoiceEnabled(parsed.voiceEnabled !== false);
+          setAvatarReducedMotion(parsed.reducedMotion === true);
+          setAvatarMuted(parsed.muted === true);
+          setAvatarPaused(parsed.paused === true);
+          setAvatarHidden(parsed.hidden === true);
+          setAvatarPosition(parsed.positionPreference || "bottom-right");
+          setAvatarSize(parsed.size || "small");
+          setAvatarStyle(parsed.style || "holographic");
+        } catch {
+          localStorage.removeItem(LDCN_AVATAR_STORAGE_KEY);
+        }
+      }
     }
   }, []);
 
@@ -115,6 +159,17 @@ export default function SettingsPage() {
     localStorage.setItem("ldcn_allow_mock_fallback", String(allowMockFallback));
     localStorage.setItem("ldcn_max_ai_calls", String(maxAiCalls));
     localStorage.setItem("ldcn_max_cost_per_gen", maxCostPerGen);
+    localStorage.setItem(LDCN_AVATAR_STORAGE_KEY, JSON.stringify({
+      enabled: avatarEnabled,
+      voiceEnabled: avatarVoiceEnabled,
+      reducedMotion: avatarReducedMotion,
+      positionPreference: avatarPosition,
+      size: avatarSize,
+      style: avatarStyle,
+      muted: avatarMuted,
+      paused: avatarPaused,
+      hidden: avatarHidden,
+    }));
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
@@ -282,6 +337,103 @@ export default function SettingsPage() {
               label={t("settings.enable_auto_backup")}
               desc={t("settings.enable_auto_backup_desc")}
             />
+          </div>
+        </SectionCard>
+
+        <SectionCard icon={Sparkles} title="LDCN Companion" desc="Presença visual, voz e movimento do mini avatar no dashboard." accent="from-cyan-500 to-blue-500">
+          <div className="space-y-2">
+            <Toggle
+              checked={avatarEnabled}
+              onChange={setAvatarEnabled}
+              label="Ativar avatar"
+              desc="Mostra ou oculta o mini corpo do LDCN no dashboard."
+            />
+            <Toggle
+              checked={avatarVoiceEnabled}
+              onChange={setAvatarVoiceEnabled}
+              label="Ativar voz"
+              desc="Permite ao avatar reagir a listening e speaking."
+            />
+            <Toggle
+              checked={avatarReducedMotion}
+              onChange={setAvatarReducedMotion}
+              label="Reduzir movimento"
+              desc="Respeita uma experiência mais estável e discreta."
+            />
+            <Toggle
+              checked={avatarMuted}
+              onChange={setAvatarMuted}
+              label="Silenciar balões"
+              desc="Esconde mensagens flutuantes do avatar."
+            />
+            <Toggle
+              checked={avatarPaused}
+              onChange={setAvatarPaused}
+              label="Pausar animações"
+              desc="Congela animações sem remover o avatar."
+            />
+            <Toggle
+              checked={avatarHidden}
+              onChange={setAvatarHidden}
+              label="Esconder avatar"
+              desc="Remove a presença visual até reativar nas preferências."
+            />
+
+            <div className="grid gap-3 pt-2 sm:grid-cols-2">
+              <div className="space-y-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-3">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Posição preferida</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {avatarPositions.map((option) => (
+                    <button
+                      key={option.id}
+                      type="button"
+                      onClick={() => setAvatarPosition(option.id)}
+                      className={`rounded-lg border px-2 py-2 text-[11px] transition ${
+                        avatarPosition === option.id
+                          ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-200"
+                          : "border-white/10 bg-white/[0.03] text-gray-300 hover:bg-white/[0.06]"
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-3">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Tamanho e estilo</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {avatarSizes.map((option) => (
+                    <button
+                      key={option.id}
+                      type="button"
+                      onClick={() => setAvatarSize(option.id)}
+                      className={`rounded-lg border px-2 py-2 text-[11px] transition ${
+                        avatarSize === option.id
+                          ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-200"
+                          : "border-white/10 bg-white/[0.03] text-gray-300 hover:bg-white/[0.06]"
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                  {avatarStyles.map((option) => (
+                    <button
+                      key={option.id}
+                      type="button"
+                      onClick={() => setAvatarStyle(option.id)}
+                      className={`rounded-lg border px-2 py-2 text-[11px] transition ${
+                        avatarStyle === option.id
+                          ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-200"
+                          : "border-white/10 bg-white/[0.03] text-gray-300 hover:bg-white/[0.06]"
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </SectionCard>
 

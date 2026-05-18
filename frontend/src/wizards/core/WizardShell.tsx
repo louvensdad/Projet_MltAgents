@@ -1,11 +1,12 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import Stepper from "./Stepper";
 import WizardActions from "./WizardActions";
 import type { WizardStep } from "../types";
 import LiveProjectBuilder from "@/components/live-builder/LiveProjectBuilder";
 import { CinematicTransition } from "@/components/motion";
+import { dispatchLdcnAvatarEvent } from "@/components/ldcn/avatar/ldcnAvatarEvents";
 
 interface WizardShellProps {
   title: string;
@@ -32,6 +33,15 @@ export default function WizardShell({
   onStepClick, onPrev, onNext, onGenerate,
   t, accent, children
 }: WizardShellProps) {
+  useEffect(() => {
+    dispatchLdcnAvatarEvent({
+      type: "wizard_step_changed",
+      route: "/wizard",
+      source: "wizard-shell",
+      message: `Etapa ${step} de ${totalSteps}.`,
+    });
+  }, [step, totalSteps]);
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-6">
       <div className="mb-6 flex items-center justify-between">

@@ -12,6 +12,7 @@ import HolographicCard from "@/components/premium/HolographicCard";
 import MetricOrb from "@/components/premium/MetricOrb";
 import SectionHeader from "@/components/premium/SectionHeader";
 import { DownloadStatusCard, DownloadLoadingModal } from "@/components/ui/DownloadStatusCard";
+import { dispatchLdcnAvatarEvent } from "@/components/ldcn/avatar/ldcnAvatarEvents";
 
 interface Project {
   id: string;
@@ -71,6 +72,12 @@ export default function DownloadsPage() {
       const data = await response.json();
 
       if (!response.ok) {
+        dispatchLdcnAvatarEvent({
+          type: "download_failed",
+          route: "/downloads",
+          source: "downloads-page",
+          message: "Esse erro parece vir do download.",
+        });
         setDownloadInfo({
           project_id: projectId,
           project_name: projectName,
@@ -84,6 +91,12 @@ export default function DownloadsPage() {
         setDownloadInfo(data);
       }
     } catch {
+      dispatchLdcnAvatarEvent({
+        type: "download_failed",
+        route: "/downloads",
+        source: "downloads-page",
+        message: "Esse erro parece vir do download.",
+      });
       setDownloadInfo({
         project_id: projectId,
         project_name: projectName,

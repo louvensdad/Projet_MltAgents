@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Box, Globe, Layers3, Palette, Server, ShieldCheck, Sparkles, Workflow, Zap } from "lucide-react";
 import { motion } from "framer-motion";
@@ -12,6 +12,7 @@ import MetricOrb from "@/components/premium/MetricOrb";
 import SectionHeader from "@/components/premium/SectionHeader";
 import AIRecommendationPanel from "@/components/premium/create/AIRecommendationPanel";
 import LiveTechPreview from "@/components/premium/create/LiveTechPreview";
+import { dispatchLdcnAvatarEvent } from "@/components/ldcn/avatar/ldcnAvatarEvents";
 
 interface WizardCard {
   slug: string;
@@ -308,6 +309,15 @@ export default function WizardSelectorPage() {
   const activeCard = useMemo(() => WIZARD_CARDS.find((card) => card.slug === activeSlug) || WIZARD_CARDS[0], [activeSlug]);
   const readyCount = WIZARD_CARDS.filter((card) => card.ready).length;
   const activeTone = activeCard.tone === "cyan" || activeCard.tone === "violet" || activeCard.tone === "emerald" ? activeCard.tone : "violet";
+
+  useEffect(() => {
+    dispatchLdcnAvatarEvent({
+      type: "template_selected",
+      route: "/wizard",
+      source: "wizard-selector",
+      message: `Stack em foco: ${activeCard.nameKey.split(".").pop() || activeCard.slug}.`,
+    });
+  }, [activeCard.slug, activeCard.nameKey]);
 
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 lg:py-10">

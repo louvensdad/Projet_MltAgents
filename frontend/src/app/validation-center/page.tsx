@@ -9,6 +9,7 @@ import EngineNodeGraph from "@/components/premium/EngineNodeGraph";
 import HolographicCard from "@/components/premium/HolographicCard";
 import MetricOrb from "@/components/premium/MetricOrb";
 import SectionHeader from "@/components/premium/SectionHeader";
+import { dispatchLdcnAvatarEvent } from "@/components/ldcn/avatar/ldcnAvatarEvents";
 
 type Item = { rule: string; status: "validado" | "warning" | "erro"; detail: string };
 
@@ -20,7 +21,18 @@ export default function ValidationCenterPage() {
   useEffect(() => {
     fetch(`${API_BASE}/api/validation/summary`)
       .then((r) => r.json())
-      .then((d) => setItems(d.items || []))
+      .then((d) => {
+        const nextItems = d.items || [];
+        setItems(nextItems);
+        if (nextItems.some((item: Item) => item.status !== "validado")) {
+          dispatchLdcnAvatarEvent({
+            type: "validation_failed",
+            route: "/validation-center",
+            source: "validation-center",
+            message: "Preciso validar essa stack.",
+          });
+        }
+      })
       .finally(() => setLoading(false));
   }, []);
 

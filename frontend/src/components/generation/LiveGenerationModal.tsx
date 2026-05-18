@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { X, Loader2, CheckCircle, AlertTriangle, FileText, BookOpen, Shield, Package, Cpu, ScanLine, Archive } from "lucide-react";
 import type { GenerationEvent, DocEvent } from "@/lib/generation-types";
 import { getApiBaseUrl } from "@/lib/config";
+import { dispatchLdcnAvatarEvent } from "@/components/ldcn/avatar/ldcnAvatarEvents";
 
 interface LiveGenerationModalProps {
   jobId: string;
@@ -108,11 +109,13 @@ export default function LiveGenerationModal({ jobId, onClose, onComplete }: Live
         if (data.status === "generated") {
           setCompleted(true);
           setFailed(false);
+          dispatchLdcnAvatarEvent({ type: "project_generated", message: "Boa, projeto gerado.", source: "generation-modal" });
           if (interval) window.clearInterval(interval);
           setTimeout(() => onComplete(), 1000);
         } else if (data.status === "generation_failed") {
           setFailed(true);
           setErrorMessage("Project generation failed.");
+          dispatchLdcnAvatarEvent({ type: "generation_failed", message: "Parece que encontrei um problema.", source: "generation-modal" });
           if (interval) window.clearInterval(interval);
         }
       } catch {

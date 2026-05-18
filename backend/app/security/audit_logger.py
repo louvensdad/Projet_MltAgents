@@ -1,6 +1,6 @@
 import os
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 # Pasta de logs configurada para o ambiente
@@ -40,7 +40,7 @@ class AuditLogger:
             action = "system_error"
             details = f"Ação desconhecida interceptada: {details}"
             
-        timestamp = datetime.utcnow().isoformat() + "Z"
+        timestamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         
         # Mascarar potenciais tokens acidentais na string details
         masked_details = AuditLogger._mask_secrets(details)
