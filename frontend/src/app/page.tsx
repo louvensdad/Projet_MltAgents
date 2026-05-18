@@ -10,6 +10,7 @@ import StatusBadge from "@/components/common/StatusBadge";
 import { usePreferences } from "@/context/PreferencesContext";
 import { AnimatedCounter, PulseStatus } from "@/components/motion";
 import { EngineNodeGraph, FloatingActionCard, HolographicCard, LiveArchitecturePanel, MetricOrb, SectionHeader, EmptyState3D, AnimatedBadge } from "@/components/premium";
+import { dispatchLdcnAvatarEvent } from "@/components/ldcn/avatar/ldcnAvatarEvents";
 
 type Service = { name: string; status: string; updated_at: string };
 type Project = { id: string; name: string; type: string; stack: string; payment_status: string; created_at: string; template_name?: string; download_status?: string };
@@ -45,6 +46,17 @@ export default function Dashboard() {
   const securityScore = 94;
   const aiMode = aiStatus?.generation_quality_mode === "agent_boost_100" ? "Agent Boost 100%" : "Local Build 90%";
   const kpiGeneratorsStatus = stableCount === totalGenerators ? "stable" : stableCount > 0 ? "active" : "offline";
+
+  useEffect(() => {
+    if (!loading && aiStatus) {
+      dispatchLdcnAvatarEvent({
+        type: "agent_boost_active",
+        route: "/",
+        source: "dashboard",
+        message: aiStatus?.agent_boost_available ? "Seus agentes estão ativos." : "Monitorando o trabalho dos agentes.",
+      });
+    }
+  }, [loading, aiStatus]);
 
   const engineNodes = [
     { name: "Motor de validação", status: "online", hint: "Prompt validator + stack checks" },
